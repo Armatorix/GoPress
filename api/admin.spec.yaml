@@ -12,18 +12,72 @@ servers:
 paths:
   /admin/users:
     get:
+      operationId: getUsers
+      responses:
+        '200': {$ref: '#/components/responses/GetUsers'}
+        '500': {$ref: '#/components/responses/ErrorMsg'}
     post:
+      summary: Create a new user
+      requestBody: {$ref: '#/components/requestBodies/PostUsers'}
+      responses:
+        '200': {description: User created}
+        '400': {$ref: '#/components/responses/ErrorMsg'}
     delete:
+      operationId: deleteUsers
+      parameters:
+        - $ref: '#/components/parameters/userIds'
+      responses:
+        '200': {description: All users deleted}
+        '500': {$ref: '#/components/responses/ErrorMsg'}
   /admin/users/{userId}:
+    parameters:
+      - $ref: '#/components/parameters/userId'
     patch:
-  /admin/content:
+      operationId: updateUser
+      requestBody: {$ref: '#/components/requestBodies/PatchUser'}
+      responses:
+        '200': {description: User updated}
+        '400': {$ref: '#/components/responses/ErrorMsg'}
+        '500': {$ref: '#/components/responses/ErrorMsg'}
+  /admin/contents:
     get:
+      operationId: getContents
+      responses:
+        '200': {$ref: '#/components/responses/GetContents'}
+        '500': {$ref: '#/components/responses/ErrorMsg'}
     post:
+      summary: Create new content
+      requestBody: {$ref: '#/components/requestBodies/PostContent'}
+      responses:
+        '200': {description: Content created}
+        '400': {$ref: '#/components/responses/ErrorMsg'}
     delete:
+      summary: Delete all content
+      responses:
+        '200': {description: All content deleted}
+        '500': {$ref: '#/components/responses/ErrorMsg'}
   /admin/content/{contentId}:
     patch:
+      summary: Update content
+      parameters:
+        - $ref: '#/components/parameters/contentId'
+      requestBody: {$ref: '#/components/requestBodies/PatchContent'}
+      responses:
+        '200': {description: Content updated}
+        '400':
+          $ref: '#/components/responses/ErrorMsg'
+        '404':
+          $ref: '#/components/responses/ErrorMsg'
 components:
   parameters:
+    userIds:
+      name: userIds
+      in: query
+      required: true
+      schema:
+        type: array
+        items:
+          type: string
     userId:
       name: userId
       in: path
@@ -37,6 +91,26 @@ components:
       schema:
         type: string
   requestBodies:
+    PostUsers:
+      required: true
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/PostUsers'}
+    PatchUser:
+      required: true
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/PatchUser'}
+    PostContent:
+      required: true
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/PostContent'}
+    PatchContent:
+      required: true
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/PatchContent'}
   responses:
     ErrorMsg:
       description: Error message
@@ -47,6 +121,16 @@ components:
             properties:
               error: {type: string}
             required: [error]
+    GetUsers:
+      description: List of users
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/Users'}
+    GetContents:
+      description: List of contents
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/Contents'}
   schemas:
     ErrorMsg:
       type: object
@@ -57,14 +141,56 @@ components:
       type: object
       properties:
         id: {type: string}
-        name: {type: string}
+        nick: {type: string}
         email: {type: string}
         userType: {type: string}
-      required: [id, name, email, userType]ee
+      required: [id, name, email, userType]
     UserType:
       type: string
       enum:
         - ADMIN
         - CONTENT_CREATOR
+    Users:
+      type: array
+      items: {$ref: '#/components/schemas/User'}
+    Content:
+      type: object
+      properties:
+        id: {type: string}
+        title: {type: string}
+        body: {type: string}
+        tags: {type: array, items: {type: string}}
+      required: [id, title, body, tags]
+    Contents:
+      type: array
+      items: {$ref: '#/components/schemas/Content'}
+    PostUsers:
+      type: object
+      properties:
+        nick: {type: string}
+        email: {type: string}
+        userType: {$ref: '#/components/schemas/UserType'}
+      required: [nick, email, userType]
+    PatchUser:
+      type: object
+      properties:
+        nick: {type: string}
+        email: {type: string}
+        userType: {$ref: '#/components/schemas/UserType'}
+      required: [nick, email, userType]
+    PostContent:
+      type: object
+      properties:
+        title: {type: string}
+        body: {type: string}
+        tags: {type: array, items: {type: string}}
+      required: [title, body, tags]
+    PatchContent:
+      type: object
+      properties:
+        title: {type: string}
+        body: {type: string}
+        tags: {type: array, items: {type: string}}
+      required: [title, body, tags]
   securitySchemes: {}
 security: []
