@@ -1,0 +1,25 @@
+run:
+  timeout: 20m
+  modules-download-mode: readonly
+issues:
+  # Show all issues
+  max-issues-per-linter: 0
+  max-same-issues: 0
+  exclude-dirs:
+    - ent
+linters-settings:
+  staticcheck:
+    checks:
+      - all
+linters:
+  disable-all: true
+  enable:
+    - errcheck
+    - gofumpt
+    - gosec
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - typecheck
+    - unused

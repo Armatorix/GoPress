@@ -4,6 +4,8 @@ admin pandel:
 - [ ] adding new content
 - [ ] members handling
 - [ ] password change
+- [ ] create an admin user based on envs when missing users
+- [ ] ...
 public api:
 - [ ] get content list (with tag filters)
 - [ ] get content by id

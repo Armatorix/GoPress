@@ -1,0 +1,17 @@
+{{ define "debug" }}
+
+{{ $pkg := base $.Config.Package }}
+{{ template "header" $ }}
+
+{{ range $n := $.Nodes }}
+    {{ $client := print $n.Name "Client" }}
+    func (c *{{ $client }}) Debug() *{{ $client }} {
+        if c.debug {
+            return c
+        }
+        cfg := config{driver: dialect.Debug(c.driver, c.log), log: c.log, debug: true, hooks: c.hooks}
+        return &{{ $client }}{config: cfg}
+    }
+{{ end }}
+
+{{ end }}
