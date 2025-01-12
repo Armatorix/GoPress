@@ -1,0 +1,70 @@
+openapi: 3.0.0
+info:
+  title: API
+  version: 0.0.1
+servers:
+  - url: '{env}/api/v1'
+    variables:
+      env:
+        default: http://localhost:8080
+        enum:
+          - http://localhost:8080
+paths:
+  /admin/users:
+    get:
+    post:
+    delete:
+  /admin/users/{userId}:
+    patch:
+  /admin/content:
+    get:
+    post:
+    delete:
+  /admin/content/{contentId}:
+    patch:
+components:
+  parameters:
+    userId:
+      name: userId
+      in: path
+      required: true
+      schema:
+        type: string
+    contentId:
+      name: contentId
+      in: path
+      required: true
+      schema:
+        type: string
+  requestBodies:
+  responses:
+    ErrorMsg:
+      description: Error message
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error: {type: string}
+            required: [error]
+  schemas:
+    ErrorMsg:
+      type: object
+      properties:
+        error: {type: string}
+      required: [error]
+    User:
+      type: object
+      properties:
+        id: {type: string}
+        name: {type: string}
+        email: {type: string}
+        userType: {type: string}
+      required: [id, name, email, userType]ee
+    UserType:
+      type: string
+      enum:
+        - ADMIN
+        - CONTENT_CREATOR
+  securitySchemes: {}
+security: []
