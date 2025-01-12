@@ -1,0 +1,85 @@
+services:
+  postgres:
+    image: 17.2-alpine3.21
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    healthcheck:
+      test: ['CMD-SHELL', "psql -U postgres -c 'select 1'"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    command: ['postgres', '-c', 'log_statement=all']
+    profiles: [local, ci, localprod]
+
+  pgweb:
+    image: sosedoff/pgweb:latest
+    ports:
+      - '8082:8081'
+    environment:
+      PGWEB_DATABASE_URL: postgres://postgres:@postgres:5432/postgres?sslmode=disable
+    restart: on-failure
+    depends_on:
+      postgres:
+        condition: service_healthy
+    profiles: [local]
+
+  backend:
+    build:
+      context: ./be/
+      dockerfile: ./Dockerfile.dev
+    restart: on-failure
+    env_file:
+      - ./be/.env
+    ports:
+      - '8080:8080'
+    depends_on:
+      postgres:
+        condition: service_healthy
+    develop:
+      watch:
+        - path: ./be
+          action: rebuild
+          target: /app
+    profiles: [local]
+
+  frontend:
+    build:
+      context: ./web
+      dockerfile: ./Dockerfile.dev
+    restart: on-failure
+    environment:
+      VITE_BACKEND_API: http://localhost:8080
+      VITE_USE_FS_ACCESS_API: 'false'
+    ports:
+      - '5173:5173'
+    develop:
+      watch:
+        - path: ./web
+          action: sync
+          target: /app
+          ignore:
+            - node_modules
+        - path: package.json
+          action: rebuild
+
+    profiles: [local]
+  befe:
+    build:
+      dockerfile: ./Dockerfile
+    restart: on-failure
+    env_file:
+      - ./be/.env
+    ports:
+      - '8080:8080'
+    develop:
+      watch:
+        - path: ./be
+          action: rebuild
+          target: /app
+        - path: ./web
+          action: rebuild
+          target: /app
+
+    profiles: [localprod]
