@@ -1,0 +1,74 @@
+openapi: 3.0.0
+info:
+  title: API
+  version: 0.0.1
+servers:
+  - url: '{env}/api/v1'
+    variables:
+      env:
+        default: http://localhost:8080
+        enum:
+          - http://localhost:8080
+paths:
+  /admin/contents:
+    get:
+      operationId: getContents
+      responses:
+        '200': {$ref: '#/components/responses/GetContents'}
+        '500': {$ref: '#/components/responses/ErrorMsg'}
+  /admin/content/{contentId}:
+    get:
+      operationId: getContent
+      parameters:
+        - $ref: '#/components/parameters/contentId'
+      responses:
+        '200': {$ref: '#/components/responses/GetContent'}
+        '404': {$ref: '#/components/responses/ErrorMsg'}
+        '500': {$ref: '#/components/responses/ErrorMsg'}
+components:
+  parameters:
+    contentId:
+      name: contentId
+      in: path
+      required: true
+      schema:
+        type: string
+  responses:
+    ErrorMsg:
+      description: Error message
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error: {type: string}
+            required: [error]
+    GetContents:
+      description: List of contents
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/Contents'}
+    GetContent:
+      description: Content
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/Content'}
+  schemas:
+    ErrorMsg:
+      type: object
+      properties:
+        error: {type: string}
+      required: [error]
+    Content:
+      type: object
+      properties:
+        id: {type: string}
+        title: {type: string}
+        body: {type: string}
+        tags: {type: array, items: {type: string}}
+      required: [id, title, body, tags]
+    Contents:
+      type: array
+      items: {$ref: '#/components/schemas/Content'}
+  securitySchemes: {}
+security: []
