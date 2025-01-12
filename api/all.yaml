@@ -1,0 +1,293 @@
+openapi: 3.0.0
+info:
+  title: API
+  version: 0.0.1
+servers:
+  - url: '{env}/api/v1'
+    variables:
+      env:
+        default: http://localhost:8080
+        enum:
+          - http://localhost:8080
+paths:
+  /admin/users:
+    get:
+      operationId: getUsers
+      responses:
+        '200':
+          $ref: '#/components/responses/GetUsers'
+        '500':
+          $ref: '#/components/responses/ErrorMsg'
+    post:
+      summary: Create a new user
+      requestBody:
+        $ref: '#/components/requestBodies/PostUsers'
+      responses:
+        '200':
+          description: User created
+        '400':
+          $ref: '#/components/responses/ErrorMsg'
+    delete:
+      operationId: deleteUsers
+      parameters:
+        - $ref: '#/components/parameters/userIds'
+      responses:
+        '200':
+          description: All users deleted
+        '500':
+          $ref: '#/components/responses/ErrorMsg'
+  /admin/users/{userId}:
+    parameters:
+      - $ref: '#/components/parameters/userId'
+    patch:
+      operationId: updateUser
+      requestBody:
+        $ref: '#/components/requestBodies/PatchUser'
+      responses:
+        '200':
+          description: User updated
+        '400':
+          $ref: '#/components/responses/ErrorMsg'
+        '500':
+          $ref: '#/components/responses/ErrorMsg'
+  /admin/contents:
+    get:
+      operationId: getContents
+      responses:
+        '200': {$ref: '#/components/responses/GetContents'}
+        '500': {$ref: '#/components/responses/ErrorMsg'}
+    post:
+      summary: Create new content
+      requestBody:
+        $ref: '#/components/requestBodies/PostContent'
+      responses:
+        '200':
+          description: Content created
+        '400':
+          $ref: '#/components/responses/ErrorMsg'
+    delete:
+      summary: Delete all content
+      responses:
+        '200':
+          description: All content deleted
+        '500':
+          $ref: '#/components/responses/ErrorMsg'
+  /admin/content/{contentId}:
+    patch:
+      summary: Update content
+      parameters:
+        - $ref: '#/components/parameters/contentId'
+      requestBody:
+        $ref: '#/components/requestBodies/PatchContent'
+      responses:
+        '200':
+          description: Content updated
+        '400':
+          $ref: '#/components/responses/ErrorMsg'
+        '404':
+          $ref: '#/components/responses/ErrorMsg'
+    get:
+      operationId: getContent
+      parameters:
+        - $ref: '#/components/parameters/contentId'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetContent'
+        '404':
+          $ref: '#/components/responses/ErrorMsg'
+        '500':
+          $ref: '#/components/responses/ErrorMsg'
+  /admin/login:
+    post:
+      summary: Login
+      requestBody:
+        $ref: '#/components/requestBodies/PostLogin'
+      responses:
+        '200':
+          $ref: '#/components/responses/AuthToken'
+        '400':
+          $ref: '#/components/responses/ErrorMsg'
+components:
+  parameters:
+    userIds:
+      name: userIds
+      in: query
+      required: true
+      schema:
+        type: array
+        items:
+          type: string
+    userId:
+      name: userId
+      in: path
+      required: true
+      schema:
+        type: string
+    contentId:
+      name: contentId
+      in: path
+      required: true
+      schema:
+        type: string
+  requestBodies:
+    PostUsers:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PostUsers'
+    PatchUser:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PatchUser'
+    PostContent:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PostContent'
+    PatchContent:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PatchContent'
+    PostLogin:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PostLogin'
+  responses:
+    ErrorMsg:
+      description: Error message
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error: {type: string}
+            required: [error]
+    GetUsers:
+      description: List of users
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Users'
+    GetContents:
+      description: List of contents
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/Contents'}
+    AuthToken:
+      description: Login response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AuthToken'
+    GetContent:
+      description: Content
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Content'
+  schemas:
+    ErrorMsg:
+      type: object
+      properties:
+        error: {type: string}
+      required: [error]
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        nick:
+          type: string
+        email:
+          type: string
+        userType:
+          type: string
+      required: [id, name, email, userType]
+    UserType:
+      type: string
+      enum:
+        - ADMIN
+        - CONTENT_CREATOR
+    Users:
+      type: array
+      items:
+        $ref: '#/components/schemas/User'
+    Content:
+      type: object
+      properties:
+        id: {type: string}
+        title: {type: string}
+        body: {type: string}
+        tags: {type: array, items: {type: string}}
+      required: [id, title, body, tags]
+    Contents:
+      type: array
+      items: {$ref: '#/components/schemas/Content'}
+    PostUsers:
+      type: object
+      properties:
+        nick:
+          type: string
+        email:
+          type: string
+        userType:
+          $ref: '#/components/schemas/UserType'
+      required: [nick, email, userType]
+    PatchUser:
+      type: object
+      properties:
+        nick:
+          type: string
+        email:
+          type: string
+        userType:
+          $ref: '#/components/schemas/UserType'
+      required: [nick, email, userType]
+    PostContent:
+      type: object
+      properties:
+        title:
+          type: string
+        body:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+      required: [title, body, tags]
+    PatchContent:
+      type: object
+      properties:
+        title:
+          type: string
+        body:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+      required: [title, body, tags]
+    PostLogin:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required: [email, password]
+    AuthToken:
+      type: object
+      properties:
+        token:
+          type: string
+      required: [token]
+  securitySchemes: {}
+security: []
