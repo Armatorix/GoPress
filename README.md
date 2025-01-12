@@ -3,6 +3,7 @@ admin pandel:
 - [ ] image upload handling to pg
 - [ ] adding new content
 - [ ] members handling
+- [ ] password change
 public api:
 - [ ] get content list (with tag filters)
 - [ ] get content by id

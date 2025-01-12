@@ -1,0 +1,60 @@
+openapi: 3.0.0
+info:
+  title: API
+  version: 0.0.1
+servers:
+  - url: '{env}/api/v1'
+    variables:
+      env:
+        default: http://localhost:8080
+        enum:
+          - http://localhost:8080
+paths:
+  /admin/login:
+    post:
+      summary: Login
+      requestBody: {$ref: '#/components/requestBodies/PostLogin'}
+      responses:
+        '200': {$ref: '#/components/responses/AuthToken'}
+        '400': {$ref: '#/components/responses/ErrorMsg'}
+components:
+  requestBodies:
+    PostLogin:
+      required: true
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/PostLogin'}
+  responses:
+    ErrorMsg:
+      description: Error message
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error: {type: string}
+            required: [error]
+    AuthToken:
+      description: Login response
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/AuthToken'}
+  schemas:
+    ErrorMsg:
+      type: object
+      properties:
+        error: {type: string}
+      required: [error]
+    PostLogin:
+      type: object
+      properties:
+        email: {type: string}
+        password: {type: string}
+      required: [email, password]
+    AuthToken:
+      type: object
+      properties:
+        token: {type: string}
+      required: [token]
+  securitySchemes: {}
+security: []
