@@ -22,5 +22,6 @@ admin pandel:
 public api:
 - [ ] get content list (with tag filters)
 - [ ] get content by id
+- [ ] articel statistics api
 additional:
 - [ ] in memory content caching
