@@ -17,7 +17,6 @@ var (
 		{Name: "description", Type: field.TypeString, Nullable: true},
 		{Name: "body", Type: field.TypeString, Default: ""},
 		{Name: "author_id", Type: field.TypeString},
-		{Name: "email_confirmation_secret", Type: field.TypeString, Nullable: true},
 	}
 	// ArticlesTable holds the schema information for the "articles" table.
 	ArticlesTable = &schema.Table{

@@ -13,7 +13,6 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/Armatorix/GoPress/be/db/ent/ent/article"
 	"github.com/Armatorix/GoPress/be/db/ent/ent/user"
-	"github.com/Armatorix/GoPress/be/db/ext"
 )
 
 // ArticleCreate is the builder for creating a Article entity.
@@ -67,15 +66,15 @@ func (ac *ArticleCreate) SetNillableTitle(s *string) *ArticleCreate {
 }
 
 // SetDescription sets the "description" field.
-func (ac *ArticleCreate) SetDescription(e ext.Password) *ArticleCreate {
-	ac.mutation.SetDescription(e)
+func (ac *ArticleCreate) SetDescription(s string) *ArticleCreate {
+	ac.mutation.SetDescription(s)
 	return ac
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (ac *ArticleCreate) SetNillableDescription(e *ext.Password) *ArticleCreate {
-	if e != nil {
-		ac.SetDescription(*e)
+func (ac *ArticleCreate) SetNillableDescription(s *string) *ArticleCreate {
+	if s != nil {
+		ac.SetDescription(*s)
 	}
 	return ac
 }
@@ -97,20 +96,6 @@ func (ac *ArticleCreate) SetNillableBody(s *string) *ArticleCreate {
 // SetAuthorID sets the "author_id" field.
 func (ac *ArticleCreate) SetAuthorID(s string) *ArticleCreate {
 	ac.mutation.SetAuthorID(s)
-	return ac
-}
-
-// SetEmailConfirmationSecret sets the "email_confirmation_secret" field.
-func (ac *ArticleCreate) SetEmailConfirmationSecret(e ext.Password) *ArticleCreate {
-	ac.mutation.SetEmailConfirmationSecret(e)
-	return ac
-}
-
-// SetNillableEmailConfirmationSecret sets the "email_confirmation_secret" field if the given value is not nil.
-func (ac *ArticleCreate) SetNillableEmailConfirmationSecret(e *ext.Password) *ArticleCreate {
-	if e != nil {
-		ac.SetEmailConfirmationSecret(*e)
-	}
 	return ac
 }
 
@@ -255,10 +240,6 @@ func (ac *ArticleCreate) createSpec() (*Article, *sqlgraph.CreateSpec) {
 		_spec.SetField(article.FieldAuthorID, field.TypeString, value)
 		_node.AuthorID = value
 	}
-	if value, ok := ac.mutation.EmailConfirmationSecret(); ok {
-		_spec.SetField(article.FieldEmailConfirmationSecret, field.TypeString, value)
-		_node.EmailConfirmationSecret = value
-	}
 	if nodes := ac.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
@@ -358,7 +339,7 @@ func (u *ArticleUpsert) ClearTitle() *ArticleUpsert {
 }
 
 // SetDescription sets the "description" field.
-func (u *ArticleUpsert) SetDescription(v ext.Password) *ArticleUpsert {
+func (u *ArticleUpsert) SetDescription(v string) *ArticleUpsert {
 	u.Set(article.FieldDescription, v)
 	return u
 }
@@ -396,24 +377,6 @@ func (u *ArticleUpsert) SetAuthorID(v string) *ArticleUpsert {
 // UpdateAuthorID sets the "author_id" field to the value that was provided on create.
 func (u *ArticleUpsert) UpdateAuthorID() *ArticleUpsert {
 	u.SetExcluded(article.FieldAuthorID)
-	return u
-}
-
-// SetEmailConfirmationSecret sets the "email_confirmation_secret" field.
-func (u *ArticleUpsert) SetEmailConfirmationSecret(v ext.Password) *ArticleUpsert {
-	u.Set(article.FieldEmailConfirmationSecret, v)
-	return u
-}
-
-// UpdateEmailConfirmationSecret sets the "email_confirmation_secret" field to the value that was provided on create.
-func (u *ArticleUpsert) UpdateEmailConfirmationSecret() *ArticleUpsert {
-	u.SetExcluded(article.FieldEmailConfirmationSecret)
-	return u
-}
-
-// ClearEmailConfirmationSecret clears the value of the "email_confirmation_secret" field.
-func (u *ArticleUpsert) ClearEmailConfirmationSecret() *ArticleUpsert {
-	u.SetNull(article.FieldEmailConfirmationSecret)
 	return u
 }
 
@@ -504,7 +467,7 @@ func (u *ArticleUpsertOne) ClearTitle() *ArticleUpsertOne {
 }
 
 // SetDescription sets the "description" field.
-func (u *ArticleUpsertOne) SetDescription(v ext.Password) *ArticleUpsertOne {
+func (u *ArticleUpsertOne) SetDescription(v string) *ArticleUpsertOne {
 	return u.Update(func(s *ArticleUpsert) {
 		s.SetDescription(v)
 	})
@@ -549,27 +512,6 @@ func (u *ArticleUpsertOne) SetAuthorID(v string) *ArticleUpsertOne {
 func (u *ArticleUpsertOne) UpdateAuthorID() *ArticleUpsertOne {
 	return u.Update(func(s *ArticleUpsert) {
 		s.UpdateAuthorID()
-	})
-}
-
-// SetEmailConfirmationSecret sets the "email_confirmation_secret" field.
-func (u *ArticleUpsertOne) SetEmailConfirmationSecret(v ext.Password) *ArticleUpsertOne {
-	return u.Update(func(s *ArticleUpsert) {
-		s.SetEmailConfirmationSecret(v)
-	})
-}
-
-// UpdateEmailConfirmationSecret sets the "email_confirmation_secret" field to the value that was provided on create.
-func (u *ArticleUpsertOne) UpdateEmailConfirmationSecret() *ArticleUpsertOne {
-	return u.Update(func(s *ArticleUpsert) {
-		s.UpdateEmailConfirmationSecret()
-	})
-}
-
-// ClearEmailConfirmationSecret clears the value of the "email_confirmation_secret" field.
-func (u *ArticleUpsertOne) ClearEmailConfirmationSecret() *ArticleUpsertOne {
-	return u.Update(func(s *ArticleUpsert) {
-		s.ClearEmailConfirmationSecret()
 	})
 }
 
@@ -826,7 +768,7 @@ func (u *ArticleUpsertBulk) ClearTitle() *ArticleUpsertBulk {
 }
 
 // SetDescription sets the "description" field.
-func (u *ArticleUpsertBulk) SetDescription(v ext.Password) *ArticleUpsertBulk {
+func (u *ArticleUpsertBulk) SetDescription(v string) *ArticleUpsertBulk {
 	return u.Update(func(s *ArticleUpsert) {
 		s.SetDescription(v)
 	})
@@ -871,27 +813,6 @@ func (u *ArticleUpsertBulk) SetAuthorID(v string) *ArticleUpsertBulk {
 func (u *ArticleUpsertBulk) UpdateAuthorID() *ArticleUpsertBulk {
 	return u.Update(func(s *ArticleUpsert) {
 		s.UpdateAuthorID()
-	})
-}
-
-// SetEmailConfirmationSecret sets the "email_confirmation_secret" field.
-func (u *ArticleUpsertBulk) SetEmailConfirmationSecret(v ext.Password) *ArticleUpsertBulk {
-	return u.Update(func(s *ArticleUpsert) {
-		s.SetEmailConfirmationSecret(v)
-	})
-}
-
-// UpdateEmailConfirmationSecret sets the "email_confirmation_secret" field to the value that was provided on create.
-func (u *ArticleUpsertBulk) UpdateEmailConfirmationSecret() *ArticleUpsertBulk {
-	return u.Update(func(s *ArticleUpsert) {
-		s.UpdateEmailConfirmationSecret()
-	})
-}
-
-// ClearEmailConfirmationSecret clears the value of the "email_confirmation_secret" field.
-func (u *ArticleUpsertBulk) ClearEmailConfirmationSecret() *ArticleUpsertBulk {
-	return u.Update(func(s *ArticleUpsert) {
-		s.ClearEmailConfirmationSecret()
 	})
 }
 

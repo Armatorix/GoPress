@@ -5,6 +5,7 @@
 export type PatchArticle = {
     title: string;
     body: string;
+    description: string;
     tags: Array<string>;
 };
 

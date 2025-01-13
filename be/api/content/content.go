@@ -19,8 +19,9 @@ func (h *handler) CreateArticle(
 	request CreateArticleRequestObject,
 ) (CreateArticleResponseObject, error) {
 	err := h.db.InsertArticle(ctx, db.InsertArticle{
-		Body:  request.Body.Body,
-		Title: request.Body.Title,
+		Body:        request.Body.Body,
+		Title:       request.Body.Title,
+		Description: request.Body.Description,
 	})
 	if err != nil {
 		return CreateArticle500JSONResponse{}, err
@@ -32,8 +33,9 @@ func (h *handler) CreateArticle(
 // UpdateArticle implements StrictServerInterface.
 func (h *handler) UpdateArticle(ctx context.Context, request UpdateArticleRequestObject) (UpdateArticleResponseObject, error) {
 	err := h.db.UpdateArticle(ctx, request.ArticleId, db.InsertArticle{
-		Body:  request.Body.Body,
-		Title: request.Body.Title,
+		Body:        request.Body.Body,
+		Title:       request.Body.Title,
+		Description: request.Body.Description,
 	})
 	if err != nil {
 		return UpdateArticle500JSONResponse{}, err

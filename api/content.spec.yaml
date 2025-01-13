@@ -111,8 +111,9 @@ components:
         id: {type: number, format: int64, x-go-type: int}
         title: {type: string}
         body: {type: string}
+        description: {type: string}
         tags: {type: array, items: {type: string}}
-      required: [id, title, body, tags]
+      required: [id, title, body, tags, description]
     Articles:
       type: array
       items: {$ref: '#/components/schemas/Article'}
@@ -122,14 +123,16 @@ components:
       properties:
         title: {type: string}
         body: {type: string}
+        description: {type: string}
         tags: {type: array, items: {type: string}}
-      required: [title, body, tags]
+      required: [title, body, tags, description]
     PatchArticle:
       type: object
       properties:
         title: {type: string}
         body: {type: string}
+        description: {type: string}
         tags: {type: array, items: {type: string}}
-      required: [title, body, tags]
+      required: [title, body, tags, description]
   securitySchemes: {}
 security: []

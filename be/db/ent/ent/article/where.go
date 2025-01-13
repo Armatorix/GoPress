@@ -8,7 +8,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/Armatorix/GoPress/be/db/ent/ent/predicate"
-	"github.com/Armatorix/GoPress/be/db/ext"
 )
 
 // ID filters vertices based on their ID field.
@@ -72,7 +71,7 @@ func Title(v string) predicate.Article {
 }
 
 // Description applies equality check predicate on the "description" field. It's identical to DescriptionEQ.
-func Description(v ext.Password) predicate.Article {
+func Description(v string) predicate.Article {
 	return predicate.Article(sql.FieldEQ(FieldDescription, v))
 }
 
@@ -84,11 +83,6 @@ func Body(v string) predicate.Article {
 // AuthorID applies equality check predicate on the "author_id" field. It's identical to AuthorIDEQ.
 func AuthorID(v string) predicate.Article {
 	return predicate.Article(sql.FieldEQ(FieldAuthorID, v))
-}
-
-// EmailConfirmationSecret applies equality check predicate on the "email_confirmation_secret" field. It's identical to EmailConfirmationSecretEQ.
-func EmailConfirmationSecret(v ext.Password) predicate.Article {
-	return predicate.Article(sql.FieldEQ(FieldEmailConfirmationSecret, v))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
@@ -247,61 +241,58 @@ func TitleContainsFold(v string) predicate.Article {
 }
 
 // DescriptionEQ applies the EQ predicate on the "description" field.
-func DescriptionEQ(v ext.Password) predicate.Article {
+func DescriptionEQ(v string) predicate.Article {
 	return predicate.Article(sql.FieldEQ(FieldDescription, v))
 }
 
 // DescriptionNEQ applies the NEQ predicate on the "description" field.
-func DescriptionNEQ(v ext.Password) predicate.Article {
+func DescriptionNEQ(v string) predicate.Article {
 	return predicate.Article(sql.FieldNEQ(FieldDescription, v))
 }
 
 // DescriptionIn applies the In predicate on the "description" field.
-func DescriptionIn(vs ...ext.Password) predicate.Article {
+func DescriptionIn(vs ...string) predicate.Article {
 	return predicate.Article(sql.FieldIn(FieldDescription, vs...))
 }
 
 // DescriptionNotIn applies the NotIn predicate on the "description" field.
-func DescriptionNotIn(vs ...ext.Password) predicate.Article {
+func DescriptionNotIn(vs ...string) predicate.Article {
 	return predicate.Article(sql.FieldNotIn(FieldDescription, vs...))
 }
 
 // DescriptionGT applies the GT predicate on the "description" field.
-func DescriptionGT(v ext.Password) predicate.Article {
+func DescriptionGT(v string) predicate.Article {
 	return predicate.Article(sql.FieldGT(FieldDescription, v))
 }
 
 // DescriptionGTE applies the GTE predicate on the "description" field.
-func DescriptionGTE(v ext.Password) predicate.Article {
+func DescriptionGTE(v string) predicate.Article {
 	return predicate.Article(sql.FieldGTE(FieldDescription, v))
 }
 
 // DescriptionLT applies the LT predicate on the "description" field.
-func DescriptionLT(v ext.Password) predicate.Article {
+func DescriptionLT(v string) predicate.Article {
 	return predicate.Article(sql.FieldLT(FieldDescription, v))
 }
 
 // DescriptionLTE applies the LTE predicate on the "description" field.
-func DescriptionLTE(v ext.Password) predicate.Article {
+func DescriptionLTE(v string) predicate.Article {
 	return predicate.Article(sql.FieldLTE(FieldDescription, v))
 }
 
 // DescriptionContains applies the Contains predicate on the "description" field.
-func DescriptionContains(v ext.Password) predicate.Article {
-	vc := string(v)
-	return predicate.Article(sql.FieldContains(FieldDescription, vc))
+func DescriptionContains(v string) predicate.Article {
+	return predicate.Article(sql.FieldContains(FieldDescription, v))
 }
 
 // DescriptionHasPrefix applies the HasPrefix predicate on the "description" field.
-func DescriptionHasPrefix(v ext.Password) predicate.Article {
-	vc := string(v)
-	return predicate.Article(sql.FieldHasPrefix(FieldDescription, vc))
+func DescriptionHasPrefix(v string) predicate.Article {
+	return predicate.Article(sql.FieldHasPrefix(FieldDescription, v))
 }
 
 // DescriptionHasSuffix applies the HasSuffix predicate on the "description" field.
-func DescriptionHasSuffix(v ext.Password) predicate.Article {
-	vc := string(v)
-	return predicate.Article(sql.FieldHasSuffix(FieldDescription, vc))
+func DescriptionHasSuffix(v string) predicate.Article {
+	return predicate.Article(sql.FieldHasSuffix(FieldDescription, v))
 }
 
 // DescriptionIsNil applies the IsNil predicate on the "description" field.
@@ -315,15 +306,13 @@ func DescriptionNotNil() predicate.Article {
 }
 
 // DescriptionEqualFold applies the EqualFold predicate on the "description" field.
-func DescriptionEqualFold(v ext.Password) predicate.Article {
-	vc := string(v)
-	return predicate.Article(sql.FieldEqualFold(FieldDescription, vc))
+func DescriptionEqualFold(v string) predicate.Article {
+	return predicate.Article(sql.FieldEqualFold(FieldDescription, v))
 }
 
 // DescriptionContainsFold applies the ContainsFold predicate on the "description" field.
-func DescriptionContainsFold(v ext.Password) predicate.Article {
-	vc := string(v)
-	return predicate.Article(sql.FieldContainsFold(FieldDescription, vc))
+func DescriptionContainsFold(v string) predicate.Article {
+	return predicate.Article(sql.FieldContainsFold(FieldDescription, v))
 }
 
 // BodyEQ applies the EQ predicate on the "body" field.
@@ -454,86 +443,6 @@ func AuthorIDEqualFold(v string) predicate.Article {
 // AuthorIDContainsFold applies the ContainsFold predicate on the "author_id" field.
 func AuthorIDContainsFold(v string) predicate.Article {
 	return predicate.Article(sql.FieldContainsFold(FieldAuthorID, v))
-}
-
-// EmailConfirmationSecretEQ applies the EQ predicate on the "email_confirmation_secret" field.
-func EmailConfirmationSecretEQ(v ext.Password) predicate.Article {
-	return predicate.Article(sql.FieldEQ(FieldEmailConfirmationSecret, v))
-}
-
-// EmailConfirmationSecretNEQ applies the NEQ predicate on the "email_confirmation_secret" field.
-func EmailConfirmationSecretNEQ(v ext.Password) predicate.Article {
-	return predicate.Article(sql.FieldNEQ(FieldEmailConfirmationSecret, v))
-}
-
-// EmailConfirmationSecretIn applies the In predicate on the "email_confirmation_secret" field.
-func EmailConfirmationSecretIn(vs ...ext.Password) predicate.Article {
-	return predicate.Article(sql.FieldIn(FieldEmailConfirmationSecret, vs...))
-}
-
-// EmailConfirmationSecretNotIn applies the NotIn predicate on the "email_confirmation_secret" field.
-func EmailConfirmationSecretNotIn(vs ...ext.Password) predicate.Article {
-	return predicate.Article(sql.FieldNotIn(FieldEmailConfirmationSecret, vs...))
-}
-
-// EmailConfirmationSecretGT applies the GT predicate on the "email_confirmation_secret" field.
-func EmailConfirmationSecretGT(v ext.Password) predicate.Article {
-	return predicate.Article(sql.FieldGT(FieldEmailConfirmationSecret, v))
-}
-
-// EmailConfirmationSecretGTE applies the GTE predicate on the "email_confirmation_secret" field.
-func EmailConfirmationSecretGTE(v ext.Password) predicate.Article {
-	return predicate.Article(sql.FieldGTE(FieldEmailConfirmationSecret, v))
-}
-
-// EmailConfirmationSecretLT applies the LT predicate on the "email_confirmation_secret" field.
-func EmailConfirmationSecretLT(v ext.Password) predicate.Article {
-	return predicate.Article(sql.FieldLT(FieldEmailConfirmationSecret, v))
-}
-
-// EmailConfirmationSecretLTE applies the LTE predicate on the "email_confirmation_secret" field.
-func EmailConfirmationSecretLTE(v ext.Password) predicate.Article {
-	return predicate.Article(sql.FieldLTE(FieldEmailConfirmationSecret, v))
-}
-
-// EmailConfirmationSecretContains applies the Contains predicate on the "email_confirmation_secret" field.
-func EmailConfirmationSecretContains(v ext.Password) predicate.Article {
-	vc := string(v)
-	return predicate.Article(sql.FieldContains(FieldEmailConfirmationSecret, vc))
-}
-
-// EmailConfirmationSecretHasPrefix applies the HasPrefix predicate on the "email_confirmation_secret" field.
-func EmailConfirmationSecretHasPrefix(v ext.Password) predicate.Article {
-	vc := string(v)
-	return predicate.Article(sql.FieldHasPrefix(FieldEmailConfirmationSecret, vc))
-}
-
-// EmailConfirmationSecretHasSuffix applies the HasSuffix predicate on the "email_confirmation_secret" field.
-func EmailConfirmationSecretHasSuffix(v ext.Password) predicate.Article {
-	vc := string(v)
-	return predicate.Article(sql.FieldHasSuffix(FieldEmailConfirmationSecret, vc))
-}
-
-// EmailConfirmationSecretIsNil applies the IsNil predicate on the "email_confirmation_secret" field.
-func EmailConfirmationSecretIsNil() predicate.Article {
-	return predicate.Article(sql.FieldIsNull(FieldEmailConfirmationSecret))
-}
-
-// EmailConfirmationSecretNotNil applies the NotNil predicate on the "email_confirmation_secret" field.
-func EmailConfirmationSecretNotNil() predicate.Article {
-	return predicate.Article(sql.FieldNotNull(FieldEmailConfirmationSecret))
-}
-
-// EmailConfirmationSecretEqualFold applies the EqualFold predicate on the "email_confirmation_secret" field.
-func EmailConfirmationSecretEqualFold(v ext.Password) predicate.Article {
-	vc := string(v)
-	return predicate.Article(sql.FieldEqualFold(FieldEmailConfirmationSecret, vc))
-}
-
-// EmailConfirmationSecretContainsFold applies the ContainsFold predicate on the "email_confirmation_secret" field.
-func EmailConfirmationSecretContainsFold(v ext.Password) predicate.Article {
-	vc := string(v)
-	return predicate.Article(sql.FieldContainsFold(FieldEmailConfirmationSecret, vc))
 }
 
 // HasUser applies the HasEdge predicate on the "user" edge.

@@ -26,8 +26,6 @@ const (
 	FieldBody = "body"
 	// FieldAuthorID holds the string denoting the author_id field in the database.
 	FieldAuthorID = "author_id"
-	// FieldEmailConfirmationSecret holds the string denoting the email_confirmation_secret field in the database.
-	FieldEmailConfirmationSecret = "email_confirmation_secret"
 	// EdgeUser holds the string denoting the user edge name in mutations.
 	EdgeUser = "user"
 	// Table holds the table name of the article in the database.
@@ -48,7 +46,6 @@ var Columns = []string{
 	FieldDescription,
 	FieldBody,
 	FieldAuthorID,
-	FieldEmailConfirmationSecret,
 }
 
 var (
@@ -112,11 +109,6 @@ func ByBody(opts ...sql.OrderTermOption) OrderOption {
 // ByAuthorID orders the results by the author_id field.
 func ByAuthorID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldAuthorID, opts...).ToFunc()
-}
-
-// ByEmailConfirmationSecret orders the results by the email_confirmation_secret field.
-func ByEmailConfirmationSecret(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldEmailConfirmationSecret, opts...).ToFunc()
 }
 
 // ByUserCount orders the results by user count.

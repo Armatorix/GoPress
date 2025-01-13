@@ -5,10 +5,11 @@ package content
 
 // Article defines model for Article.
 type Article struct {
-	Body  string   `json:"body"`
-	Id    int      `json:"id"`
-	Tags  []string `json:"tags"`
-	Title string   `json:"title"`
+	Body        string   `json:"body"`
+	Description string   `json:"description"`
+	Id          int      `json:"id"`
+	Tags        []string `json:"tags"`
+	Title       string   `json:"title"`
 }
 
 // Articles defines model for Articles.
@@ -21,16 +22,18 @@ type ErrorMsg struct {
 
 // PatchArticle defines model for PatchArticle.
 type PatchArticle struct {
-	Body  string   `json:"body"`
-	Tags  []string `json:"tags"`
-	Title string   `json:"title"`
+	Body        string   `json:"body"`
+	Description string   `json:"description"`
+	Tags        []string `json:"tags"`
+	Title       string   `json:"title"`
 }
 
 // PostArticle defines model for PostArticle.
 type PostArticle struct {
-	Body  string   `json:"body"`
-	Tags  []string `json:"tags"`
-	Title string   `json:"title"`
+	Body        string   `json:"body"`
+	Description string   `json:"description"`
+	Tags        []string `json:"tags"`
+	Title       string   `json:"title"`
 }
 
 // ArticleId defines model for articleId.

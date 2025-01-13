@@ -10,7 +10,6 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/Armatorix/GoPress/be/db/ent/ent/article"
-	"github.com/Armatorix/GoPress/be/db/ext"
 )
 
 // Article is the model entity for the Article schema.
@@ -25,13 +24,11 @@ type Article struct {
 	// Title holds the value of the "title" field.
 	Title string `json:"title,omitempty"`
 	// Description holds the value of the "description" field.
-	Description ext.Password `json:"description,omitempty"`
+	Description string `json:"description,omitempty"`
 	// Body holds the value of the "body" field.
 	Body string `json:"body,omitempty"`
 	// AuthorID holds the value of the "author_id" field.
 	AuthorID string `json:"author_id,omitempty"`
-	// EmailConfirmationSecret holds the value of the "email_confirmation_secret" field.
-	EmailConfirmationSecret ext.Password `json:"email_confirmation_secret,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ArticleQuery when eager-loading is set.
 	Edges        ArticleEdges `json:"edges"`
@@ -62,11 +59,9 @@ func (*Article) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case article.FieldDescription, article.FieldEmailConfirmationSecret:
-			values[i] = new(ext.Password)
 		case article.FieldID:
 			values[i] = new(sql.NullInt64)
-		case article.FieldTitle, article.FieldBody, article.FieldAuthorID:
+		case article.FieldTitle, article.FieldDescription, article.FieldBody, article.FieldAuthorID:
 			values[i] = new(sql.NullString)
 		case article.FieldCreatedAt, article.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -110,10 +105,10 @@ func (a *Article) assignValues(columns []string, values []any) error {
 				a.Title = value.String
 			}
 		case article.FieldDescription:
-			if value, ok := values[i].(*ext.Password); !ok {
+			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field description", values[i])
-			} else if value != nil {
-				a.Description = *value
+			} else if value.Valid {
+				a.Description = value.String
 			}
 		case article.FieldBody:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -126,12 +121,6 @@ func (a *Article) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field author_id", values[i])
 			} else if value.Valid {
 				a.AuthorID = value.String
-			}
-		case article.FieldEmailConfirmationSecret:
-			if value, ok := values[i].(*ext.Password); !ok {
-				return fmt.Errorf("unexpected type %T for field email_confirmation_secret", values[i])
-			} else if value != nil {
-				a.EmailConfirmationSecret = *value
 			}
 		default:
 			a.selectValues.Set(columns[i], values[i])
@@ -184,16 +173,13 @@ func (a *Article) String() string {
 	builder.WriteString(a.Title)
 	builder.WriteString(", ")
 	builder.WriteString("description=")
-	builder.WriteString(fmt.Sprintf("%v", a.Description))
+	builder.WriteString(a.Description)
 	builder.WriteString(", ")
 	builder.WriteString("body=")
 	builder.WriteString(a.Body)
 	builder.WriteString(", ")
 	builder.WriteString("author_id=")
 	builder.WriteString(a.AuthorID)
-	builder.WriteString(", ")
-	builder.WriteString("email_confirmation_secret=")
-	builder.WriteString(fmt.Sprintf("%v", a.EmailConfirmationSecret))
 	builder.WriteByte(')')
 	return builder.String()
 }

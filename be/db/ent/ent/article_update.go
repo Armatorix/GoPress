@@ -14,7 +14,6 @@ import (
 	"github.com/Armatorix/GoPress/be/db/ent/ent/article"
 	"github.com/Armatorix/GoPress/be/db/ent/ent/predicate"
 	"github.com/Armatorix/GoPress/be/db/ent/ent/user"
-	"github.com/Armatorix/GoPress/be/db/ext"
 )
 
 // ArticleUpdate is the builder for updating Article entities.
@@ -66,15 +65,15 @@ func (au *ArticleUpdate) ClearTitle() *ArticleUpdate {
 }
 
 // SetDescription sets the "description" field.
-func (au *ArticleUpdate) SetDescription(e ext.Password) *ArticleUpdate {
-	au.mutation.SetDescription(e)
+func (au *ArticleUpdate) SetDescription(s string) *ArticleUpdate {
+	au.mutation.SetDescription(s)
 	return au
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (au *ArticleUpdate) SetNillableDescription(e *ext.Password) *ArticleUpdate {
-	if e != nil {
-		au.SetDescription(*e)
+func (au *ArticleUpdate) SetNillableDescription(s *string) *ArticleUpdate {
+	if s != nil {
+		au.SetDescription(*s)
 	}
 	return au
 }
@@ -110,26 +109,6 @@ func (au *ArticleUpdate) SetNillableAuthorID(s *string) *ArticleUpdate {
 	if s != nil {
 		au.SetAuthorID(*s)
 	}
-	return au
-}
-
-// SetEmailConfirmationSecret sets the "email_confirmation_secret" field.
-func (au *ArticleUpdate) SetEmailConfirmationSecret(e ext.Password) *ArticleUpdate {
-	au.mutation.SetEmailConfirmationSecret(e)
-	return au
-}
-
-// SetNillableEmailConfirmationSecret sets the "email_confirmation_secret" field if the given value is not nil.
-func (au *ArticleUpdate) SetNillableEmailConfirmationSecret(e *ext.Password) *ArticleUpdate {
-	if e != nil {
-		au.SetEmailConfirmationSecret(*e)
-	}
-	return au
-}
-
-// ClearEmailConfirmationSecret clears the value of the "email_confirmation_secret" field.
-func (au *ArticleUpdate) ClearEmailConfirmationSecret() *ArticleUpdate {
-	au.mutation.ClearEmailConfirmationSecret()
 	return au
 }
 
@@ -237,12 +216,6 @@ func (au *ArticleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := au.mutation.AuthorID(); ok {
 		_spec.SetField(article.FieldAuthorID, field.TypeString, value)
 	}
-	if value, ok := au.mutation.EmailConfirmationSecret(); ok {
-		_spec.SetField(article.FieldEmailConfirmationSecret, field.TypeString, value)
-	}
-	if au.mutation.EmailConfirmationSecretCleared() {
-		_spec.ClearField(article.FieldEmailConfirmationSecret, field.TypeString)
-	}
 	if au.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
@@ -345,15 +318,15 @@ func (auo *ArticleUpdateOne) ClearTitle() *ArticleUpdateOne {
 }
 
 // SetDescription sets the "description" field.
-func (auo *ArticleUpdateOne) SetDescription(e ext.Password) *ArticleUpdateOne {
-	auo.mutation.SetDescription(e)
+func (auo *ArticleUpdateOne) SetDescription(s string) *ArticleUpdateOne {
+	auo.mutation.SetDescription(s)
 	return auo
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (auo *ArticleUpdateOne) SetNillableDescription(e *ext.Password) *ArticleUpdateOne {
-	if e != nil {
-		auo.SetDescription(*e)
+func (auo *ArticleUpdateOne) SetNillableDescription(s *string) *ArticleUpdateOne {
+	if s != nil {
+		auo.SetDescription(*s)
 	}
 	return auo
 }
@@ -389,26 +362,6 @@ func (auo *ArticleUpdateOne) SetNillableAuthorID(s *string) *ArticleUpdateOne {
 	if s != nil {
 		auo.SetAuthorID(*s)
 	}
-	return auo
-}
-
-// SetEmailConfirmationSecret sets the "email_confirmation_secret" field.
-func (auo *ArticleUpdateOne) SetEmailConfirmationSecret(e ext.Password) *ArticleUpdateOne {
-	auo.mutation.SetEmailConfirmationSecret(e)
-	return auo
-}
-
-// SetNillableEmailConfirmationSecret sets the "email_confirmation_secret" field if the given value is not nil.
-func (auo *ArticleUpdateOne) SetNillableEmailConfirmationSecret(e *ext.Password) *ArticleUpdateOne {
-	if e != nil {
-		auo.SetEmailConfirmationSecret(*e)
-	}
-	return auo
-}
-
-// ClearEmailConfirmationSecret clears the value of the "email_confirmation_secret" field.
-func (auo *ArticleUpdateOne) ClearEmailConfirmationSecret() *ArticleUpdateOne {
-	auo.mutation.ClearEmailConfirmationSecret()
 	return auo
 }
 
@@ -545,12 +498,6 @@ func (auo *ArticleUpdateOne) sqlSave(ctx context.Context) (_node *Article, err e
 	}
 	if value, ok := auo.mutation.AuthorID(); ok {
 		_spec.SetField(article.FieldAuthorID, field.TypeString, value)
-	}
-	if value, ok := auo.mutation.EmailConfirmationSecret(); ok {
-		_spec.SetField(article.FieldEmailConfirmationSecret, field.TypeString, value)
-	}
-	if auo.mutation.EmailConfirmationSecretCleared() {
-		_spec.ClearField(article.FieldEmailConfirmationSecret, field.TypeString)
 	}
 	if auo.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{

@@ -33,23 +33,22 @@ const (
 // ArticleMutation represents an operation that mutates the Article nodes in the graph.
 type ArticleMutation struct {
 	config
-	op                        Op
-	typ                       string
-	id                        *int
-	created_at                *time.Time
-	updated_at                *time.Time
-	title                     *string
-	description               *ext.Password
-	body                      *string
-	author_id                 *string
-	email_confirmation_secret *ext.Password
-	clearedFields             map[string]struct{}
-	user                      map[int]struct{}
-	removeduser               map[int]struct{}
-	cleareduser               bool
-	done                      bool
-	oldValue                  func(context.Context) (*Article, error)
-	predicates                []predicate.Article
+	op            Op
+	typ           string
+	id            *int
+	created_at    *time.Time
+	updated_at    *time.Time
+	title         *string
+	description   *string
+	body          *string
+	author_id     *string
+	clearedFields map[string]struct{}
+	user          map[int]struct{}
+	removeduser   map[int]struct{}
+	cleareduser   bool
+	done          bool
+	oldValue      func(context.Context) (*Article, error)
+	predicates    []predicate.Article
 }
 
 var _ ent.Mutation = (*ArticleMutation)(nil)
@@ -278,12 +277,12 @@ func (m *ArticleMutation) ResetTitle() {
 }
 
 // SetDescription sets the "description" field.
-func (m *ArticleMutation) SetDescription(e ext.Password) {
-	m.description = &e
+func (m *ArticleMutation) SetDescription(s string) {
+	m.description = &s
 }
 
 // Description returns the value of the "description" field in the mutation.
-func (m *ArticleMutation) Description() (r ext.Password, exists bool) {
+func (m *ArticleMutation) Description() (r string, exists bool) {
 	v := m.description
 	if v == nil {
 		return
@@ -294,7 +293,7 @@ func (m *ArticleMutation) Description() (r ext.Password, exists bool) {
 // OldDescription returns the old "description" field's value of the Article entity.
 // If the Article object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ArticleMutation) OldDescription(ctx context.Context) (v ext.Password, err error) {
+func (m *ArticleMutation) OldDescription(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldDescription is only allowed on UpdateOne operations")
 	}
@@ -398,55 +397,6 @@ func (m *ArticleMutation) ResetAuthorID() {
 	m.author_id = nil
 }
 
-// SetEmailConfirmationSecret sets the "email_confirmation_secret" field.
-func (m *ArticleMutation) SetEmailConfirmationSecret(e ext.Password) {
-	m.email_confirmation_secret = &e
-}
-
-// EmailConfirmationSecret returns the value of the "email_confirmation_secret" field in the mutation.
-func (m *ArticleMutation) EmailConfirmationSecret() (r ext.Password, exists bool) {
-	v := m.email_confirmation_secret
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldEmailConfirmationSecret returns the old "email_confirmation_secret" field's value of the Article entity.
-// If the Article object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ArticleMutation) OldEmailConfirmationSecret(ctx context.Context) (v ext.Password, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldEmailConfirmationSecret is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldEmailConfirmationSecret requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldEmailConfirmationSecret: %w", err)
-	}
-	return oldValue.EmailConfirmationSecret, nil
-}
-
-// ClearEmailConfirmationSecret clears the value of the "email_confirmation_secret" field.
-func (m *ArticleMutation) ClearEmailConfirmationSecret() {
-	m.email_confirmation_secret = nil
-	m.clearedFields[article.FieldEmailConfirmationSecret] = struct{}{}
-}
-
-// EmailConfirmationSecretCleared returns if the "email_confirmation_secret" field was cleared in this mutation.
-func (m *ArticleMutation) EmailConfirmationSecretCleared() bool {
-	_, ok := m.clearedFields[article.FieldEmailConfirmationSecret]
-	return ok
-}
-
-// ResetEmailConfirmationSecret resets all changes to the "email_confirmation_secret" field.
-func (m *ArticleMutation) ResetEmailConfirmationSecret() {
-	m.email_confirmation_secret = nil
-	delete(m.clearedFields, article.FieldEmailConfirmationSecret)
-}
-
 // AddUserIDs adds the "user" edge to the User entity by ids.
 func (m *ArticleMutation) AddUserIDs(ids ...int) {
 	if m.user == nil {
@@ -535,7 +485,7 @@ func (m *ArticleMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ArticleMutation) Fields() []string {
-	fields := make([]string, 0, 7)
+	fields := make([]string, 0, 6)
 	if m.created_at != nil {
 		fields = append(fields, article.FieldCreatedAt)
 	}
@@ -553,9 +503,6 @@ func (m *ArticleMutation) Fields() []string {
 	}
 	if m.author_id != nil {
 		fields = append(fields, article.FieldAuthorID)
-	}
-	if m.email_confirmation_secret != nil {
-		fields = append(fields, article.FieldEmailConfirmationSecret)
 	}
 	return fields
 }
@@ -577,8 +524,6 @@ func (m *ArticleMutation) Field(name string) (ent.Value, bool) {
 		return m.Body()
 	case article.FieldAuthorID:
 		return m.AuthorID()
-	case article.FieldEmailConfirmationSecret:
-		return m.EmailConfirmationSecret()
 	}
 	return nil, false
 }
@@ -600,8 +545,6 @@ func (m *ArticleMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldBody(ctx)
 	case article.FieldAuthorID:
 		return m.OldAuthorID(ctx)
-	case article.FieldEmailConfirmationSecret:
-		return m.OldEmailConfirmationSecret(ctx)
 	}
 	return nil, fmt.Errorf("unknown Article field %s", name)
 }
@@ -633,7 +576,7 @@ func (m *ArticleMutation) SetField(name string, value ent.Value) error {
 		m.SetTitle(v)
 		return nil
 	case article.FieldDescription:
-		v, ok := value.(ext.Password)
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -652,13 +595,6 @@ func (m *ArticleMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetAuthorID(v)
-		return nil
-	case article.FieldEmailConfirmationSecret:
-		v, ok := value.(ext.Password)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetEmailConfirmationSecret(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Article field %s", name)
@@ -696,9 +632,6 @@ func (m *ArticleMutation) ClearedFields() []string {
 	if m.FieldCleared(article.FieldDescription) {
 		fields = append(fields, article.FieldDescription)
 	}
-	if m.FieldCleared(article.FieldEmailConfirmationSecret) {
-		fields = append(fields, article.FieldEmailConfirmationSecret)
-	}
 	return fields
 }
 
@@ -718,9 +651,6 @@ func (m *ArticleMutation) ClearField(name string) error {
 		return nil
 	case article.FieldDescription:
 		m.ClearDescription()
-		return nil
-	case article.FieldEmailConfirmationSecret:
-		m.ClearEmailConfirmationSecret()
 		return nil
 	}
 	return fmt.Errorf("unknown Article nullable field %s", name)
@@ -747,9 +677,6 @@ func (m *ArticleMutation) ResetField(name string) error {
 		return nil
 	case article.FieldAuthorID:
 		m.ResetAuthorID()
-		return nil
-	case article.FieldEmailConfirmationSecret:
-		m.ResetEmailConfirmationSecret()
 		return nil
 	}
 	return fmt.Errorf("unknown Article field %s", name)

@@ -312,11 +312,13 @@ components:
           type: string
         body:
           type: string
+        description:
+          type: string
         tags:
           type: array
           items:
             type: string
-      required: [id, title, body, tags]
+      required: [id, title, body, tags, description]
     Articles:
       type: array
       items:
@@ -329,11 +331,13 @@ components:
           type: string
         body:
           type: string
+        description:
+          type: string
         tags:
           type: array
           items:
             type: string
-      required: [title, body, tags]
+      required: [title, body, tags, description]
     PatchArticle:
       type: object
       properties:
@@ -341,11 +345,13 @@ components:
           type: string
         body:
           type: string
+        description:
+          type: string
         tags:
           type: array
           items:
             type: string
-      required: [title, body, tags]
+      required: [title, body, tags, description]
     Content:
       type: object
       properties:

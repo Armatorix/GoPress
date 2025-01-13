@@ -6,6 +6,7 @@ export type Article = {
     id: number;
     title: string;
     body: string;
+    description: string;
     tags: Array<string>;
 };
 

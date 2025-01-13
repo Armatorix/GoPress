@@ -8,8 +8,9 @@ import (
 )
 
 type InsertArticle struct {
-	Body  string
-	Title string
+	Body        string
+	Title       string
+	Description string
 }
 
 func (db *DB) GetArticles(ctx context.Context) (ent.Articles, error) {
@@ -23,6 +24,7 @@ func (db *DB) InsertArticle(ctx context.Context, v InsertArticle) error {
 		Create().
 		SetBody(v.Body).
 		SetTitle(v.Title).
+		SetDescription(v.Description).
 		Exec(ctx)
 }
 
@@ -31,6 +33,7 @@ func (db *DB) UpdateArticle(ctx context.Context, id int, v InsertArticle) error 
 		UpdateOneID(id).
 		SetBody(v.Body).
 		SetTitle(v.Title).
+		SetDescription(v.Description).
 		Exec(ctx)
 }
 
