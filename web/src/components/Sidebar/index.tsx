@@ -1,22 +1,17 @@
+import { resetAuthJwt } from '@/lib/AuthProvider'
+import {
+  ClipboardDocumentIcon,
+  Cog6ToothIcon,
+  PowerIcon,
+  PresentationChartBarIcon,
+} from '@heroicons/react/24/solid'
 import {
   Card,
-  Typography,
   List,
   ListItem,
   ListItemPrefix,
-  ListItemSuffix,
-  Chip,
+  Typography,
 } from '@material-tailwind/react'
-import {
-  PresentationChartBarIcon,
-  ShoppingBagIcon,
-  UserCircleIcon,
-  Cog6ToothIcon,
-  InboxIcon,
-  PowerIcon,
-} from '@heroicons/react/24/solid'
-import { resetAuthJwt } from '@/lib/AuthProvider'
-import { useNavigate } from 'react-router-dom'
 
 function Sidebar() {
   const onLogout = () => {
@@ -24,47 +19,27 @@ function Sidebar() {
     window.location.reload()
   }
   return (
-    <Card className="h-[calc(100vh-2rem)] w-full max-w-[20rem] p-4 shadow-xl shadow-blue-gray-900/5">
-      <div className="mb-2 p-4">
+    <Card className="h-screen w-full max-w-72 p-4 shadow-xl shadow-blue-gray-900">
+      <div className="mb-2 p-4 flex flex-row items-center justify-center space-x-2 select-none">
+        <img src="/icon.png" alt="logo" className="h-10 w-10" />
         <Typography variant="h5" color="blue-gray">
-          Sidebar
+          GoPress
         </Typography>
       </div>
       <List>
-        <ListItem>
+        <ListItem disabled>
           <ListItemPrefix>
             <PresentationChartBarIcon className="h-5 w-5" />
           </ListItemPrefix>
           Dashboard
         </ListItem>
-        <ListItem>
+        <ListItem disabled>
           <ListItemPrefix>
-            <ShoppingBagIcon className="h-5 w-5" />
+            <ClipboardDocumentIcon className="h-5 w-5" />
           </ListItemPrefix>
-          E-Commerce
+          Articles
         </ListItem>
-        <ListItem>
-          <ListItemPrefix>
-            <InboxIcon className="h-5 w-5" />
-          </ListItemPrefix>
-          Inbox
-          <ListItemSuffix>
-            <Chip
-              value="14"
-              size="sm"
-              variant="ghost"
-              color="blue-gray"
-              className="rounded-full"
-            />
-          </ListItemSuffix>
-        </ListItem>
-        <ListItem>
-          <ListItemPrefix>
-            <UserCircleIcon className="h-5 w-5" />
-          </ListItemPrefix>
-          Profile
-        </ListItem>
-        <ListItem>
+        <ListItem disabled>
           <ListItemPrefix>
             <Cog6ToothIcon className="h-5 w-5" />
           </ListItemPrefix>
