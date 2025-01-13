@@ -17,6 +17,7 @@ admin pandel:
 - [ ] members handling
 - [ ] password change
 - [ ] create an admin user based on envs when missing users
+- [ ] page view statistics
 - [ ] ...
 public api:
 - [ ] get content list (with tag filters)
