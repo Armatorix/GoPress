@@ -5,18 +5,14 @@ import { Typography } from '@material-tailwind/react'
 function Articles() {
   const articles = useArticles()
 
-  if (articles.isLoading) {
+  if (articles.isLoading || articles.data === undefined) {
     return (
       <Bootstrap>
         <Typography>Loading...</Typography>
       </Bootstrap>
     )
   }
-  return (
-    <Bootstrap>
-      <Typography color="gray">Hello, world!</Typography>
-    </Bootstrap>
-  )
+  return <Bootstrap>xd</Bootstrap>
 }
 
 export default Articles

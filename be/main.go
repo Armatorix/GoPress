@@ -10,6 +10,7 @@ import (
 
 	"github.com/Armatorix/GoPress/be/api/admin"
 	"github.com/Armatorix/GoPress/be/api/auth"
+	"github.com/Armatorix/GoPress/be/api/content"
 	"github.com/Armatorix/GoPress/be/api/public"
 	"github.com/Armatorix/GoPress/be/config"
 	"github.com/Armatorix/GoPress/be/db"
@@ -104,6 +105,12 @@ func main() {
 		RegisterHandlers(
 			apiAuth,
 			admin.NewHandler(db),
+		)
+
+	content.
+		RegisterHandlers(
+			apiAuth,
+			content.NewHandler(db),
 		)
 
 	public.RegisterHandlers(
