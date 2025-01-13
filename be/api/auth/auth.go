@@ -5,17 +5,41 @@ package auth
 
 import (
 	"context"
+	"time"
 
 	"github.com/Armatorix/GoPress/be/db"
+	"github.com/Armatorix/GoPress/be/db/ent/ent"
+	"github.com/Armatorix/GoPress/be/x/xjwt"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type handler struct {
-	db *db.DB
+	db  *db.DB
+	jwt *xjwt.Client
 }
 
 // PostAdminLogin implements StrictServerInterface.
-func (h *handler) PostAdminLogin(ctx context.Context, request PostAdminLoginRequestObject) (PostAdminLoginResponseObject, error) {
-	panic("unimplemented")
+func (h *handler) PostAdminLogin(
+	ctx context.Context,
+	request PostAdminLoginRequestObject,
+) (PostAdminLoginResponseObject, error) {
+	user, err := h.db.UserByEmail(ctx, request.Body.Email)
+	if err != nil {
+		return PostAdminLogin500JSONResponse{}, err
+	}
+
+	// TODO: user token
+	if user.Password.String() != request.Body.Password {
+		return PostAdminLogin400JSONResponse{}, nil
+	}
+
+	token, err := h.userToken(user)
+	if err != nil {
+		return PostAdminLogin500JSONResponse{}, err
+	}
+	return PostAdminLogin200JSONResponse{
+		AuthTokenJSONResponse(*token),
+	}, nil
 }
 
 func NewHandler(db *db.DB) ServerInterface {
@@ -25,4 +49,24 @@ func NewHandler(db *db.DB) ServerInterface {
 		},
 		nil,
 	)
+}
+
+func (h *handler) userToken(user *ent.User) (*AuthToken, error) {
+	expAt := time.Now().Add(time.Hour * 24 * 7)
+	jwt, err := h.jwt.Encode(xjwt.Claims{
+		UserId: user.ID,
+		RegisteredClaims: jwt.RegisteredClaims{
+			Issuer:    "gopress",
+			Audience:  jwt.ClaimStrings{"gopress"},
+			ExpiresAt: jwt.NewNumericDate(expAt),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &AuthToken{
+		Token:     jwt,
+		ExpiresAt: expAt,
+	}, nil
 }

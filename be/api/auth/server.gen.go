@@ -98,6 +98,17 @@ func (response PostAdminLogin400JSONResponse) VisitPostAdminLoginResponse(w http
 	return json.NewEncoder(w).Encode(response)
 }
 
+type PostAdminLogin500JSONResponse struct {
+	Error string `json:"error"`
+}
+
+func (response PostAdminLogin500JSONResponse) VisitPostAdminLoginResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
 // StrictServerInterface represents all server handlers.
 type StrictServerInterface interface {
 	// Login

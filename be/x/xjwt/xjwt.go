@@ -8,8 +8,7 @@ type Client struct {
 
 type Claims struct {
 	jwt.RegisteredClaims
-	UserId     int  `json:"userId"`
-	IsVerified bool `json:"isVerified"`
+	UserId int `json:"userId"`
 }
 
 func New(secret []byte) *Client {

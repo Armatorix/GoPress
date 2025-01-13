@@ -27,6 +27,8 @@ paths:
           description: User created
         '400':
           $ref: '#/components/responses/ErrorMsg'
+        '500':
+          $ref: '#/components/responses/ErrorMsg'
     delete:
       operationId: deleteUsers
       parameters:
@@ -65,6 +67,8 @@ paths:
           description: Content created
         '400':
           $ref: '#/components/responses/ErrorMsg'
+        '500':
+          $ref: '#/components/responses/ErrorMsg'
     delete:
       summary: Delete all content
       responses:
@@ -86,6 +90,8 @@ paths:
           $ref: '#/components/responses/ErrorMsg'
         '404':
           $ref: '#/components/responses/ErrorMsg'
+        '500':
+          $ref: '#/components/responses/ErrorMsg'
     get:
       operationId: getContent
       parameters:
@@ -106,6 +112,8 @@ paths:
         '200':
           $ref: '#/components/responses/AuthToken'
         '400':
+          $ref: '#/components/responses/ErrorMsg'
+        '500':
           $ref: '#/components/responses/ErrorMsg'
 components:
   parameters:
@@ -288,6 +296,9 @@ components:
       properties:
         token:
           type: string
-      required: [token]
+        expiresAt:
+          type: string
+          format: date-time
+      required: [token, expiresAt]
   securitySchemes: {}
 security: []

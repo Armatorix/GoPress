@@ -44,6 +44,7 @@ export class DefaultService {
             mediaType: 'application/json',
             errors: {
                 400: `Error message`,
+                500: `Error message`,
             },
         });
     }
@@ -119,6 +120,7 @@ export class DefaultService {
             mediaType: 'application/json',
             errors: {
                 400: `Error message`,
+                500: `Error message`,
             },
         });
     }
@@ -158,6 +160,7 @@ export class DefaultService {
             errors: {
                 400: `Error message`,
                 404: `Error message`,
+                500: `Error message`,
             },
         });
     }
@@ -197,6 +200,7 @@ export class DefaultService {
             mediaType: 'application/json',
             errors: {
                 400: `Error message`,
+                500: `Error message`,
             },
         });
     }

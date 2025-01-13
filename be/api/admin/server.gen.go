@@ -226,6 +226,17 @@ func (response PatchAdminContentContentId404JSONResponse) VisitPatchAdminContent
 	return json.NewEncoder(w).Encode(response)
 }
 
+type PatchAdminContentContentId500JSONResponse struct {
+	Error string `json:"error"`
+}
+
+func (response PatchAdminContentContentId500JSONResponse) VisitPatchAdminContentContentIdResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
 type DeleteAdminContentsRequestObject struct {
 }
 
@@ -296,6 +307,17 @@ type PostAdminContents400JSONResponse struct{ ErrorMsgJSONResponse }
 func (response PostAdminContents400JSONResponse) VisitPostAdminContentsResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(400)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type PostAdminContents500JSONResponse struct {
+	Error string `json:"error"`
+}
+
+func (response PostAdminContents500JSONResponse) VisitPostAdminContentsResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
 
 	return json.NewEncoder(w).Encode(response)
 }
@@ -371,6 +393,17 @@ type PostAdminUsers400JSONResponse struct{ ErrorMsgJSONResponse }
 func (response PostAdminUsers400JSONResponse) VisitPostAdminUsersResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(400)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type PostAdminUsers500JSONResponse struct {
+	Error string `json:"error"`
+}
+
+func (response PostAdminUsers500JSONResponse) VisitPostAdminUsersResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
 
 	return json.NewEncoder(w).Encode(response)
 }

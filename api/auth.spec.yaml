@@ -17,6 +17,7 @@ paths:
       responses:
         '200': {$ref: '#/components/responses/AuthToken'}
         '400': {$ref: '#/components/responses/ErrorMsg'}
+        '500': {$ref: '#/components/responses/ErrorMsg'}
 components:
   requestBodies:
     PostLogin:
@@ -55,6 +56,7 @@ components:
       type: object
       properties:
         token: {type: string}
-      required: [token]
+        expiresAt: {type: string, format: date-time}
+      required: [token, expiresAt]
   securitySchemes: {}
 security: []
