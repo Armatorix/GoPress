@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS public.articles(
     title text NOT NULL,
     description text NOT NULL,
     body text NOT NULL,
+    released boolean NOT NULL DEFAULT false,
     author_id int NOT NULL REFERENCES public.users(id),
     created_at timestamptz NOT NULL DEFAULT now(),
     updated_at timestamptz NOT NULL DEFAULT now(),

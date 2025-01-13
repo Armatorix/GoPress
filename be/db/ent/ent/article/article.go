@@ -24,6 +24,8 @@ const (
 	FieldDescription = "description"
 	// FieldBody holds the string denoting the body field in the database.
 	FieldBody = "body"
+	// FieldReleased holds the string denoting the released field in the database.
+	FieldReleased = "released"
 	// FieldAuthorID holds the string denoting the author_id field in the database.
 	FieldAuthorID = "author_id"
 	// EdgeUser holds the string denoting the user edge name in mutations.
@@ -45,6 +47,7 @@ var Columns = []string{
 	FieldTitle,
 	FieldDescription,
 	FieldBody,
+	FieldReleased,
 	FieldAuthorID,
 }
 
@@ -71,6 +74,8 @@ var (
 	DefaultUpdatedAt time.Time
 	// DefaultBody holds the default value on creation for the "body" field.
 	DefaultBody string
+	// DefaultReleased holds the default value on creation for the "released" field.
+	DefaultReleased bool
 )
 
 // OrderOption defines the ordering options for the Article queries.
@@ -104,6 +109,11 @@ func ByDescription(opts ...sql.OrderTermOption) OrderOption {
 // ByBody orders the results by the body field.
 func ByBody(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldBody, opts...).ToFunc()
+}
+
+// ByReleased orders the results by the released field.
+func ByReleased(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldReleased, opts...).ToFunc()
 }
 
 // ByAuthorID orders the results by the author_id field.

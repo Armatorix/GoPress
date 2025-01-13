@@ -93,6 +93,20 @@ func (ac *ArticleCreate) SetNillableBody(s *string) *ArticleCreate {
 	return ac
 }
 
+// SetReleased sets the "released" field.
+func (ac *ArticleCreate) SetReleased(b bool) *ArticleCreate {
+	ac.mutation.SetReleased(b)
+	return ac
+}
+
+// SetNillableReleased sets the "released" field if the given value is not nil.
+func (ac *ArticleCreate) SetNillableReleased(b *bool) *ArticleCreate {
+	if b != nil {
+		ac.SetReleased(*b)
+	}
+	return ac
+}
+
 // SetAuthorID sets the "author_id" field.
 func (ac *ArticleCreate) SetAuthorID(s string) *ArticleCreate {
 	ac.mutation.SetAuthorID(s)
@@ -167,6 +181,10 @@ func (ac *ArticleCreate) defaults() {
 		v := article.DefaultBody
 		ac.mutation.SetBody(v)
 	}
+	if _, ok := ac.mutation.Released(); !ok {
+		v := article.DefaultReleased
+		ac.mutation.SetReleased(v)
+	}
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -179,6 +197,9 @@ func (ac *ArticleCreate) check() error {
 	}
 	if _, ok := ac.mutation.Body(); !ok {
 		return &ValidationError{Name: "body", err: errors.New(`ent: missing required field "Article.body"`)}
+	}
+	if _, ok := ac.mutation.Released(); !ok {
+		return &ValidationError{Name: "released", err: errors.New(`ent: missing required field "Article.released"`)}
 	}
 	if _, ok := ac.mutation.AuthorID(); !ok {
 		return &ValidationError{Name: "author_id", err: errors.New(`ent: missing required field "Article.author_id"`)}
@@ -235,6 +256,10 @@ func (ac *ArticleCreate) createSpec() (*Article, *sqlgraph.CreateSpec) {
 	if value, ok := ac.mutation.Body(); ok {
 		_spec.SetField(article.FieldBody, field.TypeString, value)
 		_node.Body = value
+	}
+	if value, ok := ac.mutation.Released(); ok {
+		_spec.SetField(article.FieldReleased, field.TypeBool, value)
+		_node.Released = value
 	}
 	if value, ok := ac.mutation.AuthorID(); ok {
 		_spec.SetField(article.FieldAuthorID, field.TypeString, value)
@@ -368,6 +393,18 @@ func (u *ArticleUpsert) UpdateBody() *ArticleUpsert {
 	return u
 }
 
+// SetReleased sets the "released" field.
+func (u *ArticleUpsert) SetReleased(v bool) *ArticleUpsert {
+	u.Set(article.FieldReleased, v)
+	return u
+}
+
+// UpdateReleased sets the "released" field to the value that was provided on create.
+func (u *ArticleUpsert) UpdateReleased() *ArticleUpsert {
+	u.SetExcluded(article.FieldReleased)
+	return u
+}
+
 // SetAuthorID sets the "author_id" field.
 func (u *ArticleUpsert) SetAuthorID(v string) *ArticleUpsert {
 	u.Set(article.FieldAuthorID, v)
@@ -498,6 +535,20 @@ func (u *ArticleUpsertOne) SetBody(v string) *ArticleUpsertOne {
 func (u *ArticleUpsertOne) UpdateBody() *ArticleUpsertOne {
 	return u.Update(func(s *ArticleUpsert) {
 		s.UpdateBody()
+	})
+}
+
+// SetReleased sets the "released" field.
+func (u *ArticleUpsertOne) SetReleased(v bool) *ArticleUpsertOne {
+	return u.Update(func(s *ArticleUpsert) {
+		s.SetReleased(v)
+	})
+}
+
+// UpdateReleased sets the "released" field to the value that was provided on create.
+func (u *ArticleUpsertOne) UpdateReleased() *ArticleUpsertOne {
+	return u.Update(func(s *ArticleUpsert) {
+		s.UpdateReleased()
 	})
 }
 
@@ -799,6 +850,20 @@ func (u *ArticleUpsertBulk) SetBody(v string) *ArticleUpsertBulk {
 func (u *ArticleUpsertBulk) UpdateBody() *ArticleUpsertBulk {
 	return u.Update(func(s *ArticleUpsert) {
 		s.UpdateBody()
+	})
+}
+
+// SetReleased sets the "released" field.
+func (u *ArticleUpsertBulk) SetReleased(v bool) *ArticleUpsertBulk {
+	return u.Update(func(s *ArticleUpsert) {
+		s.SetReleased(v)
+	})
+}
+
+// UpdateReleased sets the "released" field to the value that was provided on create.
+func (u *ArticleUpsertBulk) UpdateReleased() *ArticleUpsertBulk {
+	return u.Update(func(s *ArticleUpsert) {
+		s.UpdateReleased()
 	})
 }
 

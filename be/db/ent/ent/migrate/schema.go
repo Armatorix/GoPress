@@ -16,6 +16,7 @@ var (
 		{Name: "title", Type: field.TypeString, Nullable: true},
 		{Name: "description", Type: field.TypeString, Nullable: true},
 		{Name: "body", Type: field.TypeString, Default: ""},
+		{Name: "released", Type: field.TypeBool, Default: false},
 		{Name: "author_id", Type: field.TypeString},
 	}
 	// ArticlesTable holds the schema information for the "articles" table.

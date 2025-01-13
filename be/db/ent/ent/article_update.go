@@ -98,6 +98,20 @@ func (au *ArticleUpdate) SetNillableBody(s *string) *ArticleUpdate {
 	return au
 }
 
+// SetReleased sets the "released" field.
+func (au *ArticleUpdate) SetReleased(b bool) *ArticleUpdate {
+	au.mutation.SetReleased(b)
+	return au
+}
+
+// SetNillableReleased sets the "released" field if the given value is not nil.
+func (au *ArticleUpdate) SetNillableReleased(b *bool) *ArticleUpdate {
+	if b != nil {
+		au.SetReleased(*b)
+	}
+	return au
+}
+
 // SetAuthorID sets the "author_id" field.
 func (au *ArticleUpdate) SetAuthorID(s string) *ArticleUpdate {
 	au.mutation.SetAuthorID(s)
@@ -212,6 +226,9 @@ func (au *ArticleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := au.mutation.Body(); ok {
 		_spec.SetField(article.FieldBody, field.TypeString, value)
+	}
+	if value, ok := au.mutation.Released(); ok {
+		_spec.SetField(article.FieldReleased, field.TypeBool, value)
 	}
 	if value, ok := au.mutation.AuthorID(); ok {
 		_spec.SetField(article.FieldAuthorID, field.TypeString, value)
@@ -347,6 +364,20 @@ func (auo *ArticleUpdateOne) SetBody(s string) *ArticleUpdateOne {
 func (auo *ArticleUpdateOne) SetNillableBody(s *string) *ArticleUpdateOne {
 	if s != nil {
 		auo.SetBody(*s)
+	}
+	return auo
+}
+
+// SetReleased sets the "released" field.
+func (auo *ArticleUpdateOne) SetReleased(b bool) *ArticleUpdateOne {
+	auo.mutation.SetReleased(b)
+	return auo
+}
+
+// SetNillableReleased sets the "released" field if the given value is not nil.
+func (auo *ArticleUpdateOne) SetNillableReleased(b *bool) *ArticleUpdateOne {
+	if b != nil {
+		auo.SetReleased(*b)
 	}
 	return auo
 }
@@ -495,6 +526,9 @@ func (auo *ArticleUpdateOne) sqlSave(ctx context.Context) (_node *Article, err e
 	}
 	if value, ok := auo.mutation.Body(); ok {
 		_spec.SetField(article.FieldBody, field.TypeString, value)
+	}
+	if value, ok := auo.mutation.Released(); ok {
+		_spec.SetField(article.FieldReleased, field.TypeBool, value)
 	}
 	if value, ok := auo.mutation.AuthorID(); ok {
 		_spec.SetField(article.FieldAuthorID, field.TypeString, value)

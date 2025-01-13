@@ -27,6 +27,8 @@ type Article struct {
 	Description string `json:"description,omitempty"`
 	// Body holds the value of the "body" field.
 	Body string `json:"body,omitempty"`
+	// Released holds the value of the "released" field.
+	Released bool `json:"released,omitempty"`
 	// AuthorID holds the value of the "author_id" field.
 	AuthorID string `json:"author_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -59,6 +61,8 @@ func (*Article) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case article.FieldReleased:
+			values[i] = new(sql.NullBool)
 		case article.FieldID:
 			values[i] = new(sql.NullInt64)
 		case article.FieldTitle, article.FieldDescription, article.FieldBody, article.FieldAuthorID:
@@ -115,6 +119,12 @@ func (a *Article) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field body", values[i])
 			} else if value.Valid {
 				a.Body = value.String
+			}
+		case article.FieldReleased:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field released", values[i])
+			} else if value.Valid {
+				a.Released = value.Bool
 			}
 		case article.FieldAuthorID:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -177,6 +187,9 @@ func (a *Article) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("body=")
 	builder.WriteString(a.Body)
+	builder.WriteString(", ")
+	builder.WriteString("released=")
+	builder.WriteString(fmt.Sprintf("%v", a.Released))
 	builder.WriteString(", ")
 	builder.WriteString("author_id=")
 	builder.WriteString(a.AuthorID)

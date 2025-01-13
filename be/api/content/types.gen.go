@@ -8,6 +8,7 @@ type Article struct {
 	Body        string   `json:"body"`
 	Description string   `json:"description"`
 	Id          int      `json:"id"`
+	Released    bool     `json:"released"`
 	Tags        []string `json:"tags"`
 	Title       string   `json:"title"`
 }
@@ -24,6 +25,7 @@ type ErrorMsg struct {
 type PatchArticle struct {
 	Body        string   `json:"body"`
 	Description string   `json:"description"`
+	Released    bool     `json:"released"`
 	Tags        []string `json:"tags"`
 	Title       string   `json:"title"`
 }
@@ -32,6 +34,7 @@ type PatchArticle struct {
 type PostArticle struct {
 	Body        string   `json:"body"`
 	Description string   `json:"description"`
+	Released    bool     `json:"released"`
 	Tags        []string `json:"tags"`
 	Title       string   `json:"title"`
 }

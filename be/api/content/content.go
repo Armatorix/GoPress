@@ -22,6 +22,7 @@ func (h *handler) CreateArticle(
 		Body:        request.Body.Body,
 		Title:       request.Body.Title,
 		Description: request.Body.Description,
+		Released:    request.Body.Released,
 	})
 	if err != nil {
 		return CreateArticle500JSONResponse{}, err
@@ -36,6 +37,7 @@ func (h *handler) UpdateArticle(ctx context.Context, request UpdateArticleReques
 		Body:        request.Body.Body,
 		Title:       request.Body.Title,
 		Description: request.Body.Description,
+		Released:    request.Body.Released,
 	})
 	if err != nil {
 		return UpdateArticle500JSONResponse{}, err

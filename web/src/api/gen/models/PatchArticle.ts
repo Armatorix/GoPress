@@ -7,5 +7,6 @@ export type PatchArticle = {
     body: string;
     description: string;
     tags: Array<string>;
+    released: boolean;
 };
 

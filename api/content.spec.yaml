@@ -113,7 +113,8 @@ components:
         body: {type: string}
         description: {type: string}
         tags: {type: array, items: {type: string}}
-      required: [id, title, body, tags, description]
+        released: {type: boolean}
+      required: [id, title, body, tags, description, released]
     Articles:
       type: array
       items: {$ref: '#/components/schemas/Article'}
@@ -125,7 +126,8 @@ components:
         body: {type: string}
         description: {type: string}
         tags: {type: array, items: {type: string}}
-      required: [title, body, tags, description]
+        released: {type: boolean}
+      required: [title, body, tags, description, released]
     PatchArticle:
       type: object
       properties:
@@ -133,6 +135,7 @@ components:
         body: {type: string}
         description: {type: string}
         tags: {type: array, items: {type: string}}
-      required: [title, body, tags, description]
+        released: {type: boolean}
+      required: [title, body, tags, description, released]
   securitySchemes: {}
 security: []

@@ -31,6 +31,10 @@ func init() {
 	articleDescBody := articleFields[3].Descriptor()
 	// article.DefaultBody holds the default value on creation for the body field.
 	article.DefaultBody = articleDescBody.Default.(string)
+	// articleDescReleased is the schema descriptor for released field.
+	articleDescReleased := articleFields[4].Descriptor()
+	// article.DefaultReleased holds the default value on creation for the released field.
+	article.DefaultReleased = articleDescReleased.Default.(bool)
 	userMixin := schema.User{}.Mixin()
 	userMixinFields0 := userMixin[0].Fields()
 	_ = userMixinFields0

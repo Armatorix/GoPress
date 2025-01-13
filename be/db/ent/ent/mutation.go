@@ -41,6 +41,7 @@ type ArticleMutation struct {
 	title         *string
 	description   *string
 	body          *string
+	released      *bool
 	author_id     *string
 	clearedFields map[string]struct{}
 	user          map[int]struct{}
@@ -361,6 +362,42 @@ func (m *ArticleMutation) ResetBody() {
 	m.body = nil
 }
 
+// SetReleased sets the "released" field.
+func (m *ArticleMutation) SetReleased(b bool) {
+	m.released = &b
+}
+
+// Released returns the value of the "released" field in the mutation.
+func (m *ArticleMutation) Released() (r bool, exists bool) {
+	v := m.released
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldReleased returns the old "released" field's value of the Article entity.
+// If the Article object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ArticleMutation) OldReleased(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldReleased is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldReleased requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldReleased: %w", err)
+	}
+	return oldValue.Released, nil
+}
+
+// ResetReleased resets all changes to the "released" field.
+func (m *ArticleMutation) ResetReleased() {
+	m.released = nil
+}
+
 // SetAuthorID sets the "author_id" field.
 func (m *ArticleMutation) SetAuthorID(s string) {
 	m.author_id = &s
@@ -485,7 +522,7 @@ func (m *ArticleMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ArticleMutation) Fields() []string {
-	fields := make([]string, 0, 6)
+	fields := make([]string, 0, 7)
 	if m.created_at != nil {
 		fields = append(fields, article.FieldCreatedAt)
 	}
@@ -500,6 +537,9 @@ func (m *ArticleMutation) Fields() []string {
 	}
 	if m.body != nil {
 		fields = append(fields, article.FieldBody)
+	}
+	if m.released != nil {
+		fields = append(fields, article.FieldReleased)
 	}
 	if m.author_id != nil {
 		fields = append(fields, article.FieldAuthorID)
@@ -522,6 +562,8 @@ func (m *ArticleMutation) Field(name string) (ent.Value, bool) {
 		return m.Description()
 	case article.FieldBody:
 		return m.Body()
+	case article.FieldReleased:
+		return m.Released()
 	case article.FieldAuthorID:
 		return m.AuthorID()
 	}
@@ -543,6 +585,8 @@ func (m *ArticleMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldDescription(ctx)
 	case article.FieldBody:
 		return m.OldBody(ctx)
+	case article.FieldReleased:
+		return m.OldReleased(ctx)
 	case article.FieldAuthorID:
 		return m.OldAuthorID(ctx)
 	}
@@ -588,6 +632,13 @@ func (m *ArticleMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetBody(v)
+		return nil
+	case article.FieldReleased:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetReleased(v)
 		return nil
 	case article.FieldAuthorID:
 		v, ok := value.(string)
@@ -674,6 +725,9 @@ func (m *ArticleMutation) ResetField(name string) error {
 		return nil
 	case article.FieldBody:
 		m.ResetBody()
+		return nil
+	case article.FieldReleased:
+		m.ResetReleased()
 		return nil
 	case article.FieldAuthorID:
 		m.ResetAuthorID()

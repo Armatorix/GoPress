@@ -8,5 +8,6 @@ export type Article = {
     body: string;
     description: string;
     tags: Array<string>;
+    released: boolean;
 };
 

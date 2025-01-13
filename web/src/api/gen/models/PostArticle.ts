@@ -7,5 +7,6 @@ export type PostArticle = {
     body: string;
     description: string;
     tags: Array<string>;
+    released: boolean;
 };
 

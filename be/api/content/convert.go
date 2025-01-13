@@ -12,8 +12,10 @@ func articlesFromEnt(ins ent.Articles) Articles {
 
 func articleFromEnt(in *ent.Article) Article {
 	return Article{
-		Body:  in.Body,
-		Id:    in.ID,
-		Title: in.Title,
+		Body:        in.Body,
+		Id:          in.ID,
+		Title:       in.Title,
+		Description: in.Description,
+		Released:    in.Released,
 	}
 }

@@ -80,6 +80,11 @@ func Body(v string) predicate.Article {
 	return predicate.Article(sql.FieldEQ(FieldBody, v))
 }
 
+// Released applies equality check predicate on the "released" field. It's identical to ReleasedEQ.
+func Released(v bool) predicate.Article {
+	return predicate.Article(sql.FieldEQ(FieldReleased, v))
+}
+
 // AuthorID applies equality check predicate on the "author_id" field. It's identical to AuthorIDEQ.
 func AuthorID(v string) predicate.Article {
 	return predicate.Article(sql.FieldEQ(FieldAuthorID, v))
@@ -378,6 +383,16 @@ func BodyEqualFold(v string) predicate.Article {
 // BodyContainsFold applies the ContainsFold predicate on the "body" field.
 func BodyContainsFold(v string) predicate.Article {
 	return predicate.Article(sql.FieldContainsFold(FieldBody, v))
+}
+
+// ReleasedEQ applies the EQ predicate on the "released" field.
+func ReleasedEQ(v bool) predicate.Article {
+	return predicate.Article(sql.FieldEQ(FieldReleased, v))
+}
+
+// ReleasedNEQ applies the NEQ predicate on the "released" field.
+func ReleasedNEQ(v bool) predicate.Article {
+	return predicate.Article(sql.FieldNEQ(FieldReleased, v))
 }
 
 // AuthorIDEQ applies the EQ predicate on the "author_id" field.

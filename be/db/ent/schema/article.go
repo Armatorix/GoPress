@@ -19,6 +19,8 @@ func (Article) Fields() []ent.Field {
 			Optional(),
 		field.String("body").
 			Default(""),
+		field.Bool("released").
+			Default(false),
 		field.String("author_id"),
 	}
 }

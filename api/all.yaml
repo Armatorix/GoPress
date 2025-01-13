@@ -318,7 +318,9 @@ components:
           type: array
           items:
             type: string
-      required: [id, title, body, tags, description]
+        released:
+          type: boolean
+      required: [id, title, body, tags, description, released]
     Articles:
       type: array
       items:
@@ -337,7 +339,9 @@ components:
           type: array
           items:
             type: string
-      required: [title, body, tags, description]
+        released:
+          type: boolean
+      required: [title, body, tags, description, released]
     PatchArticle:
       type: object
       properties:
@@ -351,7 +355,9 @@ components:
           type: array
           items:
             type: string
-      required: [title, body, tags, description]
+        released:
+          type: boolean
+      required: [title, body, tags, description, released]
     Content:
       type: object
       properties:
