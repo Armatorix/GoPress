@@ -17,20 +17,22 @@ paths:
         '200': {$ref: '#/components/responses/GetArticles'}
         '500': {$ref: '#/components/responses/ErrorMsg'}
     post:
-      summary: Create new article
+      operationId: createArticle
       requestBody: {$ref: '#/components/requestBodies/PostArticle'}
       responses:
         '200': {description: Article created}
         '400': {$ref: '#/components/responses/ErrorMsg'}
         '500': {$ref: '#/components/responses/ErrorMsg'}
     delete:
-      summary: Delete all article
+      operationId: deleteArticles
+      parameters:
+        - $ref: '#/components/parameters/articleIds'
       responses:
         '200': {description: All article deleted}
         '500': {$ref: '#/components/responses/ErrorMsg'}
   /admin/article/{articleId}:
     patch:
-      summary: Update article
+      operationId: updateArticle
       parameters:
         - $ref: '#/components/parameters/articleId'
       requestBody: {$ref: '#/components/requestBodies/PatchArticle'}
@@ -62,7 +64,19 @@ components:
       in: path
       required: true
       schema:
-        type: string
+        type: integer
+        format: int64
+        x-go-type: int
+    articleIds:
+      name: articleIds
+      in: query
+      required: true
+      schema:
+        type: array
+        items:
+          type: integer
+          format: int64
+          x-go-type: int
   requestBodies:
     PostArticle:
       required: true

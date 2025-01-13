@@ -34,13 +34,21 @@ type PostArticle struct {
 }
 
 // ArticleId defines model for articleId.
-type ArticleId = string
+type ArticleId = int
+
+// ArticleIds defines model for articleIds.
+type ArticleIds = []int
 
 // GetArticles defines model for GetArticles.
 type GetArticles = Articles
 
-// PatchAdminArticleArticleIdJSONRequestBody defines body for PatchAdminArticleArticleId for application/json ContentType.
-type PatchAdminArticleArticleIdJSONRequestBody = PatchArticle
+// DeleteArticlesParams defines parameters for DeleteArticles.
+type DeleteArticlesParams struct {
+	ArticleIds ArticleIds `form:"articleIds" json:"articleIds"`
+}
 
-// PostAdminArticlesJSONRequestBody defines body for PostAdminArticles for application/json ContentType.
-type PostAdminArticlesJSONRequestBody = PostArticle
+// UpdateArticleJSONRequestBody defines body for UpdateArticle for application/json ContentType.
+type UpdateArticleJSONRequestBody = PatchArticle
+
+// CreateArticleJSONRequestBody defines body for CreateArticle for application/json ContentType.
+type CreateArticleJSONRequestBody = PostArticle

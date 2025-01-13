@@ -16,18 +16,18 @@ import (
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
-	// Update article
+
 	// (PATCH /admin/article/{articleId})
-	PatchAdminArticleArticleId(ctx echo.Context, articleId ArticleId) error
-	// Delete all article
+	UpdateArticle(ctx echo.Context, articleId ArticleId) error
+
 	// (DELETE /admin/articles)
-	DeleteAdminArticles(ctx echo.Context) error
+	DeleteArticles(ctx echo.Context, params DeleteArticlesParams) error
 
 	// (GET /admin/articles)
 	GetArticles(ctx echo.Context) error
-	// Create new article
+
 	// (POST /admin/articles)
-	PostAdminArticles(ctx echo.Context) error
+	CreateArticle(ctx echo.Context) error
 }
 
 // ServerInterfaceWrapper converts echo contexts to parameters.
@@ -35,8 +35,8 @@ type ServerInterfaceWrapper struct {
 	Handler ServerInterface
 }
 
-// PatchAdminArticleArticleId converts echo context to params.
-func (w *ServerInterfaceWrapper) PatchAdminArticleArticleId(ctx echo.Context) error {
+// UpdateArticle converts echo context to params.
+func (w *ServerInterfaceWrapper) UpdateArticle(ctx echo.Context) error {
 	var err error
 	// ------------- Path parameter "articleId" -------------
 	var articleId ArticleId
@@ -47,16 +47,25 @@ func (w *ServerInterfaceWrapper) PatchAdminArticleArticleId(ctx echo.Context) er
 	}
 
 	// Invoke the callback with all the unmarshaled arguments
-	err = w.Handler.PatchAdminArticleArticleId(ctx, articleId)
+	err = w.Handler.UpdateArticle(ctx, articleId)
 	return err
 }
 
-// DeleteAdminArticles converts echo context to params.
-func (w *ServerInterfaceWrapper) DeleteAdminArticles(ctx echo.Context) error {
+// DeleteArticles converts echo context to params.
+func (w *ServerInterfaceWrapper) DeleteArticles(ctx echo.Context) error {
 	var err error
 
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DeleteArticlesParams
+	// ------------- Required query parameter "articleIds" -------------
+
+	err = runtime.BindQueryParameter("form", true, true, "articleIds", ctx.QueryParams(), &params.ArticleIds)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter articleIds: %s", err))
+	}
+
 	// Invoke the callback with all the unmarshaled arguments
-	err = w.Handler.DeleteAdminArticles(ctx)
+	err = w.Handler.DeleteArticles(ctx, params)
 	return err
 }
 
@@ -69,12 +78,12 @@ func (w *ServerInterfaceWrapper) GetArticles(ctx echo.Context) error {
 	return err
 }
 
-// PostAdminArticles converts echo context to params.
-func (w *ServerInterfaceWrapper) PostAdminArticles(ctx echo.Context) error {
+// CreateArticle converts echo context to params.
+func (w *ServerInterfaceWrapper) CreateArticle(ctx echo.Context) error {
 	var err error
 
 	// Invoke the callback with all the unmarshaled arguments
-	err = w.Handler.PostAdminArticles(ctx)
+	err = w.Handler.CreateArticle(ctx)
 	return err
 }
 
@@ -106,10 +115,10 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 		Handler: si,
 	}
 
-	router.PATCH(baseURL+"/admin/article/:articleId", wrapper.PatchAdminArticleArticleId)
-	router.DELETE(baseURL+"/admin/articles", wrapper.DeleteAdminArticles)
+	router.PATCH(baseURL+"/admin/article/:articleId", wrapper.UpdateArticle)
+	router.DELETE(baseURL+"/admin/articles", wrapper.DeleteArticles)
 	router.GET(baseURL+"/admin/articles", wrapper.GetArticles)
-	router.POST(baseURL+"/admin/articles", wrapper.PostAdminArticles)
+	router.POST(baseURL+"/admin/articles", wrapper.CreateArticle)
 
 }
 
@@ -117,68 +126,69 @@ type ErrorMsgJSONResponse ErrorMsg
 
 type GetArticlesJSONResponse Articles
 
-type PatchAdminArticleArticleIdRequestObject struct {
+type UpdateArticleRequestObject struct {
 	ArticleId ArticleId `json:"articleId"`
-	Body      *PatchAdminArticleArticleIdJSONRequestBody
+	Body      *UpdateArticleJSONRequestBody
 }
 
-type PatchAdminArticleArticleIdResponseObject interface {
-	VisitPatchAdminArticleArticleIdResponse(w http.ResponseWriter) error
+type UpdateArticleResponseObject interface {
+	VisitUpdateArticleResponse(w http.ResponseWriter) error
 }
 
-type PatchAdminArticleArticleId200Response struct {
+type UpdateArticle200Response struct {
 }
 
-func (response PatchAdminArticleArticleId200Response) VisitPatchAdminArticleArticleIdResponse(w http.ResponseWriter) error {
+func (response UpdateArticle200Response) VisitUpdateArticleResponse(w http.ResponseWriter) error {
 	w.WriteHeader(200)
 	return nil
 }
 
-type PatchAdminArticleArticleId400JSONResponse struct{ ErrorMsgJSONResponse }
+type UpdateArticle400JSONResponse struct{ ErrorMsgJSONResponse }
 
-func (response PatchAdminArticleArticleId400JSONResponse) VisitPatchAdminArticleArticleIdResponse(w http.ResponseWriter) error {
+func (response UpdateArticle400JSONResponse) VisitUpdateArticleResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(400)
 
 	return json.NewEncoder(w).Encode(response)
 }
 
-type PatchAdminArticleArticleId404JSONResponse ErrorMsg
+type UpdateArticle404JSONResponse ErrorMsg
 
-func (response PatchAdminArticleArticleId404JSONResponse) VisitPatchAdminArticleArticleIdResponse(w http.ResponseWriter) error {
+func (response UpdateArticle404JSONResponse) VisitUpdateArticleResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(404)
 
 	return json.NewEncoder(w).Encode(response)
 }
 
-type PatchAdminArticleArticleId500JSONResponse ErrorMsg
+type UpdateArticle500JSONResponse ErrorMsg
 
-func (response PatchAdminArticleArticleId500JSONResponse) VisitPatchAdminArticleArticleIdResponse(w http.ResponseWriter) error {
+func (response UpdateArticle500JSONResponse) VisitUpdateArticleResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(500)
 
 	return json.NewEncoder(w).Encode(response)
 }
 
-type DeleteAdminArticlesRequestObject struct {
+type DeleteArticlesRequestObject struct {
+	Params DeleteArticlesParams
 }
 
-type DeleteAdminArticlesResponseObject interface {
-	VisitDeleteAdminArticlesResponse(w http.ResponseWriter) error
+type DeleteArticlesResponseObject interface {
+	VisitDeleteArticlesResponse(w http.ResponseWriter) error
 }
 
-type DeleteAdminArticles200Response struct {
+type DeleteArticles200Response struct {
 }
 
-func (response DeleteAdminArticles200Response) VisitDeleteAdminArticlesResponse(w http.ResponseWriter) error {
+func (response DeleteArticles200Response) VisitDeleteArticlesResponse(w http.ResponseWriter) error {
 	w.WriteHeader(200)
 	return nil
 }
 
-type DeleteAdminArticles500JSONResponse struct{ ErrorMsgJSONResponse }
+type DeleteArticles500JSONResponse struct{ ErrorMsgJSONResponse }
 
-func (response DeleteAdminArticles500JSONResponse) VisitDeleteAdminArticlesResponse(w http.ResponseWriter) error {
+func (response DeleteArticles500JSONResponse) VisitDeleteArticlesResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(500)
 
@@ -210,34 +220,34 @@ func (response GetArticles500JSONResponse) VisitGetArticlesResponse(w http.Respo
 	return json.NewEncoder(w).Encode(response)
 }
 
-type PostAdminArticlesRequestObject struct {
-	Body *PostAdminArticlesJSONRequestBody
+type CreateArticleRequestObject struct {
+	Body *CreateArticleJSONRequestBody
 }
 
-type PostAdminArticlesResponseObject interface {
-	VisitPostAdminArticlesResponse(w http.ResponseWriter) error
+type CreateArticleResponseObject interface {
+	VisitCreateArticleResponse(w http.ResponseWriter) error
 }
 
-type PostAdminArticles200Response struct {
+type CreateArticle200Response struct {
 }
 
-func (response PostAdminArticles200Response) VisitPostAdminArticlesResponse(w http.ResponseWriter) error {
+func (response CreateArticle200Response) VisitCreateArticleResponse(w http.ResponseWriter) error {
 	w.WriteHeader(200)
 	return nil
 }
 
-type PostAdminArticles400JSONResponse struct{ ErrorMsgJSONResponse }
+type CreateArticle400JSONResponse struct{ ErrorMsgJSONResponse }
 
-func (response PostAdminArticles400JSONResponse) VisitPostAdminArticlesResponse(w http.ResponseWriter) error {
+func (response CreateArticle400JSONResponse) VisitCreateArticleResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(400)
 
 	return json.NewEncoder(w).Encode(response)
 }
 
-type PostAdminArticles500JSONResponse ErrorMsg
+type CreateArticle500JSONResponse ErrorMsg
 
-func (response PostAdminArticles500JSONResponse) VisitPostAdminArticlesResponse(w http.ResponseWriter) error {
+func (response CreateArticle500JSONResponse) VisitCreateArticleResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(500)
 
@@ -246,18 +256,18 @@ func (response PostAdminArticles500JSONResponse) VisitPostAdminArticlesResponse(
 
 // StrictServerInterface represents all server handlers.
 type StrictServerInterface interface {
-	// Update article
+
 	// (PATCH /admin/article/{articleId})
-	PatchAdminArticleArticleId(ctx context.Context, request PatchAdminArticleArticleIdRequestObject) (PatchAdminArticleArticleIdResponseObject, error)
-	// Delete all article
+	UpdateArticle(ctx context.Context, request UpdateArticleRequestObject) (UpdateArticleResponseObject, error)
+
 	// (DELETE /admin/articles)
-	DeleteAdminArticles(ctx context.Context, request DeleteAdminArticlesRequestObject) (DeleteAdminArticlesResponseObject, error)
+	DeleteArticles(ctx context.Context, request DeleteArticlesRequestObject) (DeleteArticlesResponseObject, error)
 
 	// (GET /admin/articles)
 	GetArticles(ctx context.Context, request GetArticlesRequestObject) (GetArticlesResponseObject, error)
-	// Create new article
+
 	// (POST /admin/articles)
-	PostAdminArticles(ctx context.Context, request PostAdminArticlesRequestObject) (PostAdminArticlesResponseObject, error)
+	CreateArticle(ctx context.Context, request CreateArticleRequestObject) (CreateArticleResponseObject, error)
 }
 
 type StrictHandlerFunc = strictecho.StrictEchoHandlerFunc
@@ -272,54 +282,56 @@ type strictHandler struct {
 	middlewares []StrictMiddlewareFunc
 }
 
-// PatchAdminArticleArticleId operation middleware
-func (sh *strictHandler) PatchAdminArticleArticleId(ctx echo.Context, articleId ArticleId) error {
-	var request PatchAdminArticleArticleIdRequestObject
+// UpdateArticle operation middleware
+func (sh *strictHandler) UpdateArticle(ctx echo.Context, articleId ArticleId) error {
+	var request UpdateArticleRequestObject
 
 	request.ArticleId = articleId
 
-	var body PatchAdminArticleArticleIdJSONRequestBody
+	var body UpdateArticleJSONRequestBody
 	if err := ctx.Bind(&body); err != nil {
 		return err
 	}
 	request.Body = &body
 
 	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.PatchAdminArticleArticleId(ctx.Request().Context(), request.(PatchAdminArticleArticleIdRequestObject))
+		return sh.ssi.UpdateArticle(ctx.Request().Context(), request.(UpdateArticleRequestObject))
 	}
 	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "PatchAdminArticleArticleId")
+		handler = middleware(handler, "UpdateArticle")
 	}
 
 	response, err := handler(ctx, request)
 
 	if err != nil {
 		return err
-	} else if validResponse, ok := response.(PatchAdminArticleArticleIdResponseObject); ok {
-		return validResponse.VisitPatchAdminArticleArticleIdResponse(ctx.Response())
+	} else if validResponse, ok := response.(UpdateArticleResponseObject); ok {
+		return validResponse.VisitUpdateArticleResponse(ctx.Response())
 	} else if response != nil {
 		return fmt.Errorf("unexpected response type: %T", response)
 	}
 	return nil
 }
 
-// DeleteAdminArticles operation middleware
-func (sh *strictHandler) DeleteAdminArticles(ctx echo.Context) error {
-	var request DeleteAdminArticlesRequestObject
+// DeleteArticles operation middleware
+func (sh *strictHandler) DeleteArticles(ctx echo.Context, params DeleteArticlesParams) error {
+	var request DeleteArticlesRequestObject
+
+	request.Params = params
 
 	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.DeleteAdminArticles(ctx.Request().Context(), request.(DeleteAdminArticlesRequestObject))
+		return sh.ssi.DeleteArticles(ctx.Request().Context(), request.(DeleteArticlesRequestObject))
 	}
 	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "DeleteAdminArticles")
+		handler = middleware(handler, "DeleteArticles")
 	}
 
 	response, err := handler(ctx, request)
 
 	if err != nil {
 		return err
-	} else if validResponse, ok := response.(DeleteAdminArticlesResponseObject); ok {
-		return validResponse.VisitDeleteAdminArticlesResponse(ctx.Response())
+	} else if validResponse, ok := response.(DeleteArticlesResponseObject); ok {
+		return validResponse.VisitDeleteArticlesResponse(ctx.Response())
 	} else if response != nil {
 		return fmt.Errorf("unexpected response type: %T", response)
 	}
@@ -349,29 +361,29 @@ func (sh *strictHandler) GetArticles(ctx echo.Context) error {
 	return nil
 }
 
-// PostAdminArticles operation middleware
-func (sh *strictHandler) PostAdminArticles(ctx echo.Context) error {
-	var request PostAdminArticlesRequestObject
+// CreateArticle operation middleware
+func (sh *strictHandler) CreateArticle(ctx echo.Context) error {
+	var request CreateArticleRequestObject
 
-	var body PostAdminArticlesJSONRequestBody
+	var body CreateArticleJSONRequestBody
 	if err := ctx.Bind(&body); err != nil {
 		return err
 	}
 	request.Body = &body
 
 	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.PostAdminArticles(ctx.Request().Context(), request.(PostAdminArticlesRequestObject))
+		return sh.ssi.CreateArticle(ctx.Request().Context(), request.(CreateArticleRequestObject))
 	}
 	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "PostAdminArticles")
+		handler = middleware(handler, "CreateArticle")
 	}
 
 	response, err := handler(ctx, request)
 
 	if err != nil {
 		return err
-	} else if validResponse, ok := response.(PostAdminArticlesResponseObject); ok {
-		return validResponse.VisitPostAdminArticlesResponse(ctx.Response())
+	} else if validResponse, ok := response.(CreateArticleResponseObject); ok {
+		return validResponse.VisitCreateArticleResponse(ctx.Response())
 	} else if response != nil {
 		return fmt.Errorf("unexpected response type: %T", response)
 	}

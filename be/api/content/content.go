@@ -13,12 +13,46 @@ type handler struct {
 	db *db.DB
 }
 
-// DeleteAdminArticles implements StrictServerInterface.
-func (h *handler) DeleteAdminArticles(
+// CreateArticle implements StrictServerInterface.
+func (h *handler) CreateArticle(
 	ctx context.Context,
-	request DeleteAdminArticlesRequestObject,
-) (DeleteAdminArticlesResponseObject, error) {
-	panic("unimplemented")
+	request CreateArticleRequestObject,
+) (CreateArticleResponseObject, error) {
+	err := h.db.InsertArticle(ctx, db.InsertArticle{
+		Body:  request.Body.Body,
+		Title: request.Body.Title,
+	})
+	if err != nil {
+		return CreateArticle500JSONResponse{}, err
+	}
+
+	return CreateArticle200Response{}, nil
+}
+
+// UpdateArticle implements StrictServerInterface.
+func (h *handler) UpdateArticle(ctx context.Context, request UpdateArticleRequestObject) (UpdateArticleResponseObject, error) {
+	err := h.db.UpdateArticle(ctx, request.ArticleId, db.InsertArticle{
+		Body:  request.Body.Body,
+		Title: request.Body.Title,
+	})
+	if err != nil {
+		return UpdateArticle500JSONResponse{}, err
+	}
+
+	return UpdateArticle200Response{}, nil
+}
+
+// DeleteAdminArticles implements StrictServerInterface.
+func (h *handler) DeleteArticles(
+	ctx context.Context,
+	request DeleteArticlesRequestObject,
+) (DeleteArticlesResponseObject, error) {
+	err := h.db.DeleteArticles(ctx, request.Params.ArticleIds...)
+	if err != nil {
+		return DeleteArticles500JSONResponse{}, err
+	}
+
+	return DeleteArticles200Response{}, nil
 }
 
 // GetArticles implements StrictServerInterface.
@@ -34,22 +68,6 @@ func (h *handler) GetArticles(
 	return GetArticles200JSONResponse{
 		GetArticlesJSONResponse: articlesFromEnt(articles),
 	}, nil
-}
-
-// PatchAdminArticleArticleId implements StrictServerInterface.
-func (h *handler) PatchAdminArticleArticleId(
-	ctx context.Context,
-	request PatchAdminArticleArticleIdRequestObject,
-) (PatchAdminArticleArticleIdResponseObject, error) {
-	panic("unimplemented")
-}
-
-// PostAdminArticles implements StrictServerInterface.
-func (h *handler) PostAdminArticles(
-	ctx context.Context,
-	request PostAdminArticlesRequestObject,
-) (PostAdminArticlesResponseObject, error) {
-	panic("unimplemented")
 }
 
 func NewHandler(db *db.DB) ServerInterface {

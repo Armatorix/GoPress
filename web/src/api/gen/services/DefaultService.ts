@@ -126,12 +126,11 @@ export class DefaultService {
         });
     }
     /**
-     * Create new article
      * @param requestBody
      * @returns any Article created
      * @throws ApiError
      */
-    public static postAdminArticles(
+    public static createArticle(
         requestBody: PostArticle,
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
@@ -146,28 +145,32 @@ export class DefaultService {
         });
     }
     /**
-     * Delete all article
+     * @param articleIds
      * @returns any All article deleted
      * @throws ApiError
      */
-    public static deleteAdminArticles(): CancelablePromise<any> {
+    public static deleteArticles(
+        articleIds: Array<number>,
+    ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
             url: '/admin/articles',
+            query: {
+                'articleIds': articleIds,
+            },
             errors: {
                 500: `Error message`,
             },
         });
     }
     /**
-     * Update article
      * @param articleId
      * @param requestBody
      * @returns any Article updated
      * @throws ApiError
      */
-    public static patchAdminArticle(
-        articleId: string,
+    public static updateArticle(
+        articleId: number,
         requestBody: PatchArticle,
     ): CancelablePromise<any> {
         return __request(OpenAPI, {

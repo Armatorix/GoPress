@@ -73,7 +73,7 @@ paths:
         '500':
           $ref: '#/components/responses/ErrorMsg'
     post:
-      summary: Create new article
+      operationId: createArticle
       requestBody:
         $ref: '#/components/requestBodies/PostArticle'
       responses:
@@ -84,7 +84,9 @@ paths:
         '500':
           $ref: '#/components/responses/ErrorMsg'
     delete:
-      summary: Delete all article
+      operationId: deleteArticles
+      parameters:
+        - $ref: '#/components/parameters/articleIds'
       responses:
         '200':
           description: All article deleted
@@ -92,7 +94,7 @@ paths:
           $ref: '#/components/responses/ErrorMsg'
   /admin/article/{articleId}:
     patch:
-      summary: Update article
+      operationId: updateArticle
       parameters:
         - $ref: '#/components/parameters/articleId'
       requestBody:
@@ -147,7 +149,19 @@ components:
       in: path
       required: true
       schema:
-        type: string
+        type: integer
+        format: int64
+        x-go-type: int
+    articleIds:
+      name: articleIds
+      in: query
+      required: true
+      schema:
+        type: array
+        items:
+          type: integer
+          format: int64
+          x-go-type: int
     contentId:
       name: contentId
       in: path
