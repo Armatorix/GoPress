@@ -26,8 +26,6 @@ const (
 	FieldNick = "nick"
 	// FieldAvatarURL holds the string denoting the avatar_url field in the database.
 	FieldAvatarURL = "avatar_url"
-	// FieldEmailConfirmationSecret holds the string denoting the email_confirmation_secret field in the database.
-	FieldEmailConfirmationSecret = "email_confirmation_secret"
 	// EdgeArticles holds the string denoting the articles edge name in mutations.
 	EdgeArticles = "articles"
 	// Table holds the table name of the user in the database.
@@ -48,7 +46,6 @@ var Columns = []string{
 	FieldPassword,
 	FieldNick,
 	FieldAvatarURL,
-	FieldEmailConfirmationSecret,
 }
 
 var (
@@ -114,11 +111,6 @@ func ByNick(opts ...sql.OrderTermOption) OrderOption {
 // ByAvatarURL orders the results by the avatar_url field.
 func ByAvatarURL(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldAvatarURL, opts...).ToFunc()
-}
-
-// ByEmailConfirmationSecret orders the results by the email_confirmation_secret field.
-func ByEmailConfirmationSecret(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldEmailConfirmationSecret, opts...).ToFunc()
 }
 
 // ByArticlesCount orders the results by articles count.

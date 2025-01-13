@@ -15,6 +15,7 @@ import (
 	"github.com/Armatorix/GoPress/be/db"
 	dbext "github.com/Armatorix/GoPress/be/db/ext"
 	"github.com/Armatorix/GoPress/be/x/xecho"
+	"github.com/Armatorix/GoPress/be/x/xjwt"
 	"github.com/Armatorix/GoPress/be/x/xslog"
 	"github.com/go-playground/validator/v10"
 	"github.com/golang-cz/devslog"
@@ -93,7 +94,10 @@ func main() {
 
 	auth.RegisterHandlers(
 		apiNoAuth,
-		auth.NewHandler(db),
+		auth.NewHandler(
+			db,
+			xjwt.New([]byte(cfg.Auth.JwtSecret)),
+		),
 	)
 
 	admin.

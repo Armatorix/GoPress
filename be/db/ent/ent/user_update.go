@@ -107,26 +107,6 @@ func (uu *UserUpdate) SetNillableAvatarURL(s *string) *UserUpdate {
 	return uu
 }
 
-// SetEmailConfirmationSecret sets the "email_confirmation_secret" field.
-func (uu *UserUpdate) SetEmailConfirmationSecret(e ext.Password) *UserUpdate {
-	uu.mutation.SetEmailConfirmationSecret(e)
-	return uu
-}
-
-// SetNillableEmailConfirmationSecret sets the "email_confirmation_secret" field if the given value is not nil.
-func (uu *UserUpdate) SetNillableEmailConfirmationSecret(e *ext.Password) *UserUpdate {
-	if e != nil {
-		uu.SetEmailConfirmationSecret(*e)
-	}
-	return uu
-}
-
-// ClearEmailConfirmationSecret clears the value of the "email_confirmation_secret" field.
-func (uu *UserUpdate) ClearEmailConfirmationSecret() *UserUpdate {
-	uu.mutation.ClearEmailConfirmationSecret()
-	return uu
-}
-
 // AddArticleIDs adds the "articles" edge to the Article entity by IDs.
 func (uu *UserUpdate) AddArticleIDs(ids ...int) *UserUpdate {
 	uu.mutation.AddArticleIDs(ids...)
@@ -227,12 +207,6 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := uu.mutation.AvatarURL(); ok {
 		_spec.SetField(user.FieldAvatarURL, field.TypeString, value)
-	}
-	if value, ok := uu.mutation.EmailConfirmationSecret(); ok {
-		_spec.SetField(user.FieldEmailConfirmationSecret, field.TypeString, value)
-	}
-	if uu.mutation.EmailConfirmationSecretCleared() {
-		_spec.ClearField(user.FieldEmailConfirmationSecret, field.TypeString)
 	}
 	if uu.mutation.ArticlesCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -377,26 +351,6 @@ func (uuo *UserUpdateOne) SetNillableAvatarURL(s *string) *UserUpdateOne {
 	return uuo
 }
 
-// SetEmailConfirmationSecret sets the "email_confirmation_secret" field.
-func (uuo *UserUpdateOne) SetEmailConfirmationSecret(e ext.Password) *UserUpdateOne {
-	uuo.mutation.SetEmailConfirmationSecret(e)
-	return uuo
-}
-
-// SetNillableEmailConfirmationSecret sets the "email_confirmation_secret" field if the given value is not nil.
-func (uuo *UserUpdateOne) SetNillableEmailConfirmationSecret(e *ext.Password) *UserUpdateOne {
-	if e != nil {
-		uuo.SetEmailConfirmationSecret(*e)
-	}
-	return uuo
-}
-
-// ClearEmailConfirmationSecret clears the value of the "email_confirmation_secret" field.
-func (uuo *UserUpdateOne) ClearEmailConfirmationSecret() *UserUpdateOne {
-	uuo.mutation.ClearEmailConfirmationSecret()
-	return uuo
-}
-
 // AddArticleIDs adds the "articles" edge to the Article entity by IDs.
 func (uuo *UserUpdateOne) AddArticleIDs(ids ...int) *UserUpdateOne {
 	uuo.mutation.AddArticleIDs(ids...)
@@ -527,12 +481,6 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 	}
 	if value, ok := uuo.mutation.AvatarURL(); ok {
 		_spec.SetField(user.FieldAvatarURL, field.TypeString, value)
-	}
-	if value, ok := uuo.mutation.EmailConfirmationSecret(); ok {
-		_spec.SetField(user.FieldEmailConfirmationSecret, field.TypeString, value)
-	}
-	if uuo.mutation.EmailConfirmationSecretCleared() {
-		_spec.ClearField(user.FieldEmailConfirmationSecret, field.TypeString)
 	}
 	if uuo.mutation.ArticlesCleared() {
 		edge := &sqlgraph.EdgeSpec{

@@ -17,8 +17,10 @@ func (db *DB) UserExists(ctx context.Context, id int) (bool, error) {
 func (db *DB) UserByEmailOrNick(ctx context.Context, email string) (*ent.User, error) {
 	return db.UserClient().Query().
 		Where(
-			user.Email(email),
-			user.Nick(email),
+			user.Or(
+				user.Email(email),
+				user.Nick(email),
+			),
 		).
 		Only(ctx)
 }

@@ -30,8 +30,6 @@ type User struct {
 	Nick string `json:"nick,omitempty"`
 	// AvatarURL holds the value of the "avatar_url" field.
 	AvatarURL string `json:"avatar_url,omitempty"`
-	// EmailConfirmationSecret holds the value of the "email_confirmation_secret" field.
-	EmailConfirmationSecret ext.Password `json:"email_confirmation_secret,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the UserQuery when eager-loading is set.
 	Edges        UserEdges `json:"edges"`
@@ -62,7 +60,7 @@ func (*User) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case user.FieldPassword, user.FieldEmailConfirmationSecret:
+		case user.FieldPassword:
 			values[i] = new(ext.Password)
 		case user.FieldID:
 			values[i] = new(sql.NullInt64)
@@ -127,12 +125,6 @@ func (u *User) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				u.AvatarURL = value.String
 			}
-		case user.FieldEmailConfirmationSecret:
-			if value, ok := values[i].(*ext.Password); !ok {
-				return fmt.Errorf("unexpected type %T for field email_confirmation_secret", values[i])
-			} else if value != nil {
-				u.EmailConfirmationSecret = *value
-			}
 		default:
 			u.selectValues.Set(columns[i], values[i])
 		}
@@ -191,9 +183,6 @@ func (u *User) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("avatar_url=")
 	builder.WriteString(u.AvatarURL)
-	builder.WriteString(", ")
-	builder.WriteString("email_confirmation_secret=")
-	builder.WriteString(fmt.Sprintf("%v", u.EmailConfirmationSecret))
 	builder.WriteByte(')')
 	return builder.String()
 }

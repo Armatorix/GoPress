@@ -34,7 +34,6 @@ var (
 		{Name: "password", Type: field.TypeString, Nullable: true},
 		{Name: "nick", Type: field.TypeString, Default: ""},
 		{Name: "avatar_url", Type: field.TypeString, Default: ""},
-		{Name: "email_confirmation_secret", Type: field.TypeString, Nullable: true},
 	}
 	// UsersTable holds the schema information for the "users" table.
 	UsersTable = &schema.Table{

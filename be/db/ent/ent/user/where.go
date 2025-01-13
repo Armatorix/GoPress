@@ -86,11 +86,6 @@ func AvatarURL(v string) predicate.User {
 	return predicate.User(sql.FieldEQ(FieldAvatarURL, v))
 }
 
-// EmailConfirmationSecret applies equality check predicate on the "email_confirmation_secret" field. It's identical to EmailConfirmationSecretEQ.
-func EmailConfirmationSecret(v ext.Password) predicate.User {
-	return predicate.User(sql.FieldEQ(FieldEmailConfirmationSecret, v))
-}
-
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v time.Time) predicate.User {
 	return predicate.User(sql.FieldEQ(FieldCreatedAt, v))
@@ -444,86 +439,6 @@ func AvatarURLEqualFold(v string) predicate.User {
 // AvatarURLContainsFold applies the ContainsFold predicate on the "avatar_url" field.
 func AvatarURLContainsFold(v string) predicate.User {
 	return predicate.User(sql.FieldContainsFold(FieldAvatarURL, v))
-}
-
-// EmailConfirmationSecretEQ applies the EQ predicate on the "email_confirmation_secret" field.
-func EmailConfirmationSecretEQ(v ext.Password) predicate.User {
-	return predicate.User(sql.FieldEQ(FieldEmailConfirmationSecret, v))
-}
-
-// EmailConfirmationSecretNEQ applies the NEQ predicate on the "email_confirmation_secret" field.
-func EmailConfirmationSecretNEQ(v ext.Password) predicate.User {
-	return predicate.User(sql.FieldNEQ(FieldEmailConfirmationSecret, v))
-}
-
-// EmailConfirmationSecretIn applies the In predicate on the "email_confirmation_secret" field.
-func EmailConfirmationSecretIn(vs ...ext.Password) predicate.User {
-	return predicate.User(sql.FieldIn(FieldEmailConfirmationSecret, vs...))
-}
-
-// EmailConfirmationSecretNotIn applies the NotIn predicate on the "email_confirmation_secret" field.
-func EmailConfirmationSecretNotIn(vs ...ext.Password) predicate.User {
-	return predicate.User(sql.FieldNotIn(FieldEmailConfirmationSecret, vs...))
-}
-
-// EmailConfirmationSecretGT applies the GT predicate on the "email_confirmation_secret" field.
-func EmailConfirmationSecretGT(v ext.Password) predicate.User {
-	return predicate.User(sql.FieldGT(FieldEmailConfirmationSecret, v))
-}
-
-// EmailConfirmationSecretGTE applies the GTE predicate on the "email_confirmation_secret" field.
-func EmailConfirmationSecretGTE(v ext.Password) predicate.User {
-	return predicate.User(sql.FieldGTE(FieldEmailConfirmationSecret, v))
-}
-
-// EmailConfirmationSecretLT applies the LT predicate on the "email_confirmation_secret" field.
-func EmailConfirmationSecretLT(v ext.Password) predicate.User {
-	return predicate.User(sql.FieldLT(FieldEmailConfirmationSecret, v))
-}
-
-// EmailConfirmationSecretLTE applies the LTE predicate on the "email_confirmation_secret" field.
-func EmailConfirmationSecretLTE(v ext.Password) predicate.User {
-	return predicate.User(sql.FieldLTE(FieldEmailConfirmationSecret, v))
-}
-
-// EmailConfirmationSecretContains applies the Contains predicate on the "email_confirmation_secret" field.
-func EmailConfirmationSecretContains(v ext.Password) predicate.User {
-	vc := string(v)
-	return predicate.User(sql.FieldContains(FieldEmailConfirmationSecret, vc))
-}
-
-// EmailConfirmationSecretHasPrefix applies the HasPrefix predicate on the "email_confirmation_secret" field.
-func EmailConfirmationSecretHasPrefix(v ext.Password) predicate.User {
-	vc := string(v)
-	return predicate.User(sql.FieldHasPrefix(FieldEmailConfirmationSecret, vc))
-}
-
-// EmailConfirmationSecretHasSuffix applies the HasSuffix predicate on the "email_confirmation_secret" field.
-func EmailConfirmationSecretHasSuffix(v ext.Password) predicate.User {
-	vc := string(v)
-	return predicate.User(sql.FieldHasSuffix(FieldEmailConfirmationSecret, vc))
-}
-
-// EmailConfirmationSecretIsNil applies the IsNil predicate on the "email_confirmation_secret" field.
-func EmailConfirmationSecretIsNil() predicate.User {
-	return predicate.User(sql.FieldIsNull(FieldEmailConfirmationSecret))
-}
-
-// EmailConfirmationSecretNotNil applies the NotNil predicate on the "email_confirmation_secret" field.
-func EmailConfirmationSecretNotNil() predicate.User {
-	return predicate.User(sql.FieldNotNull(FieldEmailConfirmationSecret))
-}
-
-// EmailConfirmationSecretEqualFold applies the EqualFold predicate on the "email_confirmation_secret" field.
-func EmailConfirmationSecretEqualFold(v ext.Password) predicate.User {
-	vc := string(v)
-	return predicate.User(sql.FieldEqualFold(FieldEmailConfirmationSecret, vc))
-}
-
-// EmailConfirmationSecretContainsFold applies the ContainsFold predicate on the "email_confirmation_secret" field.
-func EmailConfirmationSecretContainsFold(v ext.Password) predicate.User {
-	vc := string(v)
-	return predicate.User(sql.FieldContainsFold(FieldEmailConfirmationSecret, vc))
 }
 
 // HasArticles applies the HasEdge predicate on the "articles" edge.

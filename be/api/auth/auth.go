@@ -42,10 +42,11 @@ func (h *handler) PostAdminLogin(
 	}, nil
 }
 
-func NewHandler(db *db.DB) ServerInterface {
+func NewHandler(db *db.DB, jwtc *xjwt.Client) ServerInterface {
 	return NewStrictHandler(
 		&handler{
-			db: db,
+			db:  db,
+			jwt: jwtc,
 		},
 		nil,
 	)

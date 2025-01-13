@@ -23,9 +23,6 @@ func (User) Fields() []ent.Field {
 			Default(""),
 		field.String("avatar_url").
 			Default(""),
-		field.String("email_confirmation_secret").
-			GoType(ext.Password("")).
-			Optional(),
 	}
 }
 

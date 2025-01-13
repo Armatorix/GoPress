@@ -100,20 +100,6 @@ func (uc *UserCreate) SetNillableAvatarURL(s *string) *UserCreate {
 	return uc
 }
 
-// SetEmailConfirmationSecret sets the "email_confirmation_secret" field.
-func (uc *UserCreate) SetEmailConfirmationSecret(e ext.Password) *UserCreate {
-	uc.mutation.SetEmailConfirmationSecret(e)
-	return uc
-}
-
-// SetNillableEmailConfirmationSecret sets the "email_confirmation_secret" field if the given value is not nil.
-func (uc *UserCreate) SetNillableEmailConfirmationSecret(e *ext.Password) *UserCreate {
-	if e != nil {
-		uc.SetEmailConfirmationSecret(*e)
-	}
-	return uc
-}
-
 // SetID sets the "id" field.
 func (uc *UserCreate) SetID(i int) *UserCreate {
 	uc.mutation.SetID(i)
@@ -262,10 +248,6 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		_spec.SetField(user.FieldAvatarURL, field.TypeString, value)
 		_node.AvatarURL = value
 	}
-	if value, ok := uc.mutation.EmailConfirmationSecret(); ok {
-		_spec.SetField(user.FieldEmailConfirmationSecret, field.TypeString, value)
-		_node.EmailConfirmationSecret = value
-	}
 	if nodes := uc.mutation.ArticlesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
@@ -400,24 +382,6 @@ func (u *UserUpsert) UpdateAvatarURL() *UserUpsert {
 	return u
 }
 
-// SetEmailConfirmationSecret sets the "email_confirmation_secret" field.
-func (u *UserUpsert) SetEmailConfirmationSecret(v ext.Password) *UserUpsert {
-	u.Set(user.FieldEmailConfirmationSecret, v)
-	return u
-}
-
-// UpdateEmailConfirmationSecret sets the "email_confirmation_secret" field to the value that was provided on create.
-func (u *UserUpsert) UpdateEmailConfirmationSecret() *UserUpsert {
-	u.SetExcluded(user.FieldEmailConfirmationSecret)
-	return u
-}
-
-// ClearEmailConfirmationSecret clears the value of the "email_confirmation_secret" field.
-func (u *UserUpsert) ClearEmailConfirmationSecret() *UserUpsert {
-	u.SetNull(user.FieldEmailConfirmationSecret)
-	return u
-}
-
 // UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
@@ -543,27 +507,6 @@ func (u *UserUpsertOne) SetAvatarURL(v string) *UserUpsertOne {
 func (u *UserUpsertOne) UpdateAvatarURL() *UserUpsertOne {
 	return u.Update(func(s *UserUpsert) {
 		s.UpdateAvatarURL()
-	})
-}
-
-// SetEmailConfirmationSecret sets the "email_confirmation_secret" field.
-func (u *UserUpsertOne) SetEmailConfirmationSecret(v ext.Password) *UserUpsertOne {
-	return u.Update(func(s *UserUpsert) {
-		s.SetEmailConfirmationSecret(v)
-	})
-}
-
-// UpdateEmailConfirmationSecret sets the "email_confirmation_secret" field to the value that was provided on create.
-func (u *UserUpsertOne) UpdateEmailConfirmationSecret() *UserUpsertOne {
-	return u.Update(func(s *UserUpsert) {
-		s.UpdateEmailConfirmationSecret()
-	})
-}
-
-// ClearEmailConfirmationSecret clears the value of the "email_confirmation_secret" field.
-func (u *UserUpsertOne) ClearEmailConfirmationSecret() *UserUpsertOne {
-	return u.Update(func(s *UserUpsert) {
-		s.ClearEmailConfirmationSecret()
 	})
 }
 
@@ -858,27 +801,6 @@ func (u *UserUpsertBulk) SetAvatarURL(v string) *UserUpsertBulk {
 func (u *UserUpsertBulk) UpdateAvatarURL() *UserUpsertBulk {
 	return u.Update(func(s *UserUpsert) {
 		s.UpdateAvatarURL()
-	})
-}
-
-// SetEmailConfirmationSecret sets the "email_confirmation_secret" field.
-func (u *UserUpsertBulk) SetEmailConfirmationSecret(v ext.Password) *UserUpsertBulk {
-	return u.Update(func(s *UserUpsert) {
-		s.SetEmailConfirmationSecret(v)
-	})
-}
-
-// UpdateEmailConfirmationSecret sets the "email_confirmation_secret" field to the value that was provided on create.
-func (u *UserUpsertBulk) UpdateEmailConfirmationSecret() *UserUpsertBulk {
-	return u.Update(func(s *UserUpsert) {
-		s.UpdateEmailConfirmationSecret()
-	})
-}
-
-// ClearEmailConfirmationSecret clears the value of the "email_confirmation_secret" field.
-func (u *UserUpsertBulk) ClearEmailConfirmationSecret() *UserUpsertBulk {
-	return u.Update(func(s *UserUpsert) {
-		s.ClearEmailConfirmationSecret()
 	})
 }
 

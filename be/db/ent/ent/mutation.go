@@ -842,23 +842,22 @@ func (m *ArticleMutation) ResetEdge(name string) error {
 // UserMutation represents an operation that mutates the User nodes in the graph.
 type UserMutation struct {
 	config
-	op                        Op
-	typ                       string
-	id                        *int
-	created_at                *time.Time
-	updated_at                *time.Time
-	email                     *string
-	password                  *ext.Password
-	nick                      *string
-	avatar_url                *string
-	email_confirmation_secret *ext.Password
-	clearedFields             map[string]struct{}
-	articles                  map[int]struct{}
-	removedarticles           map[int]struct{}
-	clearedarticles           bool
-	done                      bool
-	oldValue                  func(context.Context) (*User, error)
-	predicates                []predicate.User
+	op              Op
+	typ             string
+	id              *int
+	created_at      *time.Time
+	updated_at      *time.Time
+	email           *string
+	password        *ext.Password
+	nick            *string
+	avatar_url      *string
+	clearedFields   map[string]struct{}
+	articles        map[int]struct{}
+	removedarticles map[int]struct{}
+	clearedarticles bool
+	done            bool
+	oldValue        func(context.Context) (*User, error)
+	predicates      []predicate.User
 }
 
 var _ ent.Mutation = (*UserMutation)(nil)
@@ -1194,55 +1193,6 @@ func (m *UserMutation) ResetAvatarURL() {
 	m.avatar_url = nil
 }
 
-// SetEmailConfirmationSecret sets the "email_confirmation_secret" field.
-func (m *UserMutation) SetEmailConfirmationSecret(e ext.Password) {
-	m.email_confirmation_secret = &e
-}
-
-// EmailConfirmationSecret returns the value of the "email_confirmation_secret" field in the mutation.
-func (m *UserMutation) EmailConfirmationSecret() (r ext.Password, exists bool) {
-	v := m.email_confirmation_secret
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldEmailConfirmationSecret returns the old "email_confirmation_secret" field's value of the User entity.
-// If the User object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UserMutation) OldEmailConfirmationSecret(ctx context.Context) (v ext.Password, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldEmailConfirmationSecret is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldEmailConfirmationSecret requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldEmailConfirmationSecret: %w", err)
-	}
-	return oldValue.EmailConfirmationSecret, nil
-}
-
-// ClearEmailConfirmationSecret clears the value of the "email_confirmation_secret" field.
-func (m *UserMutation) ClearEmailConfirmationSecret() {
-	m.email_confirmation_secret = nil
-	m.clearedFields[user.FieldEmailConfirmationSecret] = struct{}{}
-}
-
-// EmailConfirmationSecretCleared returns if the "email_confirmation_secret" field was cleared in this mutation.
-func (m *UserMutation) EmailConfirmationSecretCleared() bool {
-	_, ok := m.clearedFields[user.FieldEmailConfirmationSecret]
-	return ok
-}
-
-// ResetEmailConfirmationSecret resets all changes to the "email_confirmation_secret" field.
-func (m *UserMutation) ResetEmailConfirmationSecret() {
-	m.email_confirmation_secret = nil
-	delete(m.clearedFields, user.FieldEmailConfirmationSecret)
-}
-
 // AddArticleIDs adds the "articles" edge to the Article entity by ids.
 func (m *UserMutation) AddArticleIDs(ids ...int) {
 	if m.articles == nil {
@@ -1331,7 +1281,7 @@ func (m *UserMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *UserMutation) Fields() []string {
-	fields := make([]string, 0, 7)
+	fields := make([]string, 0, 6)
 	if m.created_at != nil {
 		fields = append(fields, user.FieldCreatedAt)
 	}
@@ -1349,9 +1299,6 @@ func (m *UserMutation) Fields() []string {
 	}
 	if m.avatar_url != nil {
 		fields = append(fields, user.FieldAvatarURL)
-	}
-	if m.email_confirmation_secret != nil {
-		fields = append(fields, user.FieldEmailConfirmationSecret)
 	}
 	return fields
 }
@@ -1373,8 +1320,6 @@ func (m *UserMutation) Field(name string) (ent.Value, bool) {
 		return m.Nick()
 	case user.FieldAvatarURL:
 		return m.AvatarURL()
-	case user.FieldEmailConfirmationSecret:
-		return m.EmailConfirmationSecret()
 	}
 	return nil, false
 }
@@ -1396,8 +1341,6 @@ func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldNick(ctx)
 	case user.FieldAvatarURL:
 		return m.OldAvatarURL(ctx)
-	case user.FieldEmailConfirmationSecret:
-		return m.OldEmailConfirmationSecret(ctx)
 	}
 	return nil, fmt.Errorf("unknown User field %s", name)
 }
@@ -1449,13 +1392,6 @@ func (m *UserMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetAvatarURL(v)
 		return nil
-	case user.FieldEmailConfirmationSecret:
-		v, ok := value.(ext.Password)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetEmailConfirmationSecret(v)
-		return nil
 	}
 	return fmt.Errorf("unknown User field %s", name)
 }
@@ -1489,9 +1425,6 @@ func (m *UserMutation) ClearedFields() []string {
 	if m.FieldCleared(user.FieldPassword) {
 		fields = append(fields, user.FieldPassword)
 	}
-	if m.FieldCleared(user.FieldEmailConfirmationSecret) {
-		fields = append(fields, user.FieldEmailConfirmationSecret)
-	}
 	return fields
 }
 
@@ -1508,9 +1441,6 @@ func (m *UserMutation) ClearField(name string) error {
 	switch name {
 	case user.FieldPassword:
 		m.ClearPassword()
-		return nil
-	case user.FieldEmailConfirmationSecret:
-		m.ClearEmailConfirmationSecret()
 		return nil
 	}
 	return fmt.Errorf("unknown User nullable field %s", name)
@@ -1537,9 +1467,6 @@ func (m *UserMutation) ResetField(name string) error {
 		return nil
 	case user.FieldAvatarURL:
 		m.ResetAvatarURL()
-		return nil
-	case user.FieldEmailConfirmationSecret:
-		m.ResetEmailConfirmationSecret()
 		return nil
 	}
 	return fmt.Errorf("unknown User field %s", name)
