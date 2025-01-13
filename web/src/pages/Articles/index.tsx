@@ -16,12 +16,11 @@ function Articles() {
   console.log(articles.data)
   return (
     <Bootstrap>
-      {articles.data.data.length === 0 && (
+      {articles.data.data.length === 0 ? (
         <Typography>No articles found</Typography>
+      ) : (
+        <ArticleList articles={articles.data.data} />
       )}
-      {articles.data.data.map((article) => (
-        <ArticleTile key={article.id} article={article} />
-      ))}
     </Bootstrap>
   )
 }
@@ -29,6 +28,15 @@ type ArticleTileProps = {
   article: Article
 }
 
+function ArticleList({ articles }: { articles: Article[] }) {
+  return (
+    <div className="grid grid-cols-2 gap-2">
+      {articles.map((article) => (
+        <ArticleTile key={article.id} article={article} />
+      ))}
+    </div>
+  )
+}
 function ArticleTile({ article }: ArticleTileProps) {
   return (
     <div className="bg-white shadow-md p-4 rounded-md">
