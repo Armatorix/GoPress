@@ -12,8 +12,13 @@ import {
   ListItemPrefix,
   Typography,
 } from '@material-tailwind/react'
+import { useNavigate } from 'react-router-dom'
 
 function Sidebar() {
+  const navigate = useNavigate()
+  const onArticles = () => {
+    navigate('/articles')
+  }
   const onLogout = () => {
     resetAuthJwt()
     window.location.reload()
@@ -33,7 +38,7 @@ function Sidebar() {
           </ListItemPrefix>
           Dashboard
         </ListItem>
-        <ListItem disabled>
+        <ListItem onClick={onArticles}>
           <ListItemPrefix>
             <ClipboardDocumentIcon className="h-5 w-5" />
           </ListItemPrefix>
