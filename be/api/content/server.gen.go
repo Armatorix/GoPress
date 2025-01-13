@@ -124,7 +124,9 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 
 type ErrorMsgJSONResponse ErrorMsg
 
-type GetArticlesJSONResponse Articles
+type GetArticlesJSONResponse struct {
+	Data Articles `json:"data"`
+}
 
 type UpdateArticleRequestObject struct {
 	ArticleId ArticleId `json:"articleId"`

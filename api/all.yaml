@@ -222,7 +222,11 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Articles'
+            type: object
+            properties:
+              data:
+                $ref: '#/components/schemas/Articles'
+            required: [data]
     GetContents:
       description: List of contents
       content:

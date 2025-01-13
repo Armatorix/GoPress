@@ -113,10 +113,12 @@ export class DefaultService {
         });
     }
     /**
-     * @returns Articles List of articles
+     * @returns any List of articles
      * @throws ApiError
      */
-    public static getArticles(): CancelablePromise<Articles> {
+    public static getArticles(): CancelablePromise<{
+        data: Articles;
+    }> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/admin/articles',

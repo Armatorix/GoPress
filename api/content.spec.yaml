@@ -98,7 +98,11 @@ components:
       description: List of articles
       content:
         application/json:
-          schema: {$ref: '#/components/schemas/Articles'}
+          schema:
+            type: object
+            properties:
+              data: {$ref: '#/components/schemas/Articles'}
+            required: [data]
   schemas:
     ErrorMsg:
       type: object

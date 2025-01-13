@@ -2,8 +2,8 @@ package content
 
 import "github.com/Armatorix/GoPress/be/db/ent/ent"
 
-func articlesFromEnt(ins ent.Articles) Articles {
-	articles := make(Articles, len(ins))
+func articlesFromEnt(ins ent.Articles) []Article {
+	articles := make([]Article, len(ins))
 	for i, in := range ins {
 		articles[i] = articleFromEnt(in)
 	}

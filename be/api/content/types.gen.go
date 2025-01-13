@@ -46,7 +46,9 @@ type ArticleId = int
 type ArticleIds = []int
 
 // GetArticles defines model for GetArticles.
-type GetArticles = Articles
+type GetArticles struct {
+	Data Articles `json:"data"`
+}
 
 // DeleteArticlesParams defines parameters for DeleteArticles.
 type DeleteArticlesParams struct {

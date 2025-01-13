@@ -70,7 +70,9 @@ func (h *handler) GetArticles(
 	}
 
 	return GetArticles200JSONResponse{
-		articlesFromEnt(articles),
+		GetArticlesJSONResponse{
+			articlesFromEnt(articles),
+		},
 	}, nil
 }
 

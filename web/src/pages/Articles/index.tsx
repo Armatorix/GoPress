@@ -16,8 +16,10 @@ function Articles() {
   console.log(articles.data)
   return (
     <Bootstrap>
-      {articles.data.length === 0 && <Typography>No articles found</Typography>}
-      {articles.data.map((article) => (
+      {articles.data.data.length === 0 && (
+        <Typography>No articles found</Typography>
+      )}
+      {articles.data.data.map((article) => (
         <ArticleTile key={article.id} article={article} />
       ))}
     </Bootstrap>
