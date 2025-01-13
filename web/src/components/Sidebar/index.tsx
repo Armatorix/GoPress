@@ -19,7 +19,7 @@ function Sidebar() {
     window.location.reload()
   }
   return (
-    <Card className="h-screen w-full max-w-72 p-4 shadow-xl shadow-blue-gray-900">
+    <Card className="h-screen w-full max-w-72 p-4 shadow-xl shadow-blue-gray-900 absolute z-10">
       <div className="mb-2 p-4 flex flex-row items-center justify-center space-x-2 select-none">
         <img src="/icon.png" alt="logo" className="h-10 w-10" />
         <Typography variant="h5" color="blue-gray">
