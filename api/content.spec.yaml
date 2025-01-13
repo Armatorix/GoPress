@@ -118,7 +118,6 @@ components:
     Articles:
       type: array
       items: {$ref: '#/components/schemas/Article'}
-      required: [nick, email, userType]
     PostArticle:
       type: object
       properties:
