@@ -1,6 +1,6 @@
-import Home from '@/pages/Home'
+import Dashboard from '@/pages/Dashboard'
 import Login from '@/pages/Login'
-import { Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 
 function UnauthedRouter() {
   return (
@@ -13,7 +13,8 @@ function UnauthedRouter() {
 function AuthedRouter() {
   return (
     <Routes>
-      <Route path="*" element={<Home />} />
+      <Route path="dashboard" element={<Dashboard />} />
+      <Route path="*" element={<Navigate to="/dashboard" />} />
     </Routes>
   )
 }
