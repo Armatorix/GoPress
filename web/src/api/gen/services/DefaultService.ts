@@ -92,6 +92,26 @@ export class DefaultService {
         });
     }
     /**
+     * Login
+     * @param requestBody
+     * @returns AuthToken Login response
+     * @throws ApiError
+     */
+    public static postAdminLogin(
+        requestBody: PostLogin,
+    ): CancelablePromise<AuthToken> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/admin/login',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                400: `Error message`,
+                500: `Error message`,
+            },
+        });
+    }
+    /**
      * @returns Contents List of contents
      * @throws ApiError
      */
@@ -180,26 +200,6 @@ export class DefaultService {
             },
             errors: {
                 404: `Error message`,
-                500: `Error message`,
-            },
-        });
-    }
-    /**
-     * Login
-     * @param requestBody
-     * @returns AuthToken Login response
-     * @throws ApiError
-     */
-    public static postAdminLogin(
-        requestBody: PostLogin,
-    ): CancelablePromise<AuthToken> {
-        return __request(OpenAPI, {
-            method: 'POST',
-            url: '/admin/login',
-            body: requestBody,
-            mediaType: 'application/json',
-            errors: {
-                400: `Error message`,
                 500: `Error message`,
             },
         });

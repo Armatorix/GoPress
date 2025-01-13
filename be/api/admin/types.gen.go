@@ -9,22 +9,9 @@ const (
 	CONTENTCREATOR UserType = "CONTENT_CREATOR"
 )
 
-// Content defines model for Content.
-type Content struct {
-	Body  string   `json:"body"`
-	Id    string   `json:"id"`
-	Tags  []string `json:"tags"`
-	Title string   `json:"title"`
-}
-
-// Contents defines model for Contents.
-type Contents = []Content
-
-// PatchContent defines model for PatchContent.
-type PatchContent struct {
-	Body  string   `json:"body"`
-	Tags  []string `json:"tags"`
-	Title string   `json:"title"`
+// ErrorMsg defines model for ErrorMsg.
+type ErrorMsg struct {
+	Error string `json:"error"`
 }
 
 // PatchUser defines model for PatchUser.
@@ -32,13 +19,6 @@ type PatchUser struct {
 	Email    string   `json:"email"`
 	Nick     string   `json:"nick"`
 	UserType UserType `json:"userType"`
-}
-
-// PostContent defines model for PostContent.
-type PostContent struct {
-	Body  string   `json:"body"`
-	Tags  []string `json:"tags"`
-	Title string   `json:"title"`
 }
 
 // PostUsers defines model for PostUsers.
@@ -62,22 +42,11 @@ type UserType string
 // Users defines model for Users.
 type Users = []User
 
-// ContentId defines model for contentId.
-type ContentId = string
-
 // UserId defines model for userId.
 type UserId = string
 
 // UserIds defines model for userIds.
 type UserIds = []string
-
-// ErrorMsg defines model for ErrorMsg.
-type ErrorMsg struct {
-	Error string `json:"error"`
-}
-
-// GetContents defines model for GetContents.
-type GetContents = Contents
 
 // GetUsers defines model for GetUsers.
 type GetUsers = Users
@@ -86,12 +55,6 @@ type GetUsers = Users
 type DeleteUsersParams struct {
 	UserIds UserIds `form:"userIds" json:"userIds"`
 }
-
-// PatchAdminContentContentIdJSONRequestBody defines body for PatchAdminContentContentId for application/json ContentType.
-type PatchAdminContentContentIdJSONRequestBody = PatchContent
-
-// PostAdminContentsJSONRequestBody defines body for PostAdminContents for application/json ContentType.
-type PostAdminContentsJSONRequestBody = PostContent
 
 // PostAdminUsersJSONRequestBody defines body for PostAdminUsers for application/json ContentType.
 type PostAdminUsersJSONRequestBody = PostUsers

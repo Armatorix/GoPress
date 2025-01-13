@@ -52,6 +52,18 @@ paths:
           $ref: '#/components/responses/ErrorMsg'
         '500':
           $ref: '#/components/responses/ErrorMsg'
+  /admin/login:
+    post:
+      summary: Login
+      requestBody:
+        $ref: '#/components/requestBodies/PostLogin'
+      responses:
+        '200':
+          $ref: '#/components/responses/AuthToken'
+        '400':
+          $ref: '#/components/responses/ErrorMsg'
+        '500':
+          $ref: '#/components/responses/ErrorMsg'
   /admin/contents:
     get:
       operationId: getContents
@@ -103,18 +115,6 @@ paths:
           $ref: '#/components/responses/ErrorMsg'
         '500':
           $ref: '#/components/responses/ErrorMsg'
-  /admin/login:
-    post:
-      summary: Login
-      requestBody:
-        $ref: '#/components/requestBodies/PostLogin'
-      responses:
-        '200':
-          $ref: '#/components/responses/AuthToken'
-        '400':
-          $ref: '#/components/responses/ErrorMsg'
-        '500':
-          $ref: '#/components/responses/ErrorMsg'
 components:
   parameters:
     userIds:
@@ -150,6 +150,12 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/PatchUser'
+    PostLogin:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PostLogin'
     PostContent:
       required: true
       content:
@@ -162,39 +168,29 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/PatchContent'
-    PostLogin:
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/PostLogin'
   responses:
     ErrorMsg:
       description: Error message
       content:
         application/json:
-          schema:
-            type: object
-            properties:
-              error: {type: string}
-            required: [error]
+          schema: {$ref: '#/components/schemas/ErrorMsg', type: object, properties: {error: {type: string}}, required: [error]}
     GetUsers:
       description: List of users
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Users'
-    GetContents:
-      description: List of contents
-      content:
-        application/json:
-          schema: {$ref: '#/components/schemas/Contents'}
     AuthToken:
       description: Login response
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/AuthToken'
+    GetContents:
+      description: List of contents
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/Contents'}
     GetContent:
       description: Content
       content:
@@ -228,17 +224,6 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/User'
-    Content:
-      type: object
-      properties:
-        id: {type: string}
-        title: {type: string}
-        body: {type: string}
-        tags: {type: array, items: {type: string}}
-      required: [id, title, body, tags]
-    Contents:
-      type: array
-      items: {$ref: '#/components/schemas/Content'}
     PostUsers:
       type: object
       properties:
@@ -258,6 +243,35 @@ components:
           type: string
         userType:
           $ref: '#/components/schemas/UserType'
+      required: [nick, email, userType]
+    PostLogin:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required: [email, password]
+    AuthToken:
+      type: object
+      properties:
+        token:
+          type: string
+        expiresAt:
+          type: string
+          format: date-time
+      required: [token, expiresAt]
+    Content:
+      type: object
+      properties:
+        id: {type: string}
+        title: {type: string}
+        body: {type: string}
+        tags: {type: array, items: {type: string}}
+      required: [id, title, body, tags]
+    Contents:
+      type: array
+      items: {$ref: '#/components/schemas/Content'}
       required: [nick, email, userType]
     PostContent:
       type: object
@@ -283,22 +297,5 @@ components:
           items:
             type: string
       required: [title, body, tags]
-    PostLogin:
-      type: object
-      properties:
-        email:
-          type: string
-        password:
-          type: string
-      required: [email, password]
-    AuthToken:
-      type: object
-      properties:
-        token:
-          type: string
-        expiresAt:
-          type: string
-          format: date-time
-      required: [token, expiresAt]
   securitySchemes: {}
 security: []

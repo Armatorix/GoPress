@@ -40,37 +40,6 @@ paths:
         '200': {description: User updated}
         '400': {$ref: '#/components/responses/ErrorMsg'}
         '500': {$ref: '#/components/responses/ErrorMsg'}
-  /admin/contents:
-    get:
-      operationId: getContents
-      responses:
-        '200': {$ref: '#/components/responses/GetContents'}
-        '500': {$ref: '#/components/responses/ErrorMsg'}
-    post:
-      summary: Create new content
-      requestBody: {$ref: '#/components/requestBodies/PostContent'}
-      responses:
-        '200': {description: Content created}
-        '400': {$ref: '#/components/responses/ErrorMsg'}
-        '500': {$ref: '#/components/responses/ErrorMsg'}
-    delete:
-      summary: Delete all content
-      responses:
-        '200': {description: All content deleted}
-        '500': {$ref: '#/components/responses/ErrorMsg'}
-  /admin/content/{contentId}:
-    patch:
-      summary: Update content
-      parameters:
-        - $ref: '#/components/parameters/contentId'
-      requestBody: {$ref: '#/components/requestBodies/PatchContent'}
-      responses:
-        '200': {description: Content updated}
-        '400':
-          $ref: '#/components/responses/ErrorMsg'
-        '404':
-          $ref: '#/components/responses/ErrorMsg'
-        '500': {$ref: '#/components/responses/ErrorMsg'}
 components:
   parameters:
     userIds:
@@ -87,12 +56,6 @@ components:
       required: true
       schema:
         type: string
-    contentId:
-      name: contentId
-      in: path
-      required: true
-      schema:
-        type: string
   requestBodies:
     PostUsers:
       required: true
@@ -104,36 +67,17 @@ components:
       content:
         application/json:
           schema: {$ref: '#/components/schemas/PatchUser'}
-    PostContent:
-      required: true
-      content:
-        application/json:
-          schema: {$ref: '#/components/schemas/PostContent'}
-    PatchContent:
-      required: true
-      content:
-        application/json:
-          schema: {$ref: '#/components/schemas/PatchContent'}
   responses:
     ErrorMsg:
       description: Error message
       content:
         application/json:
-          schema:
-            type: object
-            properties:
-              error: {type: string}
-            required: [error]
+          schema: {$ref: '#/components/schemas/ErrorMsg'}
     GetUsers:
       description: List of users
       content:
         application/json:
           schema: {$ref: '#/components/schemas/Users'}
-    GetContents:
-      description: List of contents
-      content:
-        application/json:
-          schema: {$ref: '#/components/schemas/Contents'}
   schemas:
     ErrorMsg:
       type: object
@@ -156,17 +100,6 @@ components:
     Users:
       type: array
       items: {$ref: '#/components/schemas/User'}
-    Content:
-      type: object
-      properties:
-        id: {type: string}
-        title: {type: string}
-        body: {type: string}
-        tags: {type: array, items: {type: string}}
-      required: [id, title, body, tags]
-    Contents:
-      type: array
-      items: {$ref: '#/components/schemas/Content'}
     PostUsers:
       type: object
       properties:
@@ -181,19 +114,5 @@ components:
         email: {type: string}
         userType: {$ref: '#/components/schemas/UserType'}
       required: [nick, email, userType]
-    PostContent:
-      type: object
-      properties:
-        title: {type: string}
-        body: {type: string}
-        tags: {type: array, items: {type: string}}
-      required: [title, body, tags]
-    PatchContent:
-      type: object
-      properties:
-        title: {type: string}
-        body: {type: string}
-        tags: {type: array, items: {type: string}}
-      required: [title, body, tags]
   securitySchemes: {}
 security: []

@@ -1,0 +1,121 @@
+openapi: 3.0.0
+info:
+  title: API
+  version: 0.0.1
+servers:
+  - url: '{env}/api/v1'
+    variables:
+      env:
+        default: http://localhost:8080
+        enum:
+          - http://localhost:8080
+paths:
+  /admin/contents:
+    get:
+      operationId: getContents
+      responses:
+        '200': {$ref: '#/components/responses/GetContents'}
+        '500': {$ref: '#/components/responses/ErrorMsg'}
+    post:
+      summary: Create new content
+      requestBody: {$ref: '#/components/requestBodies/PostContent'}
+      responses:
+        '200': {description: Content created}
+        '400': {$ref: '#/components/responses/ErrorMsg'}
+        '500': {$ref: '#/components/responses/ErrorMsg'}
+    delete:
+      summary: Delete all content
+      responses:
+        '200': {description: All content deleted}
+        '500': {$ref: '#/components/responses/ErrorMsg'}
+  /admin/content/{contentId}:
+    patch:
+      summary: Update content
+      parameters:
+        - $ref: '#/components/parameters/contentId'
+      requestBody: {$ref: '#/components/requestBodies/PatchContent'}
+      responses:
+        '200': {description: Content updated}
+        '400':
+          $ref: '#/components/responses/ErrorMsg'
+        '404':
+          $ref: '#/components/responses/ErrorMsg'
+        '500': {$ref: '#/components/responses/ErrorMsg'}
+components:
+  parameters:
+    userIds:
+      name: userIds
+      in: query
+      required: true
+      schema:
+        type: array
+        items:
+          type: string
+    userId:
+      name: userId
+      in: path
+      required: true
+      schema:
+        type: string
+    contentId:
+      name: contentId
+      in: path
+      required: true
+      schema:
+        type: string
+  requestBodies:
+    PostContent:
+      required: true
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/PostContent'}
+    PatchContent:
+      required: true
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/PatchContent'}
+  responses:
+    ErrorMsg:
+      description: Error message
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/ErrorMsg'}
+    GetContents:
+      description: List of contents
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/Contents'}
+  schemas:
+    ErrorMsg:
+      type: object
+      properties:
+        error: {type: string}
+      required: [error]
+    Content:
+      type: object
+      properties:
+        id: {type: string}
+        title: {type: string}
+        body: {type: string}
+        tags: {type: array, items: {type: string}}
+      required: [id, title, body, tags]
+    Contents:
+      type: array
+      items: {$ref: '#/components/schemas/Content'}
+      required: [nick, email, userType]
+    PostContent:
+      type: object
+      properties:
+        title: {type: string}
+        body: {type: string}
+        tags: {type: array, items: {type: string}}
+      required: [title, body, tags]
+    PatchContent:
+      type: object
+      properties:
+        title: {type: string}
+        body: {type: string}
+        tags: {type: array, items: {type: string}}
+      required: [title, body, tags]
+  securitySchemes: {}
+security: []
