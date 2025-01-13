@@ -2,9 +2,5 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type PostContent = {
-    title: string;
-    body: string;
-    tags: Array<string>;
-};
-
+import type { Article } from './Article';
+export type Articles = Array<Article>;

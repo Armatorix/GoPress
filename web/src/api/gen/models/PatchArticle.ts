@@ -2,10 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type User = {
-    id: number;
-    nick?: string;
-    email: string;
-    userType: string;
+export type PatchArticle = {
+    title: string;
+    body: string;
+    tags: Array<string>;
 };
 

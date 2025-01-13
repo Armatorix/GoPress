@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type PatchContent = {
+export type PostArticle = {
     title: string;
     body: string;
     tags: Array<string>;

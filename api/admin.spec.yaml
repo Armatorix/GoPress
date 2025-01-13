@@ -87,7 +87,7 @@ components:
     User:
       type: object
       properties:
-        id: {type: string}
+        id: {type: number, format: int64, x-go-type: int}
         nick: {type: string}
         email: {type: string}
         userType: {type: string}

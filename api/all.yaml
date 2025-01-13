@@ -64,46 +64,57 @@ paths:
           $ref: '#/components/responses/ErrorMsg'
         '500':
           $ref: '#/components/responses/ErrorMsg'
-  /admin/contents:
+  /admin/articles:
     get:
-      operationId: getContents
-      responses:
-        '200': {$ref: '#/components/responses/GetContents'}
-        '500': {$ref: '#/components/responses/ErrorMsg'}
-    post:
-      summary: Create new content
-      requestBody:
-        $ref: '#/components/requestBodies/PostContent'
+      operationId: getArticles
       responses:
         '200':
-          description: Content created
+          $ref: '#/components/responses/GetArticles'
+        '500':
+          $ref: '#/components/responses/ErrorMsg'
+    post:
+      summary: Create new article
+      requestBody:
+        $ref: '#/components/requestBodies/PostArticle'
+      responses:
+        '200':
+          description: Article created
         '400':
           $ref: '#/components/responses/ErrorMsg'
         '500':
           $ref: '#/components/responses/ErrorMsg'
     delete:
-      summary: Delete all content
+      summary: Delete all article
       responses:
         '200':
-          description: All content deleted
+          description: All article deleted
         '500':
           $ref: '#/components/responses/ErrorMsg'
-  /admin/content/{contentId}:
+  /admin/article/{articleId}:
     patch:
-      summary: Update content
+      summary: Update article
       parameters:
-        - $ref: '#/components/parameters/contentId'
+        - $ref: '#/components/parameters/articleId'
       requestBody:
-        $ref: '#/components/requestBodies/PatchContent'
+        $ref: '#/components/requestBodies/PatchArticle'
       responses:
         '200':
-          description: Content updated
+          description: Article updated
         '400':
           $ref: '#/components/responses/ErrorMsg'
         '404':
           $ref: '#/components/responses/ErrorMsg'
         '500':
           $ref: '#/components/responses/ErrorMsg'
+  /admin/contents:
+    get:
+      operationId: getContents
+      responses:
+        '200':
+          $ref: '#/components/responses/GetContents'
+        '500':
+          $ref: '#/components/responses/ErrorMsg'
+  /admin/content/{contentId}:
     get:
       operationId: getContent
       parameters:
@@ -127,6 +138,12 @@ components:
           type: string
     userId:
       name: userId
+      in: path
+      required: true
+      schema:
+        type: string
+    articleId:
+      name: articleId
       in: path
       required: true
       schema:
@@ -156,18 +173,18 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/PostLogin'
-    PostContent:
+    PostArticle:
       required: true
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/PostContent'
-    PatchContent:
+            $ref: '#/components/schemas/PostArticle'
+    PatchArticle:
       required: true
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/PatchContent'
+            $ref: '#/components/schemas/PatchArticle'
   responses:
     ErrorMsg:
       description: Error message
@@ -186,11 +203,18 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/AuthToken'
+    GetArticles:
+      description: List of articles
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Articles'
     GetContents:
       description: List of contents
       content:
         application/json:
-          schema: {$ref: '#/components/schemas/Contents'}
+          schema:
+            $ref: '#/components/schemas/Contents'
     GetContent:
       description: Content
       content:
@@ -207,7 +231,9 @@ components:
       type: object
       properties:
         id:
-          type: string
+          type: number
+          format: int64
+          x-go-type: int
         nick:
           type: string
         email:
@@ -261,41 +287,68 @@ components:
           type: string
           format: date-time
       required: [token, expiresAt]
+    Article:
+      type: object
+      properties:
+        id:
+          type: number
+          format: int64
+          x-go-type: int
+        title:
+          type: string
+        body:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+      required: [id, title, body, tags]
+    Articles:
+      type: array
+      items:
+        $ref: '#/components/schemas/Article'
+      required: [nick, email, userType]
+    PostArticle:
+      type: object
+      properties:
+        title:
+          type: string
+        body:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+      required: [title, body, tags]
+    PatchArticle:
+      type: object
+      properties:
+        title:
+          type: string
+        body:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+      required: [title, body, tags]
     Content:
       type: object
       properties:
-        id: {type: string}
-        title: {type: string}
-        body: {type: string}
-        tags: {type: array, items: {type: string}}
+        id:
+          type: string
+        title:
+          type: string
+        body:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
       required: [id, title, body, tags]
     Contents:
       type: array
-      items: {$ref: '#/components/schemas/Content'}
-      required: [nick, email, userType]
-    PostContent:
-      type: object
-      properties:
-        title:
-          type: string
-        body:
-          type: string
-        tags:
-          type: array
-          items:
-            type: string
-      required: [title, body, tags]
-    PatchContent:
-      type: object
-      properties:
-        title:
-          type: string
-        body:
-          type: string
-        tags:
-          type: array
-          items:
-            type: string
-      required: [title, body, tags]
+      items:
+        $ref: '#/components/schemas/Content'
   securitySchemes: {}
 security: []

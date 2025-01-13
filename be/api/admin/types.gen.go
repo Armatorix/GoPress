@@ -31,7 +31,7 @@ type PostUsers struct {
 // User defines model for User.
 type User struct {
 	Email    string  `json:"email"`
-	Id       string  `json:"id"`
+	Id       int     `json:"id"`
 	Nick     *string `json:"nick,omitempty"`
 	UserType string  `json:"userType"`
 }

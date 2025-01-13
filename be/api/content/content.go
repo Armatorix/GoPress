@@ -13,35 +13,42 @@ type handler struct {
 	db *db.DB
 }
 
-// DeleteAdminContents implements StrictServerInterface.
-func (h *handler) DeleteAdminContents(
+// DeleteAdminArticles implements StrictServerInterface.
+func (h *handler) DeleteAdminArticles(
 	ctx context.Context,
-	request DeleteAdminContentsRequestObject,
-) (DeleteAdminContentsResponseObject, error) {
+	request DeleteAdminArticlesRequestObject,
+) (DeleteAdminArticlesResponseObject, error) {
 	panic("unimplemented")
 }
 
-// GetContents implements StrictServerInterface.
-func (h *handler) GetContents(
+// GetArticles implements StrictServerInterface.
+func (h *handler) GetArticles(
 	ctx context.Context,
-	request GetContentsRequestObject,
-) (GetContentsResponseObject, error) {
+	request GetArticlesRequestObject,
+) (GetArticlesResponseObject, error) {
+	articles, err := h.db.GetArticles(ctx)
+	if err != nil {
+		return GetArticles500JSONResponse{}, err
+	}
+
+	return GetArticles200JSONResponse{
+		GetArticlesJSONResponse: articlesFromEnt(articles),
+	}, nil
+}
+
+// PatchAdminArticleArticleId implements StrictServerInterface.
+func (h *handler) PatchAdminArticleArticleId(
+	ctx context.Context,
+	request PatchAdminArticleArticleIdRequestObject,
+) (PatchAdminArticleArticleIdResponseObject, error) {
 	panic("unimplemented")
 }
 
-// PatchAdminContentContentId implements StrictServerInterface.
-func (h *handler) PatchAdminContentContentId(
+// PostAdminArticles implements StrictServerInterface.
+func (h *handler) PostAdminArticles(
 	ctx context.Context,
-	request PatchAdminContentContentIdRequestObject,
-) (PatchAdminContentContentIdResponseObject, error) {
-	panic("unimplemented")
-}
-
-// PostAdminContents implements StrictServerInterface.
-func (h *handler) PostAdminContents(
-	ctx context.Context,
-	request PostAdminContentsRequestObject,
-) (PostAdminContentsResponseObject, error) {
+	request PostAdminArticlesRequestObject,
+) (PostAdminArticlesResponseObject, error) {
 	panic("unimplemented")
 }
 

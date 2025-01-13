@@ -10,32 +10,32 @@ servers:
         enum:
           - http://localhost:8080
 paths:
-  /admin/contents:
+  /admin/articles:
     get:
-      operationId: getContents
+      operationId: getArticles
       responses:
-        '200': {$ref: '#/components/responses/GetContents'}
+        '200': {$ref: '#/components/responses/GetArticles'}
         '500': {$ref: '#/components/responses/ErrorMsg'}
     post:
-      summary: Create new content
-      requestBody: {$ref: '#/components/requestBodies/PostContent'}
+      summary: Create new article
+      requestBody: {$ref: '#/components/requestBodies/PostArticle'}
       responses:
-        '200': {description: Content created}
+        '200': {description: Article created}
         '400': {$ref: '#/components/responses/ErrorMsg'}
         '500': {$ref: '#/components/responses/ErrorMsg'}
     delete:
-      summary: Delete all content
+      summary: Delete all article
       responses:
-        '200': {description: All content deleted}
+        '200': {description: All article deleted}
         '500': {$ref: '#/components/responses/ErrorMsg'}
-  /admin/content/{contentId}:
+  /admin/article/{articleId}:
     patch:
-      summary: Update content
+      summary: Update article
       parameters:
-        - $ref: '#/components/parameters/contentId'
-      requestBody: {$ref: '#/components/requestBodies/PatchContent'}
+        - $ref: '#/components/parameters/articleId'
+      requestBody: {$ref: '#/components/requestBodies/PatchArticle'}
       responses:
-        '200': {description: Content updated}
+        '200': {description: Article updated}
         '400':
           $ref: '#/components/responses/ErrorMsg'
         '404':
@@ -57,60 +57,60 @@ components:
       required: true
       schema:
         type: string
-    contentId:
-      name: contentId
+    articleId:
+      name: articleId
       in: path
       required: true
       schema:
         type: string
   requestBodies:
-    PostContent:
+    PostArticle:
       required: true
       content:
         application/json:
-          schema: {$ref: '#/components/schemas/PostContent'}
-    PatchContent:
+          schema: {$ref: '#/components/schemas/PostArticle'}
+    PatchArticle:
       required: true
       content:
         application/json:
-          schema: {$ref: '#/components/schemas/PatchContent'}
+          schema: {$ref: '#/components/schemas/PatchArticle'}
   responses:
     ErrorMsg:
       description: Error message
       content:
         application/json:
           schema: {$ref: '#/components/schemas/ErrorMsg'}
-    GetContents:
-      description: List of contents
+    GetArticles:
+      description: List of articles
       content:
         application/json:
-          schema: {$ref: '#/components/schemas/Contents'}
+          schema: {$ref: '#/components/schemas/Articles'}
   schemas:
     ErrorMsg:
       type: object
       properties:
         error: {type: string}
       required: [error]
-    Content:
+    Article:
       type: object
       properties:
-        id: {type: string}
+        id: {type: number, format: int64, x-go-type: int}
         title: {type: string}
         body: {type: string}
         tags: {type: array, items: {type: string}}
       required: [id, title, body, tags]
-    Contents:
+    Articles:
       type: array
-      items: {$ref: '#/components/schemas/Content'}
+      items: {$ref: '#/components/schemas/Article'}
       required: [nick, email, userType]
-    PostContent:
+    PostArticle:
       type: object
       properties:
         title: {type: string}
         body: {type: string}
         tags: {type: array, items: {type: string}}
       required: [title, body, tags]
-    PatchContent:
+    PatchArticle:
       type: object
       properties:
         title: {type: string}
