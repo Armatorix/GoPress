@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"log/slog"
 	"net/http"
@@ -56,6 +57,11 @@ func main() {
 		xslog.FatalErr(err)
 	}
 
+	// TODO: user data from config
+	err = db.InitAdminUser(context.Background(), "admin")
+	if err != nil {
+		xslog.FatalErr(err)
+	}
 	e := echo.New()
 	e.Validator = &V{validator.New()}
 	apiNoAuth := e.Group("/api/v1")

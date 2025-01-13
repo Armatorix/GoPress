@@ -42,8 +42,8 @@ function Login() {
         className="text-center flex flex-col gap-2"
       >
         <Input
-          type="email"
-          label="Email"
+          type="text"
+          label="Email/Nick"
           value={authData.email}
           onChange={(e) => setAuthData({ ...authData, email: e.target.value })}
         />

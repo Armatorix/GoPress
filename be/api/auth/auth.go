@@ -23,7 +23,7 @@ func (h *handler) PostAdminLogin(
 	ctx context.Context,
 	request PostAdminLoginRequestObject,
 ) (PostAdminLoginResponseObject, error) {
-	user, err := h.db.UserByEmail(ctx, request.Body.Email)
+	user, err := h.db.UserByEmailOrNick(ctx, request.Body.Email)
 	if err != nil {
 		return PostAdminLogin500JSONResponse{}, err
 	}

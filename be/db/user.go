@@ -5,6 +5,7 @@ import (
 
 	"github.com/Armatorix/GoPress/be/db/ent/ent"
 	"github.com/Armatorix/GoPress/be/db/ent/ent/user"
+	"github.com/Armatorix/GoPress/be/db/ext"
 )
 
 func (db *DB) UserExists(ctx context.Context, id int) (bool, error) {
@@ -13,8 +14,28 @@ func (db *DB) UserExists(ctx context.Context, id int) (bool, error) {
 		Exist(ctx)
 }
 
-func (db *DB) UserByEmail(ctx context.Context, email string) (*ent.User, error) {
+func (db *DB) UserByEmailOrNick(ctx context.Context, email string) (*ent.User, error) {
 	return db.UserClient().Query().
-		Where(user.Email(email)).
+		Where(
+			user.Email(email),
+			user.Nick(email),
+		).
 		Only(ctx)
+}
+
+func (db *DB) InitAdminUser(ctx context.Context, passwd string) error {
+	totalUsers, err := db.UserClient().Query().Count(ctx)
+	if err != nil {
+		return err
+	}
+
+	if totalUsers > 0 {
+		return nil
+	}
+
+	return db.UserClient().Create().
+		SetEmail("").
+		SetNick("admin").
+		SetPassword(ext.Password(passwd)).
+		Exec(ctx)
 }
