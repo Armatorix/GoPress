@@ -1,4 +1,4 @@
-import { DefaultService, type PostLogin } from '@/api/gen'
+import { DefaultService, type PostArticle, type PostLogin } from '@/api/gen'
 import { useMutation, useQuery } from '@tanstack/react-query'
 
 export const queryKey = {
@@ -14,5 +14,11 @@ export function useArticles() {
   return useQuery({
     queryKey: queryKey.articles(),
     queryFn: () => DefaultService.getArticles(),
+  })
+}
+
+export function useNewArticle() {
+  return useMutation({
+    mutationFn: (body: PostArticle) => DefaultService.createArticle(body),
   })
 }

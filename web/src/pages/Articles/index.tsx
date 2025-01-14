@@ -1,10 +1,15 @@
 import { useArticles } from '@/api/articles'
 import type { Article } from '@/api/gen'
 import { Bootstrap } from '@/page_wrappers'
-import { Typography } from '@material-tailwind/react'
+import { Button, Typography } from '@material-tailwind/react'
+import { useNavigate } from 'react-router-dom'
 
 function Articles() {
   const articles = useArticles()
+  const navigate = useNavigate()
+  const onNewArticle = () => {
+    navigate('/articles/new')
+  }
 
   if (articles.isLoading || articles.data === undefined) {
     return (
@@ -16,11 +21,14 @@ function Articles() {
   console.log(articles.data)
   return (
     <Bootstrap>
-      {articles.data.data.length === 0 ? (
-        <Typography>No articles found</Typography>
-      ) : (
-        <ArticleList articles={articles.data.data} />
-      )}
+      <div className="flex flex-col gap-4">
+        <Button onClick={onNewArticle}>New Article</Button>
+        {articles.data.data.length === 0 ? (
+          <Typography>No articles found</Typography>
+        ) : (
+          <ArticleList articles={articles.data.data} />
+        )}
+      </div>
     </Bootstrap>
   )
 }
