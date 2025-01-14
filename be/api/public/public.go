@@ -18,7 +18,7 @@ func (h *handler) GetContent(
 	ctx context.Context,
 	request GetContentRequestObject,
 ) (GetContentResponseObject, error) {
-	art, err := h.db.GetArticleWithAuthor(ctx, request.ArticleId)
+	art, err := h.db.GetPublishedArticleWithAuthor(ctx, request.ArticleId)
 	if err != nil {
 		return GetContent500JSONResponse{}, err
 	}
@@ -33,7 +33,7 @@ func (h *handler) GetContents(
 	ctx context.Context,
 	request GetContentsRequestObject,
 ) (GetContentsResponseObject, error) {
-	arts, err := h.db.GetArticlesWithAuthors(ctx)
+	arts, err := h.db.GetPublishedArticlesWithAuthors(ctx)
 	if err != nil {
 		return GetContents500JSONResponse{}, err
 	}
