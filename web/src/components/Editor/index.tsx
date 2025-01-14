@@ -12,6 +12,7 @@ const Editor: React.FC<EditorProps> = ({ label, value, setValue }) => {
         value={value}
         id="editor"
         onChange={setValue}
+        theme="snow"
         modules={{
           toolbar: [
             ['bold', 'italic', 'underline', 'strike'], // toggled buttons
