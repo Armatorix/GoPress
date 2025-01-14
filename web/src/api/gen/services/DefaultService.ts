@@ -191,6 +191,25 @@ export class DefaultService {
         });
     }
     /**
+     * @param articleId
+     * @returns any Article published
+     * @throws ApiError
+     */
+    public static publishArticle(
+        articleId: number,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/admin/article/{articleId}/publish',
+            path: {
+                'articleId': articleId,
+            },
+            errors: {
+                500: `Error message`,
+            },
+        });
+    }
+    /**
      * @returns Contents List of contents
      * @throws ApiError
      */

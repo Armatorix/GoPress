@@ -50,3 +50,10 @@ func (db *DB) DeleteArticles(ctx context.Context, ids ...int) error {
 		Exec(ctx)
 	return err
 }
+
+func (db *DB) PublishArticle(ctx context.Context, id int) error {
+	return db.ArticleClient().
+		UpdateOneID(id).
+		SetReleased(true).
+		Exec(ctx)
+}

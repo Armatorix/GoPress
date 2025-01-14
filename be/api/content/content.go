@@ -14,6 +14,19 @@ type handler struct {
 	db *db.DB
 }
 
+// PublishArticle implements StrictServerInterface.
+func (h *handler) PublishArticle(
+	ctx context.Context,
+	request PublishArticleRequestObject,
+) (PublishArticleResponseObject, error) {
+	err := h.db.PublishArticle(ctx, request.ArticleId)
+	if err != nil {
+		return PublishArticle500JSONResponse{}, err
+	}
+
+	return PublishArticle200Response{}, nil
+}
+
 // CreateArticle implements StrictServerInterface.
 func (h *handler) CreateArticle(
 	ctx context.Context,

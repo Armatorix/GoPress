@@ -43,6 +43,14 @@ paths:
         '404':
           $ref: '#/components/responses/ErrorMsg'
         '500': {$ref: '#/components/responses/ErrorMsg'}
+  /admin/article/{articleId}/publish:
+    post:
+      operationId: publishArticle
+      parameters:
+        - $ref: '#/components/parameters/articleId'
+      responses:
+        '200': {description: Article published}
+        '500': {$ref: '#/components/responses/ErrorMsg'}
 components:
   parameters:
     userIds:

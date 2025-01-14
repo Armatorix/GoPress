@@ -20,6 +20,9 @@ type ServerInterface interface {
 	// (PATCH /admin/article/{articleId})
 	UpdateArticle(ctx echo.Context, articleId ArticleId) error
 
+	// (POST /admin/article/{articleId}/publish)
+	PublishArticle(ctx echo.Context, articleId ArticleId) error
+
 	// (DELETE /admin/articles)
 	DeleteArticles(ctx echo.Context, params DeleteArticlesParams) error
 
@@ -48,6 +51,22 @@ func (w *ServerInterfaceWrapper) UpdateArticle(ctx echo.Context) error {
 
 	// Invoke the callback with all the unmarshaled arguments
 	err = w.Handler.UpdateArticle(ctx, articleId)
+	return err
+}
+
+// PublishArticle converts echo context to params.
+func (w *ServerInterfaceWrapper) PublishArticle(ctx echo.Context) error {
+	var err error
+	// ------------- Path parameter "articleId" -------------
+	var articleId ArticleId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "articleId", ctx.Param("articleId"), &articleId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter articleId: %s", err))
+	}
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.PublishArticle(ctx, articleId)
 	return err
 }
 
@@ -116,6 +135,7 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 	}
 
 	router.PATCH(baseURL+"/admin/article/:articleId", wrapper.UpdateArticle)
+	router.POST(baseURL+"/admin/article/:articleId/publish", wrapper.PublishArticle)
 	router.DELETE(baseURL+"/admin/articles", wrapper.DeleteArticles)
 	router.GET(baseURL+"/admin/articles", wrapper.GetArticles)
 	router.POST(baseURL+"/admin/articles", wrapper.CreateArticle)
@@ -166,6 +186,31 @@ func (response UpdateArticle404JSONResponse) VisitUpdateArticleResponse(w http.R
 type UpdateArticle500JSONResponse ErrorMsg
 
 func (response UpdateArticle500JSONResponse) VisitUpdateArticleResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type PublishArticleRequestObject struct {
+	ArticleId ArticleId `json:"articleId"`
+}
+
+type PublishArticleResponseObject interface {
+	VisitPublishArticleResponse(w http.ResponseWriter) error
+}
+
+type PublishArticle200Response struct {
+}
+
+func (response PublishArticle200Response) VisitPublishArticleResponse(w http.ResponseWriter) error {
+	w.WriteHeader(200)
+	return nil
+}
+
+type PublishArticle500JSONResponse struct{ ErrorMsgJSONResponse }
+
+func (response PublishArticle500JSONResponse) VisitPublishArticleResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(500)
 
@@ -262,6 +307,9 @@ type StrictServerInterface interface {
 	// (PATCH /admin/article/{articleId})
 	UpdateArticle(ctx context.Context, request UpdateArticleRequestObject) (UpdateArticleResponseObject, error)
 
+	// (POST /admin/article/{articleId}/publish)
+	PublishArticle(ctx context.Context, request PublishArticleRequestObject) (PublishArticleResponseObject, error)
+
 	// (DELETE /admin/articles)
 	DeleteArticles(ctx context.Context, request DeleteArticlesRequestObject) (DeleteArticlesResponseObject, error)
 
@@ -309,6 +357,31 @@ func (sh *strictHandler) UpdateArticle(ctx echo.Context, articleId ArticleId) er
 		return err
 	} else if validResponse, ok := response.(UpdateArticleResponseObject); ok {
 		return validResponse.VisitUpdateArticleResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
+// PublishArticle operation middleware
+func (sh *strictHandler) PublishArticle(ctx echo.Context, articleId ArticleId) error {
+	var request PublishArticleRequestObject
+
+	request.ArticleId = articleId
+
+	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.PublishArticle(ctx.Request().Context(), request.(PublishArticleRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "PublishArticle")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(PublishArticleResponseObject); ok {
+		return validResponse.VisitPublishArticleResponse(ctx.Response())
 	} else if response != nil {
 		return fmt.Errorf("unexpected response type: %T", response)
 	}
