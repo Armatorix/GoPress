@@ -24,3 +24,4 @@ jobs:
             uses: docker/build-push-action@v6
             with:
               push: true
+              tags: armatorix/gopress:latest, armatorix/gopress:${{ github.tag }}
