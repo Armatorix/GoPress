@@ -46,3 +46,14 @@ export function usePublishArticle() {
     mutationFn: (id: number) => DefaultService.publishArticle(id),
   })
 }
+
+export function useDeleteArticle(id: number) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKey.articles() })
+    },
+    mutationFn: () => DefaultService.deleteArticles([id]),
+  })
+}
+

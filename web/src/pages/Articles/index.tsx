@@ -1,8 +1,23 @@
-import { useArticles, usePublishArticle } from '@/api/articles'
+import {
+  useArticles,
+  useDeleteArticle,
+  usePublishArticle,
+} from '@/api/articles'
 import type { Article } from '@/api/gen'
 import { useToast } from '@/components/Toasts/ToastsProvider'
 import { Bootstrap } from '@/page_wrappers'
-import { Button, Switch, Typography } from '@material-tailwind/react'
+import { TrashIcon } from '@heroicons/react/24/solid'
+import {
+  Button,
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  DialogHeader,
+  IconButton,
+  Switch,
+  Typography,
+} from '@material-tailwind/react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 function Articles() {
@@ -82,10 +97,61 @@ function ArticleTile({ article }: ArticleTileProps) {
           color="green"
         />
       </div>
-      <div className="absolute bottom-4 right-4">
+      <div className="absolute bottom-4 right-4 gap-2 flex">
+        <DeleteWithConfirmationButton article={article} />
         <Button onClick={onEditClick}>Edit</Button>
       </div>
     </div>
+  )
+}
+
+function DeleteWithConfirmationButton({ article }: { article: Article }) {
+  const deleteArticle = useDeleteArticle(article.id)
+  const toast = useToast()
+  const [open, setOpen] = useState(false)
+  const onDelete = () => {
+    deleteArticle.mutate(undefined, {
+      onSuccess: () => {
+        toast.success(`Article deleted`)
+        setOpen(false)
+      },
+      onError: (error) => {
+        toast.error(error.message)
+      },
+    })
+  }
+  return (
+    <>
+      <IconButton onClick={() => setOpen(true)} color="red">
+        <TrashIcon fill="white" className="size-4" />
+      </IconButton>
+
+      <Dialog open={open} handler={() => setOpen(!open)}>
+        <DialogHeader>Delete article</DialogHeader>
+        <DialogBody className="flex flex-col pl-8 gap-4">
+          Are you sure you want to delete this article?
+          <p>{article.title}</p>
+        </DialogBody>
+        <DialogFooter>
+          <Button
+            variant="text"
+            color="red"
+            onClick={() => setOpen(false)}
+            className="mr-1"
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="gradient"
+            color="green"
+            onClick={onDelete}
+            type="submit"
+          >
+            Change
+          </Button>
+        </DialogFooter>
+      </Dialog>
+    </>
   )
 }
 
