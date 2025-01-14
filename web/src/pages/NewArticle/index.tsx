@@ -14,6 +14,7 @@ function NewArticle() {
     title: '',
     body: '',
     description: '',
+    released: false,
   } as PostArticle)
   const toast = useToast()
   const onSubmit = (e: React.FormEvent) => {
