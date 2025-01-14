@@ -18,12 +18,21 @@ var (
 		{Name: "body", Type: field.TypeString, Default: ""},
 		{Name: "released", Type: field.TypeBool, Default: false},
 		{Name: "author_id", Type: field.TypeInt},
+		{Name: "article_user", Type: field.TypeInt, Nullable: true},
 	}
 	// ArticlesTable holds the schema information for the "articles" table.
 	ArticlesTable = &schema.Table{
 		Name:       "articles",
 		Columns:    ArticlesColumns,
 		PrimaryKey: []*schema.Column{ArticlesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "articles_users_user",
+				Columns:    []*schema.Column{ArticlesColumns[8]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
@@ -41,40 +50,13 @@ var (
 		Columns:    UsersColumns,
 		PrimaryKey: []*schema.Column{UsersColumns[0]},
 	}
-	// ArticleUserColumns holds the columns for the "article_user" table.
-	ArticleUserColumns = []*schema.Column{
-		{Name: "article_id", Type: field.TypeInt},
-		{Name: "user_id", Type: field.TypeInt},
-	}
-	// ArticleUserTable holds the schema information for the "article_user" table.
-	ArticleUserTable = &schema.Table{
-		Name:       "article_user",
-		Columns:    ArticleUserColumns,
-		PrimaryKey: []*schema.Column{ArticleUserColumns[0], ArticleUserColumns[1]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "article_user_article_id",
-				Columns:    []*schema.Column{ArticleUserColumns[0]},
-				RefColumns: []*schema.Column{ArticlesColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "article_user_user_id",
-				Columns:    []*schema.Column{ArticleUserColumns[1]},
-				RefColumns: []*schema.Column{UsersColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		ArticlesTable,
 		UsersTable,
-		ArticleUserTable,
 	}
 )
 
 func init() {
-	ArticleUserTable.ForeignKeys[0].RefTable = ArticlesTable
-	ArticleUserTable.ForeignKeys[1].RefTable = UsersTable
+	ArticlesTable.ForeignKeys[0].RefTable = UsersTable
 }

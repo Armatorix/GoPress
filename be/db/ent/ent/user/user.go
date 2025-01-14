@@ -30,11 +30,13 @@ const (
 	EdgeArticles = "articles"
 	// Table holds the table name of the user in the database.
 	Table = "users"
-	// ArticlesTable is the table that holds the articles relation/edge. The primary key declared below.
-	ArticlesTable = "article_user"
+	// ArticlesTable is the table that holds the articles relation/edge.
+	ArticlesTable = "articles"
 	// ArticlesInverseTable is the table name for the Article entity.
 	// It exists in this package in order to avoid circular dependency with the "article" package.
 	ArticlesInverseTable = "articles"
+	// ArticlesColumn is the table column denoting the articles relation/edge.
+	ArticlesColumn = "article_user"
 )
 
 // Columns holds all SQL columns for user fields.
@@ -47,12 +49,6 @@ var Columns = []string{
 	FieldNick,
 	FieldAvatarURL,
 }
-
-var (
-	// ArticlesPrimaryKey and ArticlesColumn2 are the table columns denoting the
-	// primary key for the articles relation (M2M).
-	ArticlesPrimaryKey = []string{"article_id", "user_id"}
-)
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
@@ -132,6 +128,6 @@ func newArticlesStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(ArticlesInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, true, ArticlesTable, ArticlesPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.O2M, true, ArticlesTable, ArticlesColumn),
 	)
 }

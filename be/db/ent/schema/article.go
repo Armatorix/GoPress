@@ -33,6 +33,6 @@ func (Article) Mixin() []ent.Mixin {
 
 func (Article) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("user", User.Type),
+		edge.To("user", User.Type).Unique(),
 	}
 }

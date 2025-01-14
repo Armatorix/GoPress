@@ -62,3 +62,20 @@ func (db *DB) PublishArticle(ctx context.Context, id int) error {
 		SetReleased(!article.Released).
 		Exec(ctx)
 }
+
+// GetArticlesWithAuthors
+func (db *DB) GetArticlesWithAuthors(ctx context.Context) (ent.Articles, error) {
+	return db.ArticleClient().
+		Query().
+		WithUser().
+		Order(ent.Desc(article.FieldID)).
+		All(ctx)
+}
+
+func (db *DB) GetArticleWithAuthor(ctx context.Context, id int) (*ent.Article, error) {
+	return db.ArticleClient().
+		Query().
+		Where(article.ID(id)).
+		WithUser().
+		Only(ctx)
+}

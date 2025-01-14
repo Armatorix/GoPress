@@ -125,19 +125,23 @@ func (au *ArticleUpdate) AddAuthorID(i int) *ArticleUpdate {
 	return au
 }
 
-// AddUserIDs adds the "user" edge to the User entity by IDs.
-func (au *ArticleUpdate) AddUserIDs(ids ...int) *ArticleUpdate {
-	au.mutation.AddUserIDs(ids...)
+// SetUserID sets the "user" edge to the User entity by ID.
+func (au *ArticleUpdate) SetUserID(id int) *ArticleUpdate {
+	au.mutation.SetUserID(id)
 	return au
 }
 
-// AddUser adds the "user" edges to the User entity.
-func (au *ArticleUpdate) AddUser(u ...*User) *ArticleUpdate {
-	ids := make([]int, len(u))
-	for i := range u {
-		ids[i] = u[i].ID
+// SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
+func (au *ArticleUpdate) SetNillableUserID(id *int) *ArticleUpdate {
+	if id != nil {
+		au = au.SetUserID(*id)
 	}
-	return au.AddUserIDs(ids...)
+	return au
+}
+
+// SetUser sets the "user" edge to the User entity.
+func (au *ArticleUpdate) SetUser(u *User) *ArticleUpdate {
+	return au.SetUserID(u.ID)
 }
 
 // Mutation returns the ArticleMutation object of the builder.
@@ -145,25 +149,10 @@ func (au *ArticleUpdate) Mutation() *ArticleMutation {
 	return au.mutation
 }
 
-// ClearUser clears all "user" edges to the User entity.
+// ClearUser clears the "user" edge to the User entity.
 func (au *ArticleUpdate) ClearUser() *ArticleUpdate {
 	au.mutation.ClearUser()
 	return au
-}
-
-// RemoveUserIDs removes the "user" edge to User entities by IDs.
-func (au *ArticleUpdate) RemoveUserIDs(ids ...int) *ArticleUpdate {
-	au.mutation.RemoveUserIDs(ids...)
-	return au
-}
-
-// RemoveUser removes "user" edges to User entities.
-func (au *ArticleUpdate) RemoveUser(u ...*User) *ArticleUpdate {
-	ids := make([]int, len(u))
-	for i := range u {
-		ids[i] = u[i].ID
-	}
-	return au.RemoveUserIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -246,39 +235,23 @@ func (au *ArticleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if au.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   article.UserTable,
-			Columns: article.UserPrimaryKey,
+			Columns: []string{article.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := au.mutation.RemovedUserIDs(); len(nodes) > 0 && !au.mutation.UserCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   article.UserTable,
-			Columns: article.UserPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := au.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   article.UserTable,
-			Columns: article.UserPrimaryKey,
+			Columns: []string{article.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
@@ -406,19 +379,23 @@ func (auo *ArticleUpdateOne) AddAuthorID(i int) *ArticleUpdateOne {
 	return auo
 }
 
-// AddUserIDs adds the "user" edge to the User entity by IDs.
-func (auo *ArticleUpdateOne) AddUserIDs(ids ...int) *ArticleUpdateOne {
-	auo.mutation.AddUserIDs(ids...)
+// SetUserID sets the "user" edge to the User entity by ID.
+func (auo *ArticleUpdateOne) SetUserID(id int) *ArticleUpdateOne {
+	auo.mutation.SetUserID(id)
 	return auo
 }
 
-// AddUser adds the "user" edges to the User entity.
-func (auo *ArticleUpdateOne) AddUser(u ...*User) *ArticleUpdateOne {
-	ids := make([]int, len(u))
-	for i := range u {
-		ids[i] = u[i].ID
+// SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
+func (auo *ArticleUpdateOne) SetNillableUserID(id *int) *ArticleUpdateOne {
+	if id != nil {
+		auo = auo.SetUserID(*id)
 	}
-	return auo.AddUserIDs(ids...)
+	return auo
+}
+
+// SetUser sets the "user" edge to the User entity.
+func (auo *ArticleUpdateOne) SetUser(u *User) *ArticleUpdateOne {
+	return auo.SetUserID(u.ID)
 }
 
 // Mutation returns the ArticleMutation object of the builder.
@@ -426,25 +403,10 @@ func (auo *ArticleUpdateOne) Mutation() *ArticleMutation {
 	return auo.mutation
 }
 
-// ClearUser clears all "user" edges to the User entity.
+// ClearUser clears the "user" edge to the User entity.
 func (auo *ArticleUpdateOne) ClearUser() *ArticleUpdateOne {
 	auo.mutation.ClearUser()
 	return auo
-}
-
-// RemoveUserIDs removes the "user" edge to User entities by IDs.
-func (auo *ArticleUpdateOne) RemoveUserIDs(ids ...int) *ArticleUpdateOne {
-	auo.mutation.RemoveUserIDs(ids...)
-	return auo
-}
-
-// RemoveUser removes "user" edges to User entities.
-func (auo *ArticleUpdateOne) RemoveUser(u ...*User) *ArticleUpdateOne {
-	ids := make([]int, len(u))
-	for i := range u {
-		ids[i] = u[i].ID
-	}
-	return auo.RemoveUserIDs(ids...)
 }
 
 // Where appends a list predicates to the ArticleUpdate builder.
@@ -557,39 +519,23 @@ func (auo *ArticleUpdateOne) sqlSave(ctx context.Context) (_node *Article, err e
 	}
 	if auo.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   article.UserTable,
-			Columns: article.UserPrimaryKey,
+			Columns: []string{article.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := auo.mutation.RemovedUserIDs(); len(nodes) > 0 && !auo.mutation.UserCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   article.UserTable,
-			Columns: article.UserPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := auo.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   article.UserTable,
-			Columns: article.UserPrimaryKey,
+			Columns: []string{article.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),

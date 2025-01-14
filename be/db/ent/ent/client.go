@@ -325,7 +325,7 @@ func (c *ArticleClient) QueryUser(a *Article) *UserQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(article.Table, article.FieldID, id),
 			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, article.UserTable, article.UserPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2O, false, article.UserTable, article.UserColumn),
 		)
 		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
 		return fromV, nil
@@ -474,7 +474,7 @@ func (c *UserClient) QueryArticles(u *User) *ArticleQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(user.Table, user.FieldID, id),
 			sqlgraph.To(article.Table, article.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, user.ArticlesTable, user.ArticlesPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2M, true, user.ArticlesTable, user.ArticlesColumn),
 		)
 		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
 		return fromV, nil

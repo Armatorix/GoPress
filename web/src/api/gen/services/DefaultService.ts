@@ -2,10 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { Article } from '../models/Article';
 import type { Articles } from '../models/Articles';
 import type { AuthToken } from '../models/AuthToken';
-import type { Content } from '../models/Content';
-import type { Contents } from '../models/Contents';
 import type { PatchArticle } from '../models/PatchArticle';
 import type { PatchPassword } from '../models/PatchPassword';
 import type { PatchUser } from '../models/PatchUser';
@@ -230,10 +229,12 @@ export class DefaultService {
         });
     }
     /**
-     * @returns Contents List of contents
+     * @returns any List of contents
      * @throws ApiError
      */
-    public static getContents(): CancelablePromise<Contents> {
+    public static getContents(): CancelablePromise<{
+        data: Articles;
+    }> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/admin/contents',
@@ -243,18 +244,20 @@ export class DefaultService {
         });
     }
     /**
-     * @param contentId
-     * @returns Content Content
+     * @param articleId
+     * @returns any Content
      * @throws ApiError
      */
     public static getContent(
-        contentId: string,
-    ): CancelablePromise<Content> {
+        articleId: number,
+    ): CancelablePromise<{
+        data: Article;
+    }> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/admin/content/{contentId}',
+            url: '/admin/content/{articleId}',
             path: {
-                'contentId': contentId,
+                'articleId': articleId,
             },
             errors: {
                 404: `Error message`,

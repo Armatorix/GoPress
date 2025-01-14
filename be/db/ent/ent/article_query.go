@@ -4,7 +4,6 @@ package ent
 
 import (
 	"context"
-	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -20,13 +19,13 @@ import (
 // ArticleQuery is the builder for querying Article entities.
 type ArticleQuery struct {
 	config
-	ctx           *QueryContext
-	order         []article.OrderOption
-	inters        []Interceptor
-	predicates    []predicate.Article
-	withUser      *UserQuery
-	modifiers     []func(*sql.Selector)
-	withNamedUser map[string]*UserQuery
+	ctx        *QueryContext
+	order      []article.OrderOption
+	inters     []Interceptor
+	predicates []predicate.Article
+	withUser   *UserQuery
+	withFKs    bool
+	modifiers  []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -77,7 +76,7 @@ func (aq *ArticleQuery) QueryUser() *UserQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(article.Table, article.FieldID, selector),
 			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, article.UserTable, article.UserPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2O, false, article.UserTable, article.UserColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
 		return fromU, nil
@@ -373,11 +372,18 @@ func (aq *ArticleQuery) prepareQuery(ctx context.Context) error {
 func (aq *ArticleQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Article, error) {
 	var (
 		nodes       = []*Article{}
+		withFKs     = aq.withFKs
 		_spec       = aq.querySpec()
 		loadedTypes = [1]bool{
 			aq.withUser != nil,
 		}
 	)
+	if aq.withUser != nil {
+		withFKs = true
+	}
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, article.ForeignKeys...)
+	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*Article).scanValues(nil, columns)
 	}
@@ -400,16 +406,8 @@ func (aq *ArticleQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Arti
 		return nodes, nil
 	}
 	if query := aq.withUser; query != nil {
-		if err := aq.loadUser(ctx, query, nodes,
-			func(n *Article) { n.Edges.User = []*User{} },
-			func(n *Article, e *User) { n.Edges.User = append(n.Edges.User, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range aq.withNamedUser {
-		if err := aq.loadUser(ctx, query, nodes,
-			func(n *Article) { n.appendNamedUser(name) },
-			func(n *Article, e *User) { n.appendNamedUser(name, e) }); err != nil {
+		if err := aq.loadUser(ctx, query, nodes, nil,
+			func(n *Article, e *User) { n.Edges.User = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -417,62 +415,33 @@ func (aq *ArticleQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Arti
 }
 
 func (aq *ArticleQuery) loadUser(ctx context.Context, query *UserQuery, nodes []*Article, init func(*Article), assign func(*Article, *User)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[int]*Article)
-	nids := make(map[int]map[*Article]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*Article)
+	for i := range nodes {
+		if nodes[i].article_user == nil {
+			continue
 		}
+		fk := *nodes[i].article_user
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
 	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(article.UserTable)
-		s.Join(joinT).On(s.C(user.FieldID), joinT.C(article.UserPrimaryKey[1]))
-		s.Where(sql.InValues(joinT.C(article.UserPrimaryKey[0]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(article.UserPrimaryKey[0]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
+	if len(ids) == 0 {
+		return nil
 	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := int(values[0].(*sql.NullInt64).Int64)
-				inValue := int(values[1].(*sql.NullInt64).Int64)
-				if nids[inValue] == nil {
-					nids[inValue] = map[*Article]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*User](ctx, query, qr, query.inters)
+	query.Where(user.IDIn(ids...))
+	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
+		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected "user" node returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "article_user" returned %v`, n.ID)
 		}
-		for kn := range nodes {
-			assign(kn, n)
+		for i := range nodes {
+			assign(nodes[i], n)
 		}
 	}
 	return nil
@@ -569,20 +538,6 @@ func (aq *ArticleQuery) sqlQuery(ctx context.Context) *sql.Selector {
 func (aq *ArticleQuery) Modify(modifiers ...func(s *sql.Selector)) *ArticleSelect {
 	aq.modifiers = append(aq.modifiers, modifiers...)
 	return aq.Select()
-}
-
-// WithNamedUser tells the query-builder to eager-load the nodes that are connected to the "user"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (aq *ArticleQuery) WithNamedUser(name string, opts ...func(*UserQuery)) *ArticleQuery {
-	query := (&UserClient{config: aq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if aq.withNamedUser == nil {
-		aq.withNamedUser = make(map[string]*UserQuery)
-	}
-	aq.withNamedUser[name] = query
-	return aq
 }
 
 // ArticleGroupBy is the group-by builder for Article entities.

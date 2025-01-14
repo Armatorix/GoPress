@@ -446,7 +446,7 @@ func HasArticles() predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, ArticlesTable, ArticlesPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2M, true, ArticlesTable, ArticlesColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})

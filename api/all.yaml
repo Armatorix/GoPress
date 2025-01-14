@@ -138,11 +138,11 @@ paths:
           $ref: '#/components/responses/GetContents'
         '500':
           $ref: '#/components/responses/ErrorMsg'
-  /admin/content/{contentId}:
+  /admin/content/{articleId}:
     get:
       operationId: getContent
       parameters:
-        - $ref: '#/components/parameters/contentId'
+        - $ref: '#/components/parameters/articleId'
       responses:
         '200':
           $ref: '#/components/responses/GetContent'
@@ -184,12 +184,6 @@ components:
           type: integer
           format: int64
           x-go-type: int
-    contentId:
-      name: contentId
-      in: path
-      required: true
-      schema:
-        type: string
   requestBodies:
     PatchPassword:
       required: true
@@ -260,13 +254,21 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Contents'
+            type: object
+            properties:
+              data:
+                $ref: '#/components/schemas/Articles'
+            required: [data]
     GetContent:
       description: Content
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Content'
+            type: object
+            properties:
+              data:
+                $ref: '#/components/schemas/Article'
+            required: [data]
   schemas:
     ErrorMsg:
       type: object
@@ -342,27 +344,19 @@ components:
     Article:
       type: object
       properties:
-        id:
-          type: number
-          format: int64
-          x-go-type: int
-        title:
-          type: string
-        body:
-          type: string
-        description:
-          type: string
-        tags:
-          type: array
-          items:
-            type: string
+        id: {type: number, format: int64, x-go-type: int}
+        title: {type: string}
+        body: {type: string}
+        description: {type: string}
+        tags: {type: array, items: {type: string}}
         released:
           type: boolean
-      required: [id, title, body, tags, description, released]
+        author:
+          type: string
+      required: [id, title, body, tags, author, description]
     Articles:
       type: array
-      items:
-        $ref: '#/components/schemas/Article'
+      items: {$ref: '#/components/schemas/Article'}
     PostArticle:
       type: object
       properties:
@@ -395,23 +389,5 @@ components:
         released:
           type: boolean
       required: [title, body, tags, description, released]
-    Content:
-      type: object
-      properties:
-        id:
-          type: string
-        title:
-          type: string
-        body:
-          type: string
-        tags:
-          type: array
-          items:
-            type: string
-      required: [id, title, body, tags]
-    Contents:
-      type: array
-      items:
-        $ref: '#/components/schemas/Content'
   securitySchemes: {}
 security: []

@@ -17,8 +17,8 @@ import (
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
 
-	// (GET /admin/content/{contentId})
-	GetContent(ctx echo.Context, contentId ContentId) error
+	// (GET /admin/content/{articleId})
+	GetContent(ctx echo.Context, articleId ArticleId) error
 
 	// (GET /admin/contents)
 	GetContents(ctx echo.Context) error
@@ -32,16 +32,16 @@ type ServerInterfaceWrapper struct {
 // GetContent converts echo context to params.
 func (w *ServerInterfaceWrapper) GetContent(ctx echo.Context) error {
 	var err error
-	// ------------- Path parameter "contentId" -------------
-	var contentId ContentId
+	// ------------- Path parameter "articleId" -------------
+	var articleId ArticleId
 
-	err = runtime.BindStyledParameterWithOptions("simple", "contentId", ctx.Param("contentId"), &contentId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	err = runtime.BindStyledParameterWithOptions("simple", "articleId", ctx.Param("articleId"), &articleId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter contentId: %s", err))
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter articleId: %s", err))
 	}
 
 	// Invoke the callback with all the unmarshaled arguments
-	err = w.Handler.GetContent(ctx, contentId)
+	err = w.Handler.GetContent(ctx, articleId)
 	return err
 }
 
@@ -82,7 +82,7 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 		Handler: si,
 	}
 
-	router.GET(baseURL+"/admin/content/:contentId", wrapper.GetContent)
+	router.GET(baseURL+"/admin/content/:articleId", wrapper.GetContent)
 	router.GET(baseURL+"/admin/contents", wrapper.GetContents)
 
 }
@@ -91,12 +91,16 @@ type ErrorMsgJSONResponse struct {
 	Error string `json:"error"`
 }
 
-type GetContentJSONResponse Content
+type GetContentJSONResponse struct {
+	Data Article `json:"data"`
+}
 
-type GetContentsJSONResponse Contents
+type GetContentsJSONResponse struct {
+	Data Articles `json:"data"`
+}
 
 type GetContentRequestObject struct {
-	ContentId ContentId `json:"contentId"`
+	ArticleId ArticleId `json:"articleId"`
 }
 
 type GetContentResponseObject interface {
@@ -160,7 +164,7 @@ func (response GetContents500JSONResponse) VisitGetContentsResponse(w http.Respo
 // StrictServerInterface represents all server handlers.
 type StrictServerInterface interface {
 
-	// (GET /admin/content/{contentId})
+	// (GET /admin/content/{articleId})
 	GetContent(ctx context.Context, request GetContentRequestObject) (GetContentResponseObject, error)
 
 	// (GET /admin/contents)
@@ -180,10 +184,10 @@ type strictHandler struct {
 }
 
 // GetContent operation middleware
-func (sh *strictHandler) GetContent(ctx echo.Context, contentId ContentId) error {
+func (sh *strictHandler) GetContent(ctx echo.Context, articleId ArticleId) error {
 	var request GetContentRequestObject
 
-	request.ContentId = contentId
+	request.ArticleId = articleId
 
 	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
 		return sh.ssi.GetContent(ctx.Request().Context(), request.(GetContentRequestObject))

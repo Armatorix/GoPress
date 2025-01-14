@@ -16,23 +16,25 @@ paths:
       responses:
         '200': {$ref: '#/components/responses/GetContents'}
         '500': {$ref: '#/components/responses/ErrorMsg'}
-  /admin/content/{contentId}:
+  /admin/content/{articleId}:
     get:
       operationId: getContent
       parameters:
-        - $ref: '#/components/parameters/contentId'
+        - $ref: '#/components/parameters/articleId'
       responses:
         '200': {$ref: '#/components/responses/GetContent'}
         '404': {$ref: '#/components/responses/ErrorMsg'}
         '500': {$ref: '#/components/responses/ErrorMsg'}
 components:
   parameters:
-    contentId:
-      name: contentId
+    articleId:
+      name: articleId
       in: path
       required: true
       schema:
-        type: string
+        type: integer
+        format: int64
+        x-go-type: int
   responses:
     ErrorMsg:
       description: Error message
@@ -47,28 +49,38 @@ components:
       description: List of contents
       content:
         application/json:
-          schema: {$ref: '#/components/schemas/Contents'}
+          schema:
+            type: object
+            properties:
+              data: {$ref: '#/components/schemas/Articles'}
+            required: [data]
     GetContent:
       description: Content
       content:
         application/json:
-          schema: {$ref: '#/components/schemas/Content'}
+          schema:
+            type: object
+            properties:
+              data: {$ref: '#/components/schemas/Article'}
+            required: [data]
   schemas:
     ErrorMsg:
       type: object
       properties:
         error: {type: string}
       required: [error]
-    Content:
+    Article:
       type: object
       properties:
-        id: {type: string}
+        id: {type: number, format: int64, x-go-type: int}
         title: {type: string}
         body: {type: string}
+        description: {type: string}
         tags: {type: array, items: {type: string}}
-      required: [id, title, body, tags]
-    Contents:
+        author: {type: string}
+      required: [id, title, body, tags, author, description]
+    Articles:
       type: array
-      items: {$ref: '#/components/schemas/Content'}
+      items: {$ref: '#/components/schemas/Article'}
   securitySchemes: {}
 security: []

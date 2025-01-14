@@ -14,13 +14,33 @@ type handler struct {
 }
 
 // GetContent implements StrictServerInterface.
-func (h *handler) GetContent(ctx context.Context, request GetContentRequestObject) (GetContentResponseObject, error) {
-	panic("unimplemented")
+func (h *handler) GetContent(
+	ctx context.Context,
+	request GetContentRequestObject,
+) (GetContentResponseObject, error) {
+	art, err := h.db.GetArticleWithAuthor(ctx, request.ArticleId)
+	if err != nil {
+		return GetContent500JSONResponse{}, err
+	}
+
+	return GetContent200JSONResponse{
+		GetContentJSONResponse{articleFromEnt(art)},
+	}, nil
 }
 
 // GetContents implements StrictServerInterface.
-func (h *handler) GetContents(ctx context.Context, request GetContentsRequestObject) (GetContentsResponseObject, error) {
-	panic("unimplemented")
+func (h *handler) GetContents(
+	ctx context.Context,
+	request GetContentsRequestObject,
+) (GetContentsResponseObject, error) {
+	arts, err := h.db.GetArticlesWithAuthors(ctx)
+	if err != nil {
+		return GetContents500JSONResponse{}, err
+	}
+
+	return GetContents200JSONResponse{
+		GetContentsJSONResponse{articlesFromEnt(arts)},
+	}, nil
 }
 
 func NewHandler(db *db.DB) ServerInterface {
