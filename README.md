@@ -12,18 +12,16 @@ GoPress is a simple CSM (Content Management System) written in Go. It provides b
 
 TODO:
 admin pandel:
-- [ ] image upload handling to pg
 - [x] adding new content
 - [x] changing self password
-- [ ] page view statistics
-- [ ] preview mode
-- [ ] ...
 public api:
 - [ ] get content list (with tag filters)
 - [ ] get content by id
-- [ ] articel statistics api
 
 additional:
+- [ ] preview mode
+- [ ] page view statistics
+- [ ] files upload handling to pg
 - [ ] members handling - adding new members with password
 - [ ] in memory content caching
 - [ ] first publish date
