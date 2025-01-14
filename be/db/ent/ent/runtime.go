@@ -27,6 +27,8 @@ func init() {
 	articleDescUpdatedAt := articleMixinFields0[1].Descriptor()
 	// article.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	article.DefaultUpdatedAt = articleDescUpdatedAt.Default.(time.Time)
+	// article.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	article.UpdateDefaultUpdatedAt = articleDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// articleDescBody is the schema descriptor for body field.
 	articleDescBody := articleFields[3].Descriptor()
 	// article.DefaultBody holds the default value on creation for the body field.
@@ -48,6 +50,8 @@ func init() {
 	userDescUpdatedAt := userMixinFields0[1].Descriptor()
 	// user.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	user.DefaultUpdatedAt = userDescUpdatedAt.Default.(time.Time)
+	// user.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	user.UpdateDefaultUpdatedAt = userDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// userDescNick is the schema descriptor for nick field.
 	userDescNick := userFields[3].Descriptor()
 	// user.DefaultNick holds the default value on creation for the nick field.

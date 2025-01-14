@@ -19,6 +19,7 @@ func (TimeMixin) Fields() []ent.Field {
 			Default(time.Now()).
 			Immutable(),
 		field.Time("updated_at").
+			UpdateDefault(time.Now).
 			Default(time.Now()),
 	}
 }
