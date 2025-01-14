@@ -27,6 +27,16 @@ export function useNewArticle() {
   })
 }
 
+export function useUpdateArticle(id: number) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKey.articles() })
+    },
+    mutationFn: (body: PostArticle) => DefaultService.updateArticle(id, body),
+  })
+}
+
 export function usePublishArticle() {
   const queryClient = useQueryClient()
   return useMutation({
