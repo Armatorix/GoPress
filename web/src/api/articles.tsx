@@ -1,5 +1,5 @@
 import { DefaultService, type PostArticle, type PostLogin } from '@/api/gen'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 export const queryKey = {
   articles: () => ['articles'] as const,
@@ -18,13 +18,21 @@ export function useArticles() {
 }
 
 export function useNewArticle() {
+  const queryClient = useQueryClient()
   return useMutation({
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKey.articles() })
+    },
     mutationFn: (body: PostArticle) => DefaultService.createArticle(body),
   })
 }
 
 export function usePublishArticle() {
+  const queryClient = useQueryClient()
   return useMutation({
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKey.articles() })
+    },
     mutationFn: (id: number) => DefaultService.publishArticle(id),
   })
 }
