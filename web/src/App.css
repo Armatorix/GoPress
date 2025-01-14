@@ -4,3 +4,12 @@
   padding: 2rem;
   text-align: center;
 }
+.ql-editor {
+  font-family: 'Roboto', sans-serif;
+}
+.ql-font-roboto {
+  font-family: 'Roboto', sans-serif;
+}
+* {
+  font-family: 'Roboto', sans-serif; 
+}
