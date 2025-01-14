@@ -52,8 +52,12 @@ func (db *DB) DeleteArticles(ctx context.Context, ids ...int) error {
 }
 
 func (db *DB) PublishArticle(ctx context.Context, id int) error {
+	article, err := db.ArticleClient().Get(ctx, id)
+	if err != nil {
+		return err
+	}
 	return db.ArticleClient().
 		UpdateOneID(id).
-		SetReleased(true).
+		SetReleased(!article.Released).
 		Exec(ctx)
 }

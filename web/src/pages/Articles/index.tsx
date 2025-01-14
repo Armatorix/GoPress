@@ -1,5 +1,6 @@
-import { useArticles } from '@/api/articles'
+import { useArticles, usePublishArticle } from '@/api/articles'
 import type { Article } from '@/api/gen'
+import { useToast } from '@/components/Toasts/ToastsProvider'
 import { Bootstrap } from '@/page_wrappers'
 import { Button, Switch, Typography } from '@material-tailwind/react'
 import { useNavigate } from 'react-router-dom'
@@ -45,6 +46,22 @@ function ArticleList({ articles }: { articles: Article[] }) {
   )
 }
 function ArticleTile({ article }: ArticleTileProps) {
+  const publishArticle = usePublishArticle()
+  const toast = useToast()
+  const onPublishClick = () => {
+    publishArticle.mutate(article.id, {
+      onSuccess: () => {
+        toast.success(
+          `Article ${article.title} ${
+            article.released ? 'unpublished' : 'published'
+          }`,
+        )
+      },
+      onError: (error) => {
+        toast.error(error.message)
+      },
+    })
+  }
   return (
     <div className="bg-white shadow-md p-4 rounded-md h-40 relative">
       <Typography variant="h6" className="max-w-40 overflow-ellipsis">
@@ -56,9 +73,9 @@ function ArticleTile({ article }: ArticleTileProps) {
       <div className="absolute top-4 right-4">
         <Switch
           checked={article.released}
+          onChange={onPublishClick}
           label="Published"
           color="green"
-          disabled
         />
       </div>
     </div>
