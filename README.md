@@ -22,9 +22,11 @@ public api:
 - [ ] get content list (with tag filters)
 - [ ] get content by id
 - [ ] articel statistics api
+
 additional:
 - [ ] members handling - adding new members with password
 - [ ] in memory content caching
+- [ ] first publish date
 
 ## Options for docker image:
 - [ ] usage domain (for inner-links and CORS)
