@@ -14,7 +14,7 @@ TODO:
 admin pandel:
 - [ ] image upload handling to pg
 - [x] adding new content
-- [ ] changing self password
+- [x] changing self password
 - [ ] page view statistics
 - [ ] preview mode
 - [ ] ...
