@@ -20,6 +20,27 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 function Sidebar() {
+  return (
+    <>
+      <div className="hidden xl:block">
+        <AlwaysOpenSidebar />
+      </div>
+      <div className="xl:hidden">
+        <DrawerSidebar />
+      </div>
+    </>
+  )
+}
+
+function AlwaysOpenSidebar() {
+  return (
+    <Card className="h-screen absolute">
+      <SidebarContent />
+    </Card>
+  )
+}
+
+function DrawerSidebar() {
   const [open, setOpen] = useState(false)
   return (
     <>
