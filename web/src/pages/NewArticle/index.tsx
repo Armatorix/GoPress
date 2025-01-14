@@ -4,7 +4,7 @@ import Editor from '@/components/Editor'
 import { useToast } from '@/components/Toasts/ToastsProvider'
 import { useAuthInfo } from '@/lib/AuthProvider'
 import { Bootstrap } from '@/page_wrappers'
-import { Button } from '@material-tailwind/react'
+import { Button, Input } from '@material-tailwind/react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -19,8 +19,8 @@ function NewArticle() {
   const onSubmit = () => {
     newArticle.mutate(form, {
       onSuccess: () => {
-        navigate('/articles')
         toast.success('Article created')
+        navigate('/articles')
       },
       onError: (error) => {
         toast.error(error.message)
@@ -32,8 +32,22 @@ function NewArticle() {
       <div>
         <h1>New Article</h1>
         <form>
+          <Input
+            type="text"
+            label="Title"
+            value={form.title}
+            onChange={(e) => setForm({ ...form, title: e.target.value })}
+          />
           <div>
             <Editor
+              label="Description"
+              value={form.description}
+              setValue={(description) => setForm({ ...form, description })}
+            />
+          </div>
+          <div>
+            <Editor
+              label="Body"
               value={form.body}
               setValue={(body) => setForm({ ...form, body })}
             />

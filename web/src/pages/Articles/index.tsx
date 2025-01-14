@@ -18,7 +18,6 @@ function Articles() {
       </Bootstrap>
     )
   }
-  console.log(articles.data)
   return (
     <Bootstrap>
       <div className="flex flex-col gap-4">
