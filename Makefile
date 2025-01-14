@@ -18,3 +18,6 @@ fresh:
 	docker compose -p gopress up -d --build --force-recreate --renew-anon-volumes --remove-orphans postgres
 	docker compose -p gopress exec -it backend sh -c 'touch __tmp_reload_db.go && rm __tmp_reload_db.go'
 
+.PHONY: localprod
+localprod:
+	docker compose --profile localprod up --watch --build --force-recreate --renew-anon-volumes --remove-orphans
