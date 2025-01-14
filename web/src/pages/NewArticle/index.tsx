@@ -31,7 +31,7 @@ function NewArticle() {
     <Bootstrap>
       <div>
         <h1>New Article</h1>
-        <form>
+        <form className="flex flex-col gap-4">
           <Input
             type="text"
             label="Title"

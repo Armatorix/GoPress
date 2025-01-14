@@ -50,6 +50,7 @@ const Editor: React.FC<EditorProps> = ({ label, value, setValue }) => {
           'image',
           'video',
         ]}
+        className="rounded-lg" // Add this line to apply rounded edges
       />
 
       <label className="absolute left-3 -top-2 bg-white px-1 text-xs text-gray-700">
