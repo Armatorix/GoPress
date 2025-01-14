@@ -125,14 +125,6 @@ func (ac *ArticleCreate) SetUserID(id int) *ArticleCreate {
 	return ac
 }
 
-// SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
-func (ac *ArticleCreate) SetNillableUserID(id *int) *ArticleCreate {
-	if id != nil {
-		ac = ac.SetUserID(*id)
-	}
-	return ac
-}
-
 // SetUser sets the "user" edge to the User entity.
 func (ac *ArticleCreate) SetUser(u *User) *ArticleCreate {
 	return ac.SetUserID(u.ID)
@@ -208,6 +200,9 @@ func (ac *ArticleCreate) check() error {
 	if _, ok := ac.mutation.AuthorID(); !ok {
 		return &ValidationError{Name: "author_id", err: errors.New(`ent: missing required field "Article.author_id"`)}
 	}
+	if len(ac.mutation.UserIDs()) == 0 {
+		return &ValidationError{Name: "user", err: errors.New(`ent: missing required edge "Article.user"`)}
+	}
 	return nil
 }
 
@@ -265,10 +260,6 @@ func (ac *ArticleCreate) createSpec() (*Article, *sqlgraph.CreateSpec) {
 		_spec.SetField(article.FieldReleased, field.TypeBool, value)
 		_node.Released = value
 	}
-	if value, ok := ac.mutation.AuthorID(); ok {
-		_spec.SetField(article.FieldAuthorID, field.TypeInt, value)
-		_node.AuthorID = value
-	}
 	if nodes := ac.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
@@ -283,7 +274,7 @@ func (ac *ArticleCreate) createSpec() (*Article, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.article_user = &nodes[0]
+		_node.AuthorID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
@@ -419,12 +410,6 @@ func (u *ArticleUpsert) SetAuthorID(v int) *ArticleUpsert {
 // UpdateAuthorID sets the "author_id" field to the value that was provided on create.
 func (u *ArticleUpsert) UpdateAuthorID() *ArticleUpsert {
 	u.SetExcluded(article.FieldAuthorID)
-	return u
-}
-
-// AddAuthorID adds v to the "author_id" field.
-func (u *ArticleUpsert) AddAuthorID(v int) *ArticleUpsert {
-	u.Add(article.FieldAuthorID, v)
 	return u
 }
 
@@ -567,13 +552,6 @@ func (u *ArticleUpsertOne) UpdateReleased() *ArticleUpsertOne {
 func (u *ArticleUpsertOne) SetAuthorID(v int) *ArticleUpsertOne {
 	return u.Update(func(s *ArticleUpsert) {
 		s.SetAuthorID(v)
-	})
-}
-
-// AddAuthorID adds v to the "author_id" field.
-func (u *ArticleUpsertOne) AddAuthorID(v int) *ArticleUpsertOne {
-	return u.Update(func(s *ArticleUpsert) {
-		s.AddAuthorID(v)
 	})
 }
 
@@ -889,13 +867,6 @@ func (u *ArticleUpsertBulk) UpdateReleased() *ArticleUpsertBulk {
 func (u *ArticleUpsertBulk) SetAuthorID(v int) *ArticleUpsertBulk {
 	return u.Update(func(s *ArticleUpsert) {
 		s.SetAuthorID(v)
-	})
-}
-
-// AddAuthorID adds v to the "author_id" field.
-func (u *ArticleUpsertBulk) AddAuthorID(v int) *ArticleUpsertBulk {
-	return u.Update(func(s *ArticleUpsert) {
-		s.AddAuthorID(v)
 	})
 }
 

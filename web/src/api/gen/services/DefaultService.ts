@@ -211,28 +211,6 @@ export class DefaultService {
     }
     /**
      * @param articleId
-     * @returns any Article
-     * @throws ApiError
-     */
-    public static getArticle(
-        articleId: number,
-    ): CancelablePromise<{
-        data: Article;
-    }> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/admin/article/{articleId}',
-            path: {
-                'articleId': articleId,
-            },
-            errors: {
-                404: `Error message`,
-                500: `Error message`,
-            },
-        });
-    }
-    /**
-     * @param articleId
      * @returns any Article published
      * @throws ApiError
      */
@@ -246,6 +224,43 @@ export class DefaultService {
                 'articleId': articleId,
             },
             errors: {
+                500: `Error message`,
+            },
+        });
+    }
+    /**
+     * @returns any List of articles
+     * @throws ApiError
+     */
+    public static getArticles1(): CancelablePromise<{
+        data: Articles;
+    }> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/articles',
+            errors: {
+                500: `Error message`,
+            },
+        });
+    }
+    /**
+     * @param articleId
+     * @returns any Article
+     * @throws ApiError
+     */
+    public static getArticle(
+        articleId: number,
+    ): CancelablePromise<{
+        data: Article;
+    }> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/articles/{articleId}',
+            path: {
+                'articleId': articleId,
+            },
+            errors: {
+                404: `Error message`,
                 500: `Error message`,
             },
         });

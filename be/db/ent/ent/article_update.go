@@ -106,7 +106,6 @@ func (au *ArticleUpdate) SetNillableReleased(b *bool) *ArticleUpdate {
 
 // SetAuthorID sets the "author_id" field.
 func (au *ArticleUpdate) SetAuthorID(i int) *ArticleUpdate {
-	au.mutation.ResetAuthorID()
 	au.mutation.SetAuthorID(i)
 	return au
 }
@@ -119,23 +118,9 @@ func (au *ArticleUpdate) SetNillableAuthorID(i *int) *ArticleUpdate {
 	return au
 }
 
-// AddAuthorID adds i to the "author_id" field.
-func (au *ArticleUpdate) AddAuthorID(i int) *ArticleUpdate {
-	au.mutation.AddAuthorID(i)
-	return au
-}
-
 // SetUserID sets the "user" edge to the User entity by ID.
 func (au *ArticleUpdate) SetUserID(id int) *ArticleUpdate {
 	au.mutation.SetUserID(id)
-	return au
-}
-
-// SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
-func (au *ArticleUpdate) SetNillableUserID(id *int) *ArticleUpdate {
-	if id != nil {
-		au = au.SetUserID(*id)
-	}
 	return au
 }
 
@@ -191,6 +176,14 @@ func (au *ArticleUpdate) defaults() {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (au *ArticleUpdate) check() error {
+	if au.mutation.UserCleared() && len(au.mutation.UserIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "Article.user"`)
+	}
+	return nil
+}
+
 // Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
 func (au *ArticleUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *ArticleUpdate {
 	au.modifiers = append(au.modifiers, modifiers...)
@@ -198,6 +191,9 @@ func (au *ArticleUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *Articl
 }
 
 func (au *ArticleUpdate) sqlSave(ctx context.Context) (n int, err error) {
+	if err := au.check(); err != nil {
+		return n, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(article.Table, article.Columns, sqlgraph.NewFieldSpec(article.FieldID, field.TypeInt))
 	if ps := au.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
@@ -226,12 +222,6 @@ func (au *ArticleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := au.mutation.Released(); ok {
 		_spec.SetField(article.FieldReleased, field.TypeBool, value)
-	}
-	if value, ok := au.mutation.AuthorID(); ok {
-		_spec.SetField(article.FieldAuthorID, field.TypeInt, value)
-	}
-	if value, ok := au.mutation.AddedAuthorID(); ok {
-		_spec.AddField(article.FieldAuthorID, field.TypeInt, value)
 	}
 	if au.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -360,7 +350,6 @@ func (auo *ArticleUpdateOne) SetNillableReleased(b *bool) *ArticleUpdateOne {
 
 // SetAuthorID sets the "author_id" field.
 func (auo *ArticleUpdateOne) SetAuthorID(i int) *ArticleUpdateOne {
-	auo.mutation.ResetAuthorID()
 	auo.mutation.SetAuthorID(i)
 	return auo
 }
@@ -373,23 +362,9 @@ func (auo *ArticleUpdateOne) SetNillableAuthorID(i *int) *ArticleUpdateOne {
 	return auo
 }
 
-// AddAuthorID adds i to the "author_id" field.
-func (auo *ArticleUpdateOne) AddAuthorID(i int) *ArticleUpdateOne {
-	auo.mutation.AddAuthorID(i)
-	return auo
-}
-
 // SetUserID sets the "user" edge to the User entity by ID.
 func (auo *ArticleUpdateOne) SetUserID(id int) *ArticleUpdateOne {
 	auo.mutation.SetUserID(id)
-	return auo
-}
-
-// SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
-func (auo *ArticleUpdateOne) SetNillableUserID(id *int) *ArticleUpdateOne {
-	if id != nil {
-		auo = auo.SetUserID(*id)
-	}
 	return auo
 }
 
@@ -458,6 +433,14 @@ func (auo *ArticleUpdateOne) defaults() {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (auo *ArticleUpdateOne) check() error {
+	if auo.mutation.UserCleared() && len(auo.mutation.UserIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "Article.user"`)
+	}
+	return nil
+}
+
 // Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
 func (auo *ArticleUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *ArticleUpdateOne {
 	auo.modifiers = append(auo.modifiers, modifiers...)
@@ -465,6 +448,9 @@ func (auo *ArticleUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *Ar
 }
 
 func (auo *ArticleUpdateOne) sqlSave(ctx context.Context) (_node *Article, err error) {
+	if err := auo.check(); err != nil {
+		return _node, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(article.Table, article.Columns, sqlgraph.NewFieldSpec(article.FieldID, field.TypeInt))
 	id, ok := auo.mutation.ID()
 	if !ok {
@@ -510,12 +496,6 @@ func (auo *ArticleUpdateOne) sqlSave(ctx context.Context) (_node *Article, err e
 	}
 	if value, ok := auo.mutation.Released(); ok {
 		_spec.SetField(article.FieldReleased, field.TypeBool, value)
-	}
-	if value, ok := auo.mutation.AuthorID(); ok {
-		_spec.SetField(article.FieldAuthorID, field.TypeInt, value)
-	}
-	if value, ok := auo.mutation.AddedAuthorID(); ok {
-		_spec.AddField(article.FieldAuthorID, field.TypeInt, value)
 	}
 	if auo.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{

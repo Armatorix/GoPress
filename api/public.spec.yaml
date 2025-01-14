@@ -10,13 +10,13 @@ servers:
         enum:
           - http://localhost:8080
 paths:
-  /admin/articles:
+  /articles:
     get:
       operationId: getArticles
       responses:
         '200': {$ref: '#/components/responses/GetArticles'}
         '500': {$ref: '#/components/responses/ErrorMsg'}
-  /admin/article/{articleId}:
+  /articles/{articleId}:
     get:
       operationId: getArticle
       parameters:

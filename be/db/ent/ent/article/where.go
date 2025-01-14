@@ -415,26 +415,6 @@ func AuthorIDNotIn(vs ...int) predicate.Article {
 	return predicate.Article(sql.FieldNotIn(FieldAuthorID, vs...))
 }
 
-// AuthorIDGT applies the GT predicate on the "author_id" field.
-func AuthorIDGT(v int) predicate.Article {
-	return predicate.Article(sql.FieldGT(FieldAuthorID, v))
-}
-
-// AuthorIDGTE applies the GTE predicate on the "author_id" field.
-func AuthorIDGTE(v int) predicate.Article {
-	return predicate.Article(sql.FieldGTE(FieldAuthorID, v))
-}
-
-// AuthorIDLT applies the LT predicate on the "author_id" field.
-func AuthorIDLT(v int) predicate.Article {
-	return predicate.Article(sql.FieldLT(FieldAuthorID, v))
-}
-
-// AuthorIDLTE applies the LTE predicate on the "author_id" field.
-func AuthorIDLTE(v int) predicate.Article {
-	return predicate.Article(sql.FieldLTE(FieldAuthorID, v))
-}
-
 // HasUser applies the HasEdge predicate on the "user" edge.
 func HasUser() predicate.Article {
 	return predicate.Article(func(s *sql.Selector) {

@@ -426,7 +426,9 @@ func (uq *UserQuery) loadArticles(ctx context.Context, query *ArticleQuery, node
 			init(nodes[i])
 		}
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(article.FieldAuthorID)
+	}
 	query.Where(predicate.Article(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(user.ArticlesColumn), fks...))
 	}))
@@ -435,13 +437,10 @@ func (uq *UserQuery) loadArticles(ctx context.Context, query *ArticleQuery, node
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.article_user
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "article_user" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.AuthorID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "article_user" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "author_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}

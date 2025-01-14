@@ -18,7 +18,6 @@ var (
 		{Name: "body", Type: field.TypeString, Default: ""},
 		{Name: "released", Type: field.TypeBool, Default: false},
 		{Name: "author_id", Type: field.TypeInt},
-		{Name: "article_user", Type: field.TypeInt, Nullable: true},
 	}
 	// ArticlesTable holds the schema information for the "articles" table.
 	ArticlesTable = &schema.Table{
@@ -28,9 +27,9 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "articles_users_user",
-				Columns:    []*schema.Column{ArticlesColumns[8]},
+				Columns:    []*schema.Column{ArticlesColumns[7]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.NoAction,
 			},
 		},
 	}

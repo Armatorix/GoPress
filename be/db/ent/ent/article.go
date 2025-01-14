@@ -35,7 +35,6 @@ type Article struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ArticleQuery when eager-loading is set.
 	Edges        ArticleEdges `json:"edges"`
-	article_user *int
 	selectValues sql.SelectValues
 }
 
@@ -72,8 +71,6 @@ func (*Article) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullString)
 		case article.FieldCreatedAt, article.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
-		case article.ForeignKeys[0]: // article_user
-			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -136,13 +133,6 @@ func (a *Article) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field author_id", values[i])
 			} else if value.Valid {
 				a.AuthorID = int(value.Int64)
-			}
-		case article.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field article_user", value)
-			} else if value.Valid {
-				a.article_user = new(int)
-				*a.article_user = int(value.Int64)
 			}
 		default:
 			a.selectValues.Set(columns[i], values[i])

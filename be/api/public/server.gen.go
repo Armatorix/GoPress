@@ -17,16 +17,25 @@ import (
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
 
-	// (GET /admin/article/{articleId})
-	GetArticle(ctx echo.Context, articleId ArticleId) error
-
-	// (GET /admin/articles)
+	// (GET /articles)
 	GetArticles(ctx echo.Context) error
+
+	// (GET /articles/{articleId})
+	GetArticle(ctx echo.Context, articleId ArticleId) error
 }
 
 // ServerInterfaceWrapper converts echo contexts to parameters.
 type ServerInterfaceWrapper struct {
 	Handler ServerInterface
+}
+
+// GetArticles converts echo context to params.
+func (w *ServerInterfaceWrapper) GetArticles(ctx echo.Context) error {
+	var err error
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.GetArticles(ctx)
+	return err
 }
 
 // GetArticle converts echo context to params.
@@ -42,15 +51,6 @@ func (w *ServerInterfaceWrapper) GetArticle(ctx echo.Context) error {
 
 	// Invoke the callback with all the unmarshaled arguments
 	err = w.Handler.GetArticle(ctx, articleId)
-	return err
-}
-
-// GetArticles converts echo context to params.
-func (w *ServerInterfaceWrapper) GetArticles(ctx echo.Context) error {
-	var err error
-
-	// Invoke the callback with all the unmarshaled arguments
-	err = w.Handler.GetArticles(ctx)
 	return err
 }
 
@@ -82,8 +82,8 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 		Handler: si,
 	}
 
-	router.GET(baseURL+"/admin/article/:articleId", wrapper.GetArticle)
-	router.GET(baseURL+"/admin/articles", wrapper.GetArticles)
+	router.GET(baseURL+"/articles", wrapper.GetArticles)
+	router.GET(baseURL+"/articles/:articleId", wrapper.GetArticle)
 
 }
 
@@ -97,6 +97,31 @@ type GetArticleJSONResponse struct {
 
 type GetArticlesJSONResponse struct {
 	Data Articles `json:"data"`
+}
+
+type GetArticlesRequestObject struct {
+}
+
+type GetArticlesResponseObject interface {
+	VisitGetArticlesResponse(w http.ResponseWriter) error
+}
+
+type GetArticles200JSONResponse struct{ GetArticlesJSONResponse }
+
+func (response GetArticles200JSONResponse) VisitGetArticlesResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetArticles500JSONResponse struct{ ErrorMsgJSONResponse }
+
+func (response GetArticles500JSONResponse) VisitGetArticlesResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+
+	return json.NewEncoder(w).Encode(response)
 }
 
 type GetArticleRequestObject struct {
@@ -136,39 +161,14 @@ func (response GetArticle500JSONResponse) VisitGetArticleResponse(w http.Respons
 	return json.NewEncoder(w).Encode(response)
 }
 
-type GetArticlesRequestObject struct {
-}
-
-type GetArticlesResponseObject interface {
-	VisitGetArticlesResponse(w http.ResponseWriter) error
-}
-
-type GetArticles200JSONResponse struct{ GetArticlesJSONResponse }
-
-func (response GetArticles200JSONResponse) VisitGetArticlesResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type GetArticles500JSONResponse struct{ ErrorMsgJSONResponse }
-
-func (response GetArticles500JSONResponse) VisitGetArticlesResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(500)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
 // StrictServerInterface represents all server handlers.
 type StrictServerInterface interface {
 
-	// (GET /admin/article/{articleId})
-	GetArticle(ctx context.Context, request GetArticleRequestObject) (GetArticleResponseObject, error)
-
-	// (GET /admin/articles)
+	// (GET /articles)
 	GetArticles(ctx context.Context, request GetArticlesRequestObject) (GetArticlesResponseObject, error)
+
+	// (GET /articles/{articleId})
+	GetArticle(ctx context.Context, request GetArticleRequestObject) (GetArticleResponseObject, error)
 }
 
 type StrictHandlerFunc = strictecho.StrictEchoHandlerFunc
@@ -181,6 +181,29 @@ func NewStrictHandler(ssi StrictServerInterface, middlewares []StrictMiddlewareF
 type strictHandler struct {
 	ssi         StrictServerInterface
 	middlewares []StrictMiddlewareFunc
+}
+
+// GetArticles operation middleware
+func (sh *strictHandler) GetArticles(ctx echo.Context) error {
+	var request GetArticlesRequestObject
+
+	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.GetArticles(ctx.Request().Context(), request.(GetArticlesRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetArticles")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(GetArticlesResponseObject); ok {
+		return validResponse.VisitGetArticlesResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
 }
 
 // GetArticle operation middleware
@@ -202,29 +225,6 @@ func (sh *strictHandler) GetArticle(ctx echo.Context, articleId ArticleId) error
 		return err
 	} else if validResponse, ok := response.(GetArticleResponseObject); ok {
 		return validResponse.VisitGetArticleResponse(ctx.Response())
-	} else if response != nil {
-		return fmt.Errorf("unexpected response type: %T", response)
-	}
-	return nil
-}
-
-// GetArticles operation middleware
-func (sh *strictHandler) GetArticles(ctx echo.Context) error {
-	var request GetArticlesRequestObject
-
-	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.GetArticles(ctx.Request().Context(), request.(GetArticlesRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "GetArticles")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		return err
-	} else if validResponse, ok := response.(GetArticlesResponseObject); ok {
-		return validResponse.VisitGetArticlesResponse(ctx.Response())
 	} else if response != nil {
 		return fmt.Errorf("unexpected response type: %T", response)
 	}

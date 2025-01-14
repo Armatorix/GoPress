@@ -42,8 +42,6 @@ type ArticleMutation struct {
 	description   *string
 	body          *string
 	released      *bool
-	author_id     *int
-	addauthor_id  *int
 	clearedFields map[string]struct{}
 	user          *int
 	cleareduser   bool
@@ -400,13 +398,12 @@ func (m *ArticleMutation) ResetReleased() {
 
 // SetAuthorID sets the "author_id" field.
 func (m *ArticleMutation) SetAuthorID(i int) {
-	m.author_id = &i
-	m.addauthor_id = nil
+	m.user = &i
 }
 
 // AuthorID returns the value of the "author_id" field in the mutation.
 func (m *ArticleMutation) AuthorID() (r int, exists bool) {
-	v := m.author_id
+	v := m.user
 	if v == nil {
 		return
 	}
@@ -430,28 +427,9 @@ func (m *ArticleMutation) OldAuthorID(ctx context.Context) (v int, err error) {
 	return oldValue.AuthorID, nil
 }
 
-// AddAuthorID adds i to the "author_id" field.
-func (m *ArticleMutation) AddAuthorID(i int) {
-	if m.addauthor_id != nil {
-		*m.addauthor_id += i
-	} else {
-		m.addauthor_id = &i
-	}
-}
-
-// AddedAuthorID returns the value that was added to the "author_id" field in this mutation.
-func (m *ArticleMutation) AddedAuthorID() (r int, exists bool) {
-	v := m.addauthor_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
 // ResetAuthorID resets all changes to the "author_id" field.
 func (m *ArticleMutation) ResetAuthorID() {
-	m.author_id = nil
-	m.addauthor_id = nil
+	m.user = nil
 }
 
 // SetUserID sets the "user" edge to the User entity by id.
@@ -462,6 +440,7 @@ func (m *ArticleMutation) SetUserID(id int) {
 // ClearUser clears the "user" edge to the User entity.
 func (m *ArticleMutation) ClearUser() {
 	m.cleareduser = true
+	m.clearedFields[article.FieldAuthorID] = struct{}{}
 }
 
 // UserCleared reports if the "user" edge to the User entity was cleared.
@@ -546,7 +525,7 @@ func (m *ArticleMutation) Fields() []string {
 	if m.released != nil {
 		fields = append(fields, article.FieldReleased)
 	}
-	if m.author_id != nil {
+	if m.user != nil {
 		fields = append(fields, article.FieldAuthorID)
 	}
 	return fields
@@ -660,9 +639,6 @@ func (m *ArticleMutation) SetField(name string, value ent.Value) error {
 // this mutation.
 func (m *ArticleMutation) AddedFields() []string {
 	var fields []string
-	if m.addauthor_id != nil {
-		fields = append(fields, article.FieldAuthorID)
-	}
 	return fields
 }
 
@@ -671,8 +647,6 @@ func (m *ArticleMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *ArticleMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case article.FieldAuthorID:
-		return m.AddedAuthorID()
 	}
 	return nil, false
 }
@@ -682,13 +656,6 @@ func (m *ArticleMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *ArticleMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case article.FieldAuthorID:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddAuthorID(v)
-		return nil
 	}
 	return fmt.Errorf("unknown Article numeric field %s", name)
 }
