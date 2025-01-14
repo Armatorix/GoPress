@@ -10,6 +10,18 @@ servers:
         enum:
           - http://localhost:8080
 paths:
+  /admin/profile/password:
+    patch:
+      operationId: updatePassword
+      requestBody:
+        $ref: '#/components/requestBodies/PatchPassword'
+      responses:
+        '200':
+          description: Password updated
+        '400':
+          $ref: '#/components/responses/ErrorMsg'
+        '500':
+          $ref: '#/components/responses/ErrorMsg'
   /admin/users:
     get:
       operationId: getUsers
@@ -179,6 +191,12 @@ components:
       schema:
         type: string
   requestBodies:
+    PatchPassword:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PatchPassword'
     PostUsers:
       required: true
       content:
@@ -298,6 +316,12 @@ components:
         userType:
           $ref: '#/components/schemas/UserType'
       required: [nick, email, userType]
+    PatchPassword:
+      type: object
+      properties:
+        password:
+          type: string
+      required: [password]
     PostLogin:
       type: object
       properties:

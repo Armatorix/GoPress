@@ -68,6 +68,10 @@ function SidebarContent() {
     resetAuthJwt()
     window.location.reload()
   }
+
+  const onProfile = () => {
+    navigate('/profile')
+  }
   return (
     <Card className="h-screen ">
       <div className="mb-2 p-4 flex flex-row items-center justify-center space-x-2 select-none">
@@ -89,11 +93,11 @@ function SidebarContent() {
           </ListItemPrefix>
           Articles
         </ListItem>
-        <ListItem disabled>
+        <ListItem onClick={onProfile}>
           <ListItemPrefix>
             <Cog6ToothIcon className="h-5 w-5" />
           </ListItemPrefix>
-          Settings
+          Profile
         </ListItem>
         <ListItem onClick={onLogout}>
           <ListItemPrefix>

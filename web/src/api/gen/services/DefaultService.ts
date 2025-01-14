@@ -7,6 +7,7 @@ import type { AuthToken } from '../models/AuthToken';
 import type { Content } from '../models/Content';
 import type { Contents } from '../models/Contents';
 import type { PatchArticle } from '../models/PatchArticle';
+import type { PatchPassword } from '../models/PatchPassword';
 import type { PatchUser } from '../models/PatchUser';
 import type { PostArticle } from '../models/PostArticle';
 import type { PostLogin } from '../models/PostLogin';
@@ -16,6 +17,25 @@ import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 export class DefaultService {
+    /**
+     * @param requestBody
+     * @returns any Password updated
+     * @throws ApiError
+     */
+    public static updatePassword(
+        requestBody: PatchPassword,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'PATCH',
+            url: '/admin/profile/password',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                400: `Error message`,
+                500: `Error message`,
+            },
+        });
+    }
     /**
      * @returns Users List of users
      * @throws ApiError

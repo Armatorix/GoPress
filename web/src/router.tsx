@@ -4,6 +4,7 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import Articles from './pages/Articles'
 import NewArticle from './pages/NewArticle'
 import EditArticle from './pages/EditArticle'
+import Profile from './pages/Profile'
 
 function UnauthedRouter() {
   return (
@@ -24,6 +25,7 @@ function AuthedRouter() {
           <Route path="edit" element={<EditArticle />} />
         </Route>
       </Route>
+      <Route path="profile" element={<Profile />} />
       <Route path="*" element={<Navigate to="/dashboard" />} />
     </Routes>
   )

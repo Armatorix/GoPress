@@ -1,6 +1,5 @@
-import { useUser } from '@/api'
+import { useUpdatePassword } from '@/api/admin'
 import { ApiError } from '@/api/gen'
-import { updatePassword } from '@/api/user'
 import { useToast } from '@/components/Toasts/ToastsProvider'
 import { Bootstrap } from '@/page_wrappers/Bootstrap'
 import {
@@ -14,51 +13,16 @@ import {
 import { useState } from 'react'
 
 function Profile() {
-  const user = useUser()
-  const userData = user.data?.data
-  const { profile } = useOrganizationPaths()
-  if (!user || user.isLoading || !userData) {
-    return null
-  }
   return (
     <Bootstrap>
-      <div className="flex flex-col gap-4">
-        <div className="flex flex-row gap-4">
-          {userData.avatarURL && (
-            <div>
-              <img
-                src={userData.avatarURL}
-                alt={`${userData.firstName.at(0)} ${userData.lastName.at(0)}`}
-                className="rounded-full w-24 h-24 text-center"
-              />
-            </div>
-          )}
-          <div className="flex flex-col gap-2">
-            <Input
-              type="email"
-              label="Imię"
-              variant="outlined"
-              disabled
-              value={userData.firstName}
-            />
-            <Input
-              type="text"
-              label="Nazwisko"
-              variant="outlined"
-              disabled
-              value={userData.lastName}
-            />
-          </div>
-        </div>
-        <ChangePasswordModal />
-      </div>
+      <ChangePasswordModal />
     </Bootstrap>
   )
 }
 
 function ChangePasswordModal() {
   const [open, setOpen] = useState(false)
-  const update = updatePassword()
+  const update = useUpdatePassword()
   const toast = useToast()
   const handleOpen = () => setOpen(!open)
   const [password, setPassword] = useState('')
@@ -88,15 +52,15 @@ function ChangePasswordModal() {
   return (
     <>
       <Button onClick={handleOpen} variant="gradient">
-        Zmień hasło
+        Change password
       </Button>
       <form>
         <Dialog open={open} handler={handleOpen}>
-          <DialogHeader>Zmiana hasła</DialogHeader>
+          <DialogHeader>Password change</DialogHeader>
           <DialogBody className="flex flex-col pl-8 gap-4">
             <Input
               type="password"
-              label="Nowe hasło"
+              label="New password"
               variant="outlined"
               value={password}
               required
@@ -110,7 +74,7 @@ function ChangePasswordModal() {
               onClick={handleOpen}
               className="mr-1"
             >
-              Anuluj
+              Cancel
             </Button>
             <Button
               variant="gradient"
@@ -118,7 +82,7 @@ function ChangePasswordModal() {
               onClick={handleConfirm}
               type="submit"
             >
-              Zmień
+              Change
             </Button>
           </DialogFooter>
         </Dialog>

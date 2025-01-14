@@ -17,6 +17,7 @@ export type { contentId } from './models/contentId';
 export type { Contents } from './models/Contents';
 export type { ErrorMsg } from './models/ErrorMsg';
 export type { PatchArticle } from './models/PatchArticle';
+export type { PatchPassword } from './models/PatchPassword';
 export type { PatchUser } from './models/PatchUser';
 export type { PostArticle } from './models/PostArticle';
 export type { PostLogin } from './models/PostLogin';

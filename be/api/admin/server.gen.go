@@ -17,6 +17,9 @@ import (
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
 
+	// (PATCH /admin/profile/password)
+	UpdatePassword(ctx echo.Context) error
+
 	// (DELETE /admin/users)
 	DeleteUsers(ctx echo.Context, params DeleteUsersParams) error
 
@@ -33,6 +36,15 @@ type ServerInterface interface {
 // ServerInterfaceWrapper converts echo contexts to parameters.
 type ServerInterfaceWrapper struct {
 	Handler ServerInterface
+}
+
+// UpdatePassword converts echo context to params.
+func (w *ServerInterfaceWrapper) UpdatePassword(ctx echo.Context) error {
+	var err error
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.UpdatePassword(ctx)
+	return err
 }
 
 // DeleteUsers converts echo context to params.
@@ -115,6 +127,7 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 		Handler: si,
 	}
 
+	router.PATCH(baseURL+"/admin/profile/password", wrapper.UpdatePassword)
 	router.DELETE(baseURL+"/admin/users", wrapper.DeleteUsers)
 	router.GET(baseURL+"/admin/users", wrapper.GetUsers)
 	router.POST(baseURL+"/admin/users", wrapper.PostAdminUsers)
@@ -125,6 +138,40 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 type ErrorMsgJSONResponse ErrorMsg
 
 type GetUsersJSONResponse Users
+
+type UpdatePasswordRequestObject struct {
+	Body *UpdatePasswordJSONRequestBody
+}
+
+type UpdatePasswordResponseObject interface {
+	VisitUpdatePasswordResponse(w http.ResponseWriter) error
+}
+
+type UpdatePassword200Response struct {
+}
+
+func (response UpdatePassword200Response) VisitUpdatePasswordResponse(w http.ResponseWriter) error {
+	w.WriteHeader(200)
+	return nil
+}
+
+type UpdatePassword400JSONResponse struct{ ErrorMsgJSONResponse }
+
+func (response UpdatePassword400JSONResponse) VisitUpdatePasswordResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type UpdatePassword500JSONResponse ErrorMsg
+
+func (response UpdatePassword500JSONResponse) VisitUpdatePasswordResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+
+	return json.NewEncoder(w).Encode(response)
+}
 
 type DeleteUsersRequestObject struct {
 	Params DeleteUsersParams
@@ -248,6 +295,9 @@ func (response UpdateUser500JSONResponse) VisitUpdateUserResponse(w http.Respons
 // StrictServerInterface represents all server handlers.
 type StrictServerInterface interface {
 
+	// (PATCH /admin/profile/password)
+	UpdatePassword(ctx context.Context, request UpdatePasswordRequestObject) (UpdatePasswordResponseObject, error)
+
 	// (DELETE /admin/users)
 	DeleteUsers(ctx context.Context, request DeleteUsersRequestObject) (DeleteUsersResponseObject, error)
 
@@ -271,6 +321,35 @@ func NewStrictHandler(ssi StrictServerInterface, middlewares []StrictMiddlewareF
 type strictHandler struct {
 	ssi         StrictServerInterface
 	middlewares []StrictMiddlewareFunc
+}
+
+// UpdatePassword operation middleware
+func (sh *strictHandler) UpdatePassword(ctx echo.Context) error {
+	var request UpdatePasswordRequestObject
+
+	var body UpdatePasswordJSONRequestBody
+	if err := ctx.Bind(&body); err != nil {
+		return err
+	}
+	request.Body = &body
+
+	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.UpdatePassword(ctx.Request().Context(), request.(UpdatePasswordRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "UpdatePassword")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(UpdatePasswordResponseObject); ok {
+		return validResponse.VisitUpdatePasswordResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
 }
 
 // DeleteUsers operation middleware

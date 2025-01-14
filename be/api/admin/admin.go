@@ -7,10 +7,24 @@ import (
 	"context"
 
 	"github.com/Armatorix/GoPress/be/db"
+	"github.com/Armatorix/GoPress/be/x/xecho"
 )
 
 type handler struct {
 	db *db.DB
+}
+
+// UpdatePassword implements StrictServerInterface.
+func (h *handler) UpdatePassword(
+	ctx context.Context,
+	request UpdatePasswordRequestObject,
+) (UpdatePasswordResponseObject, error) {
+	user := xecho.FetchUser(ctx)
+	err := h.db.UpdatePassword(ctx, user.ID, request.Body.Password)
+	if err != nil {
+		return UpdatePassword500JSONResponse{}, err
+	}
+	return UpdatePassword200Response{}, nil
 }
 
 // DeleteUsers implements StrictServerInterface.

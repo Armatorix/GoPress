@@ -14,6 +14,11 @@ type ErrorMsg struct {
 	Error string `json:"error"`
 }
 
+// PatchPassword defines model for PatchPassword.
+type PatchPassword struct {
+	Password string `json:"password"`
+}
+
 // PatchUser defines model for PatchUser.
 type PatchUser struct {
 	Email    string   `json:"email"`
@@ -55,6 +60,9 @@ type GetUsers = Users
 type DeleteUsersParams struct {
 	UserIds UserIds `form:"userIds" json:"userIds"`
 }
+
+// UpdatePasswordJSONRequestBody defines body for UpdatePassword for application/json ContentType.
+type UpdatePasswordJSONRequestBody = PatchPassword
 
 // PostAdminUsersJSONRequestBody defines body for PostAdminUsers for application/json ContentType.
 type PostAdminUsersJSONRequestBody = PostUsers

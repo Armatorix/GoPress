@@ -41,3 +41,10 @@ func (db *DB) InitAdminUser(ctx context.Context, passwd string) error {
 		SetPassword(ext.Password(passwd)).
 		Exec(ctx)
 }
+
+func (db *DB) UpdatePassword(ctx context.Context, id int, passwd string) error {
+	return db.UserClient().
+		UpdateOneID(id).
+		SetPassword(ext.Password(passwd)).
+		Exec(ctx)
+}
