@@ -26,7 +26,7 @@ function EditWithData({ article }: { article: Article }) {
     }
     updateArticle.mutate(form, {
       onSuccess: () => {
-        toast.success('Article created')
+        toast.success(`Article ${article.title} updated`)
         navigate('/articles')
       },
       onError: (error) => {
