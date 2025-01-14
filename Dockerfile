@@ -16,6 +16,7 @@ COPY ./web/package.json \
 
 RUN bun i
 
+COPY ./web/.env.production .env 
 COPY ./web/public public
 COPY ./web/index.html \
     ./web/tsconfig.json \
