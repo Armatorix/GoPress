@@ -48,6 +48,7 @@ function ArticleList({ articles }: { articles: Article[] }) {
 function ArticleTile({ article }: ArticleTileProps) {
   const publishArticle = usePublishArticle()
   const toast = useToast()
+  const navigate = useNavigate()
   const onPublishClick = () => {
     publishArticle.mutate(article.id, {
       onSuccess: () => {
@@ -61,6 +62,9 @@ function ArticleTile({ article }: ArticleTileProps) {
         toast.error(error.message)
       },
     })
+  }
+  const onEditClick = () => {
+    navigate(`/articles/${article.id}/edit`)
   }
   return (
     <div className="bg-white shadow-md p-4 rounded-md h-40 relative">
@@ -77,6 +81,9 @@ function ArticleTile({ article }: ArticleTileProps) {
           label="Published"
           color="green"
         />
+      </div>
+      <div className="absolute bottom-4 right-4">
+        <Button onClick={onEditClick}>Edit</Button>
       </div>
     </div>
   )
