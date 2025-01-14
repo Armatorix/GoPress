@@ -48,7 +48,9 @@ function ArticleTile({ article }: ArticleTileProps) {
   return (
     <div className="bg-white shadow-md p-4 rounded-md">
       <Typography variant="h6">{article.title}</Typography>
-      <Typography variant="small">{article.description}</Typography>
+      <Typography variant="small">
+        <div dangerouslySetInnerHTML={{ __html: article.description }} />
+      </Typography>
       <Typography variant="small">
         {article.released ? 'Released' : 'Not released'}
       </Typography>
