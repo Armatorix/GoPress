@@ -80,10 +80,8 @@ paths:
     get:
       operationId: getArticles
       responses:
-        '200':
-          $ref: '#/components/responses/GetArticles'
-        '500':
-          $ref: '#/components/responses/ErrorMsg'
+        '200': {$ref: '#/components/responses/GetArticles'}
+        '500': {$ref: '#/components/responses/ErrorMsg'}
     post:
       operationId: createArticle
       requestBody:
@@ -120,6 +118,17 @@ paths:
           $ref: '#/components/responses/ErrorMsg'
         '500':
           $ref: '#/components/responses/ErrorMsg'
+    get:
+      operationId: getArticle
+      parameters:
+        - $ref: '#/components/parameters/articleId'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetArticle'
+        '404':
+          $ref: '#/components/responses/ErrorMsg'
+        '500':
+          $ref: '#/components/responses/ErrorMsg'
   /admin/article/{articleId}/publish:
     post:
       operationId: publishArticle
@@ -128,26 +137,6 @@ paths:
       responses:
         '200':
           description: Article published
-        '500':
-          $ref: '#/components/responses/ErrorMsg'
-  /admin/contents:
-    get:
-      operationId: getContents
-      responses:
-        '200':
-          $ref: '#/components/responses/GetContents'
-        '500':
-          $ref: '#/components/responses/ErrorMsg'
-  /admin/content/{articleId}:
-    get:
-      operationId: getContent
-      parameters:
-        - $ref: '#/components/parameters/articleId'
-      responses:
-        '200':
-          $ref: '#/components/responses/GetContent'
-        '404':
-          $ref: '#/components/responses/ErrorMsg'
         '500':
           $ref: '#/components/responses/ErrorMsg'
 components:
@@ -246,21 +235,10 @@ components:
           schema:
             type: object
             properties:
-              data:
-                $ref: '#/components/schemas/Articles'
+              data: {$ref: '#/components/schemas/Articles'}
             required: [data]
-    GetContents:
-      description: List of contents
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                $ref: '#/components/schemas/Articles'
-            required: [data]
-    GetContent:
-      description: Content
+    GetArticle:
+      description: Article
       content:
         application/json:
           schema:

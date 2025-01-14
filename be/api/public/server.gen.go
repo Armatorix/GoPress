@@ -17,11 +17,11 @@ import (
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
 
-	// (GET /admin/content/{articleId})
-	GetContent(ctx echo.Context, articleId ArticleId) error
+	// (GET /admin/article/{articleId})
+	GetArticle(ctx echo.Context, articleId ArticleId) error
 
-	// (GET /admin/contents)
-	GetContents(ctx echo.Context) error
+	// (GET /admin/articles)
+	GetArticles(ctx echo.Context) error
 }
 
 // ServerInterfaceWrapper converts echo contexts to parameters.
@@ -29,8 +29,8 @@ type ServerInterfaceWrapper struct {
 	Handler ServerInterface
 }
 
-// GetContent converts echo context to params.
-func (w *ServerInterfaceWrapper) GetContent(ctx echo.Context) error {
+// GetArticle converts echo context to params.
+func (w *ServerInterfaceWrapper) GetArticle(ctx echo.Context) error {
 	var err error
 	// ------------- Path parameter "articleId" -------------
 	var articleId ArticleId
@@ -41,16 +41,16 @@ func (w *ServerInterfaceWrapper) GetContent(ctx echo.Context) error {
 	}
 
 	// Invoke the callback with all the unmarshaled arguments
-	err = w.Handler.GetContent(ctx, articleId)
+	err = w.Handler.GetArticle(ctx, articleId)
 	return err
 }
 
-// GetContents converts echo context to params.
-func (w *ServerInterfaceWrapper) GetContents(ctx echo.Context) error {
+// GetArticles converts echo context to params.
+func (w *ServerInterfaceWrapper) GetArticles(ctx echo.Context) error {
 	var err error
 
 	// Invoke the callback with all the unmarshaled arguments
-	err = w.Handler.GetContents(ctx)
+	err = w.Handler.GetArticles(ctx)
 	return err
 }
 
@@ -82,8 +82,8 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 		Handler: si,
 	}
 
-	router.GET(baseURL+"/admin/content/:articleId", wrapper.GetContent)
-	router.GET(baseURL+"/admin/contents", wrapper.GetContents)
+	router.GET(baseURL+"/admin/article/:articleId", wrapper.GetArticle)
+	router.GET(baseURL+"/admin/articles", wrapper.GetArticles)
 
 }
 
@@ -91,70 +91,70 @@ type ErrorMsgJSONResponse struct {
 	Error string `json:"error"`
 }
 
-type GetContentJSONResponse struct {
+type GetArticleJSONResponse struct {
 	Data Article `json:"data"`
 }
 
-type GetContentsJSONResponse struct {
+type GetArticlesJSONResponse struct {
 	Data Articles `json:"data"`
 }
 
-type GetContentRequestObject struct {
+type GetArticleRequestObject struct {
 	ArticleId ArticleId `json:"articleId"`
 }
 
-type GetContentResponseObject interface {
-	VisitGetContentResponse(w http.ResponseWriter) error
+type GetArticleResponseObject interface {
+	VisitGetArticleResponse(w http.ResponseWriter) error
 }
 
-type GetContent200JSONResponse struct{ GetContentJSONResponse }
+type GetArticle200JSONResponse struct{ GetArticleJSONResponse }
 
-func (response GetContent200JSONResponse) VisitGetContentResponse(w http.ResponseWriter) error {
+func (response GetArticle200JSONResponse) VisitGetArticleResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(200)
 
 	return json.NewEncoder(w).Encode(response)
 }
 
-type GetContent404JSONResponse struct{ ErrorMsgJSONResponse }
+type GetArticle404JSONResponse struct{ ErrorMsgJSONResponse }
 
-func (response GetContent404JSONResponse) VisitGetContentResponse(w http.ResponseWriter) error {
+func (response GetArticle404JSONResponse) VisitGetArticleResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(404)
 
 	return json.NewEncoder(w).Encode(response)
 }
 
-type GetContent500JSONResponse struct {
+type GetArticle500JSONResponse struct {
 	Error string `json:"error"`
 }
 
-func (response GetContent500JSONResponse) VisitGetContentResponse(w http.ResponseWriter) error {
+func (response GetArticle500JSONResponse) VisitGetArticleResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(500)
 
 	return json.NewEncoder(w).Encode(response)
 }
 
-type GetContentsRequestObject struct {
+type GetArticlesRequestObject struct {
 }
 
-type GetContentsResponseObject interface {
-	VisitGetContentsResponse(w http.ResponseWriter) error
+type GetArticlesResponseObject interface {
+	VisitGetArticlesResponse(w http.ResponseWriter) error
 }
 
-type GetContents200JSONResponse struct{ GetContentsJSONResponse }
+type GetArticles200JSONResponse struct{ GetArticlesJSONResponse }
 
-func (response GetContents200JSONResponse) VisitGetContentsResponse(w http.ResponseWriter) error {
+func (response GetArticles200JSONResponse) VisitGetArticlesResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(200)
 
 	return json.NewEncoder(w).Encode(response)
 }
 
-type GetContents500JSONResponse struct{ ErrorMsgJSONResponse }
+type GetArticles500JSONResponse struct{ ErrorMsgJSONResponse }
 
-func (response GetContents500JSONResponse) VisitGetContentsResponse(w http.ResponseWriter) error {
+func (response GetArticles500JSONResponse) VisitGetArticlesResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(500)
 
@@ -164,11 +164,11 @@ func (response GetContents500JSONResponse) VisitGetContentsResponse(w http.Respo
 // StrictServerInterface represents all server handlers.
 type StrictServerInterface interface {
 
-	// (GET /admin/content/{articleId})
-	GetContent(ctx context.Context, request GetContentRequestObject) (GetContentResponseObject, error)
+	// (GET /admin/article/{articleId})
+	GetArticle(ctx context.Context, request GetArticleRequestObject) (GetArticleResponseObject, error)
 
-	// (GET /admin/contents)
-	GetContents(ctx context.Context, request GetContentsRequestObject) (GetContentsResponseObject, error)
+	// (GET /admin/articles)
+	GetArticles(ctx context.Context, request GetArticlesRequestObject) (GetArticlesResponseObject, error)
 }
 
 type StrictHandlerFunc = strictecho.StrictEchoHandlerFunc
@@ -183,48 +183,48 @@ type strictHandler struct {
 	middlewares []StrictMiddlewareFunc
 }
 
-// GetContent operation middleware
-func (sh *strictHandler) GetContent(ctx echo.Context, articleId ArticleId) error {
-	var request GetContentRequestObject
+// GetArticle operation middleware
+func (sh *strictHandler) GetArticle(ctx echo.Context, articleId ArticleId) error {
+	var request GetArticleRequestObject
 
 	request.ArticleId = articleId
 
 	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.GetContent(ctx.Request().Context(), request.(GetContentRequestObject))
+		return sh.ssi.GetArticle(ctx.Request().Context(), request.(GetArticleRequestObject))
 	}
 	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "GetContent")
+		handler = middleware(handler, "GetArticle")
 	}
 
 	response, err := handler(ctx, request)
 
 	if err != nil {
 		return err
-	} else if validResponse, ok := response.(GetContentResponseObject); ok {
-		return validResponse.VisitGetContentResponse(ctx.Response())
+	} else if validResponse, ok := response.(GetArticleResponseObject); ok {
+		return validResponse.VisitGetArticleResponse(ctx.Response())
 	} else if response != nil {
 		return fmt.Errorf("unexpected response type: %T", response)
 	}
 	return nil
 }
 
-// GetContents operation middleware
-func (sh *strictHandler) GetContents(ctx echo.Context) error {
-	var request GetContentsRequestObject
+// GetArticles operation middleware
+func (sh *strictHandler) GetArticles(ctx echo.Context) error {
+	var request GetArticlesRequestObject
 
 	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.GetContents(ctx.Request().Context(), request.(GetContentsRequestObject))
+		return sh.ssi.GetArticles(ctx.Request().Context(), request.(GetArticlesRequestObject))
 	}
 	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "GetContents")
+		handler = middleware(handler, "GetArticles")
 	}
 
 	response, err := handler(ctx, request)
 
 	if err != nil {
 		return err
-	} else if validResponse, ok := response.(GetContentsResponseObject); ok {
-		return validResponse.VisitGetContentsResponse(ctx.Response())
+	} else if validResponse, ok := response.(GetArticlesResponseObject); ok {
+		return validResponse.VisitGetArticlesResponse(ctx.Response())
 	} else if response != nil {
 		return fmt.Errorf("unexpected response type: %T", response)
 	}

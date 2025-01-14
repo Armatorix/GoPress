@@ -10,19 +10,19 @@ servers:
         enum:
           - http://localhost:8080
 paths:
-  /admin/contents:
+  /admin/articles:
     get:
-      operationId: getContents
+      operationId: getArticles
       responses:
-        '200': {$ref: '#/components/responses/GetContents'}
+        '200': {$ref: '#/components/responses/GetArticles'}
         '500': {$ref: '#/components/responses/ErrorMsg'}
-  /admin/content/{articleId}:
+  /admin/article/{articleId}:
     get:
-      operationId: getContent
+      operationId: getArticle
       parameters:
         - $ref: '#/components/parameters/articleId'
       responses:
-        '200': {$ref: '#/components/responses/GetContent'}
+        '200': {$ref: '#/components/responses/GetArticle'}
         '404': {$ref: '#/components/responses/ErrorMsg'}
         '500': {$ref: '#/components/responses/ErrorMsg'}
 components:
@@ -45,8 +45,8 @@ components:
             properties:
               error: {type: string}
             required: [error]
-    GetContents:
-      description: List of contents
+    GetArticles:
+      description: List of articles
       content:
         application/json:
           schema:
@@ -54,8 +54,8 @@ components:
             properties:
               data: {$ref: '#/components/schemas/Articles'}
             required: [data]
-    GetContent:
-      description: Content
+    GetArticle:
+      description: Article
       content:
         application/json:
           schema:

@@ -24,12 +24,12 @@ type ErrorMsg struct {
 	Error string `json:"error"`
 }
 
-// GetContent defines model for GetContent.
-type GetContent struct {
+// GetArticle defines model for GetArticle.
+type GetArticle struct {
 	Data Article `json:"data"`
 }
 
-// GetContents defines model for GetContents.
-type GetContents struct {
+// GetArticles defines model for GetArticles.
+type GetArticles struct {
 	Data Articles `json:"data"`
 }
