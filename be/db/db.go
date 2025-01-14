@@ -18,7 +18,7 @@ import (
 var migrationsFS embed.FS
 
 type Config struct {
-	DSN               string `env:"DATABASE_URL,required" envDefault:"user=postgres host=localhost port=5432 dbname=postgres"`
+	DSN               string `env:"DATABASE_URL,required" envDefault:"user=postgres host=postgres port=5432 dbname=postgres"`
 	DataEncryptionKey string `env:"DB_DATA_ENCRYPTION_KEY,required" validate:"len=32"`
 }
 

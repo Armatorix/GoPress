@@ -34,7 +34,7 @@ function Sidebar() {
 
 function AlwaysOpenSidebar() {
   return (
-    <Card className="h-screen absolute">
+    <Card className="h-screen fixed max-w-72">
       <SidebarContent />
     </Card>
   )
