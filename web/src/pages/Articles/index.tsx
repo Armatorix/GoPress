@@ -1,7 +1,7 @@
 import { useArticles } from '@/api/articles'
 import type { Article } from '@/api/gen'
 import { Bootstrap } from '@/page_wrappers'
-import { Button, Typography } from '@material-tailwind/react'
+import { Button, Switch, Typography } from '@material-tailwind/react'
 import { useNavigate } from 'react-router-dom'
 
 function Articles() {
@@ -46,14 +46,21 @@ function ArticleList({ articles }: { articles: Article[] }) {
 }
 function ArticleTile({ article }: ArticleTileProps) {
   return (
-    <div className="bg-white shadow-md p-4 rounded-md">
-      <Typography variant="h6">{article.title}</Typography>
-      <Typography variant="small">
+    <div className="bg-white shadow-md p-4 rounded-md h-40 relative">
+      <Typography variant="h6" className="max-w-40 overflow-ellipsis">
+        {article.title}
+      </Typography>
+      <Typography variant="small" className="overflow-hidden max-h-24">
         <div dangerouslySetInnerHTML={{ __html: article.description }} />
       </Typography>
-      <Typography variant="small">
-        {article.released ? 'Released' : 'Not released'}
-      </Typography>
+      <div className="absolute top-4 right-4">
+        <Switch
+          checked={article.released}
+          label="Published"
+          color="green"
+          disabled
+        />
+      </div>
     </div>
   )
 }

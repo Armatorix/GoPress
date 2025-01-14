@@ -61,6 +61,8 @@ function NewArticle() {
           <Switch
             checked={form.released}
             onChange={(e) => setForm({ ...form, released: e.target.checked })}
+            label="Publish"
+            color="green"
           />
           <Button type="submit" loading={newArticle.isPending}>
             Submit
