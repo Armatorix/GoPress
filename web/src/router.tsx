@@ -3,6 +3,7 @@ import Login from '@/pages/Login'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import Articles from './pages/Articles'
 import NewArticle from './pages/NewArticle'
+import EditArticle from './pages/EditArticle'
 
 function UnauthedRouter() {
   return (
@@ -19,6 +20,9 @@ function AuthedRouter() {
       <Route path="articles">
         <Route path="new" element={<NewArticle />} />
         <Route index element={<Articles />} />
+        <Route path=":id">
+          <Route path="edit" element={<EditArticle />} />
+        </Route>
       </Route>
       <Route path="*" element={<Navigate to="/dashboard" />} />
     </Routes>
