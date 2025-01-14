@@ -37,5 +37,11 @@ function useIsEmailConfirmed() {
   const jwtDecoded = jwtDecode(tokenStr || '') as { isVerified: boolean }
   return jwtDecoded?.isVerified === true
 }
-export { resetAuthJwt, setAuthJwt, useIsEmailConfirmed }
+
+function useAuthInfo() {
+  const tokenStr = localStorage.getItem('jwt')
+  const jwtDecoded = jwtDecode(tokenStr || '') as { userId: boolean }
+  return { userId: jwtDecoded?.userId }
+}
+export { resetAuthJwt, setAuthJwt, useIsEmailConfirmed, useAuthInfo }
 export default AuthProvider

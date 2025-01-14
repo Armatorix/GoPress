@@ -113,16 +113,23 @@ func (au *ArticleUpdate) SetNillableReleased(b *bool) *ArticleUpdate {
 }
 
 // SetAuthorID sets the "author_id" field.
-func (au *ArticleUpdate) SetAuthorID(s string) *ArticleUpdate {
-	au.mutation.SetAuthorID(s)
+func (au *ArticleUpdate) SetAuthorID(i int) *ArticleUpdate {
+	au.mutation.ResetAuthorID()
+	au.mutation.SetAuthorID(i)
 	return au
 }
 
 // SetNillableAuthorID sets the "author_id" field if the given value is not nil.
-func (au *ArticleUpdate) SetNillableAuthorID(s *string) *ArticleUpdate {
-	if s != nil {
-		au.SetAuthorID(*s)
+func (au *ArticleUpdate) SetNillableAuthorID(i *int) *ArticleUpdate {
+	if i != nil {
+		au.SetAuthorID(*i)
 	}
+	return au
+}
+
+// AddAuthorID adds i to the "author_id" field.
+func (au *ArticleUpdate) AddAuthorID(i int) *ArticleUpdate {
+	au.mutation.AddAuthorID(i)
 	return au
 }
 
@@ -231,7 +238,10 @@ func (au *ArticleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.SetField(article.FieldReleased, field.TypeBool, value)
 	}
 	if value, ok := au.mutation.AuthorID(); ok {
-		_spec.SetField(article.FieldAuthorID, field.TypeString, value)
+		_spec.SetField(article.FieldAuthorID, field.TypeInt, value)
+	}
+	if value, ok := au.mutation.AddedAuthorID(); ok {
+		_spec.AddField(article.FieldAuthorID, field.TypeInt, value)
 	}
 	if au.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -383,16 +393,23 @@ func (auo *ArticleUpdateOne) SetNillableReleased(b *bool) *ArticleUpdateOne {
 }
 
 // SetAuthorID sets the "author_id" field.
-func (auo *ArticleUpdateOne) SetAuthorID(s string) *ArticleUpdateOne {
-	auo.mutation.SetAuthorID(s)
+func (auo *ArticleUpdateOne) SetAuthorID(i int) *ArticleUpdateOne {
+	auo.mutation.ResetAuthorID()
+	auo.mutation.SetAuthorID(i)
 	return auo
 }
 
 // SetNillableAuthorID sets the "author_id" field if the given value is not nil.
-func (auo *ArticleUpdateOne) SetNillableAuthorID(s *string) *ArticleUpdateOne {
-	if s != nil {
-		auo.SetAuthorID(*s)
+func (auo *ArticleUpdateOne) SetNillableAuthorID(i *int) *ArticleUpdateOne {
+	if i != nil {
+		auo.SetAuthorID(*i)
 	}
+	return auo
+}
+
+// AddAuthorID adds i to the "author_id" field.
+func (auo *ArticleUpdateOne) AddAuthorID(i int) *ArticleUpdateOne {
+	auo.mutation.AddAuthorID(i)
 	return auo
 }
 
@@ -531,7 +548,10 @@ func (auo *ArticleUpdateOne) sqlSave(ctx context.Context) (_node *Article, err e
 		_spec.SetField(article.FieldReleased, field.TypeBool, value)
 	}
 	if value, ok := auo.mutation.AuthorID(); ok {
-		_spec.SetField(article.FieldAuthorID, field.TypeString, value)
+		_spec.SetField(article.FieldAuthorID, field.TypeInt, value)
+	}
+	if value, ok := auo.mutation.AddedAuthorID(); ok {
+		_spec.AddField(article.FieldAuthorID, field.TypeInt, value)
 	}
 	if auo.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{

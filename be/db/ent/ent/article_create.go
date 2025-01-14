@@ -108,8 +108,8 @@ func (ac *ArticleCreate) SetNillableReleased(b *bool) *ArticleCreate {
 }
 
 // SetAuthorID sets the "author_id" field.
-func (ac *ArticleCreate) SetAuthorID(s string) *ArticleCreate {
-	ac.mutation.SetAuthorID(s)
+func (ac *ArticleCreate) SetAuthorID(i int) *ArticleCreate {
+	ac.mutation.SetAuthorID(i)
 	return ac
 }
 
@@ -262,7 +262,7 @@ func (ac *ArticleCreate) createSpec() (*Article, *sqlgraph.CreateSpec) {
 		_node.Released = value
 	}
 	if value, ok := ac.mutation.AuthorID(); ok {
-		_spec.SetField(article.FieldAuthorID, field.TypeString, value)
+		_spec.SetField(article.FieldAuthorID, field.TypeInt, value)
 		_node.AuthorID = value
 	}
 	if nodes := ac.mutation.UserIDs(); len(nodes) > 0 {
@@ -406,7 +406,7 @@ func (u *ArticleUpsert) UpdateReleased() *ArticleUpsert {
 }
 
 // SetAuthorID sets the "author_id" field.
-func (u *ArticleUpsert) SetAuthorID(v string) *ArticleUpsert {
+func (u *ArticleUpsert) SetAuthorID(v int) *ArticleUpsert {
 	u.Set(article.FieldAuthorID, v)
 	return u
 }
@@ -414,6 +414,12 @@ func (u *ArticleUpsert) SetAuthorID(v string) *ArticleUpsert {
 // UpdateAuthorID sets the "author_id" field to the value that was provided on create.
 func (u *ArticleUpsert) UpdateAuthorID() *ArticleUpsert {
 	u.SetExcluded(article.FieldAuthorID)
+	return u
+}
+
+// AddAuthorID adds v to the "author_id" field.
+func (u *ArticleUpsert) AddAuthorID(v int) *ArticleUpsert {
+	u.Add(article.FieldAuthorID, v)
 	return u
 }
 
@@ -553,9 +559,16 @@ func (u *ArticleUpsertOne) UpdateReleased() *ArticleUpsertOne {
 }
 
 // SetAuthorID sets the "author_id" field.
-func (u *ArticleUpsertOne) SetAuthorID(v string) *ArticleUpsertOne {
+func (u *ArticleUpsertOne) SetAuthorID(v int) *ArticleUpsertOne {
 	return u.Update(func(s *ArticleUpsert) {
 		s.SetAuthorID(v)
+	})
+}
+
+// AddAuthorID adds v to the "author_id" field.
+func (u *ArticleUpsertOne) AddAuthorID(v int) *ArticleUpsertOne {
+	return u.Update(func(s *ArticleUpsert) {
+		s.AddAuthorID(v)
 	})
 }
 
@@ -868,9 +881,16 @@ func (u *ArticleUpsertBulk) UpdateReleased() *ArticleUpsertBulk {
 }
 
 // SetAuthorID sets the "author_id" field.
-func (u *ArticleUpsertBulk) SetAuthorID(v string) *ArticleUpsertBulk {
+func (u *ArticleUpsertBulk) SetAuthorID(v int) *ArticleUpsertBulk {
 	return u.Update(func(s *ArticleUpsert) {
 		s.SetAuthorID(v)
+	})
+}
+
+// AddAuthorID adds v to the "author_id" field.
+func (u *ArticleUpsertBulk) AddAuthorID(v int) *ArticleUpsertBulk {
+	return u.Update(func(s *ArticleUpsert) {
+		s.AddAuthorID(v)
 	})
 }
 

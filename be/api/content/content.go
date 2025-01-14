@@ -7,6 +7,7 @@ import (
 	"context"
 
 	"github.com/Armatorix/GoPress/be/db"
+	"github.com/Armatorix/GoPress/be/x/xecho"
 )
 
 type handler struct {
@@ -18,11 +19,13 @@ func (h *handler) CreateArticle(
 	ctx context.Context,
 	request CreateArticleRequestObject,
 ) (CreateArticleResponseObject, error) {
+	user := xecho.FetchUser(ctx)
 	err := h.db.InsertArticle(ctx, db.InsertArticle{
 		Body:        request.Body.Body,
 		Title:       request.Body.Title,
 		Description: request.Body.Description,
 		Released:    request.Body.Released,
+		UserId:      user.ID,
 	})
 	if err != nil {
 		return CreateArticle500JSONResponse{}, err
@@ -33,11 +36,13 @@ func (h *handler) CreateArticle(
 
 // UpdateArticle implements StrictServerInterface.
 func (h *handler) UpdateArticle(ctx context.Context, request UpdateArticleRequestObject) (UpdateArticleResponseObject, error) {
+	user := xecho.FetchUser(ctx)
 	err := h.db.UpdateArticle(ctx, request.ArticleId, db.InsertArticle{
 		Body:        request.Body.Body,
 		Title:       request.Body.Title,
 		Description: request.Body.Description,
 		Released:    request.Body.Released,
+		UserId:      user.ID,
 	})
 	if err != nil {
 		return UpdateArticle500JSONResponse{}, err

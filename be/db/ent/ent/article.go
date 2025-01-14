@@ -30,7 +30,7 @@ type Article struct {
 	// Released holds the value of the "released" field.
 	Released bool `json:"released,omitempty"`
 	// AuthorID holds the value of the "author_id" field.
-	AuthorID string `json:"author_id,omitempty"`
+	AuthorID int `json:"author_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ArticleQuery when eager-loading is set.
 	Edges        ArticleEdges `json:"edges"`
@@ -63,9 +63,9 @@ func (*Article) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case article.FieldReleased:
 			values[i] = new(sql.NullBool)
-		case article.FieldID:
+		case article.FieldID, article.FieldAuthorID:
 			values[i] = new(sql.NullInt64)
-		case article.FieldTitle, article.FieldDescription, article.FieldBody, article.FieldAuthorID:
+		case article.FieldTitle, article.FieldDescription, article.FieldBody:
 			values[i] = new(sql.NullString)
 		case article.FieldCreatedAt, article.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -127,10 +127,10 @@ func (a *Article) assignValues(columns []string, values []any) error {
 				a.Released = value.Bool
 			}
 		case article.FieldAuthorID:
-			if value, ok := values[i].(*sql.NullString); !ok {
+			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field author_id", values[i])
 			} else if value.Valid {
-				a.AuthorID = value.String
+				a.AuthorID = int(value.Int64)
 			}
 		default:
 			a.selectValues.Set(columns[i], values[i])
@@ -192,7 +192,7 @@ func (a *Article) String() string {
 	builder.WriteString(fmt.Sprintf("%v", a.Released))
 	builder.WriteString(", ")
 	builder.WriteString("author_id=")
-	builder.WriteString(a.AuthorID)
+	builder.WriteString(fmt.Sprintf("%v", a.AuthorID))
 	builder.WriteByte(')')
 	return builder.String()
 }

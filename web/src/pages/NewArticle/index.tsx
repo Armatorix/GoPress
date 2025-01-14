@@ -2,6 +2,7 @@ import { useNewArticle } from '@/api/articles'
 import type { PostArticle } from '@/api/gen'
 import Editor from '@/components/Editor'
 import { useToast } from '@/components/Toasts/ToastsProvider'
+import { useAuthInfo } from '@/lib/AuthProvider'
 import { Bootstrap } from '@/page_wrappers'
 import { Button } from '@material-tailwind/react'
 import { useState } from 'react'
@@ -18,8 +19,8 @@ function NewArticle() {
   const onSubmit = () => {
     newArticle.mutate(form, {
       onSuccess: () => {
-        toast.success('Article created')
         navigate('/articles')
+        toast.success('Article created')
       },
       onError: (error) => {
         toast.error(error.message)
@@ -34,7 +35,7 @@ function NewArticle() {
           <div>
             <Editor
               value={form.body}
-              onChange={(body) => setForm({ ...form, body })}
+              setValue={(body) => setForm({ ...form, body })}
             />
           </div>
 

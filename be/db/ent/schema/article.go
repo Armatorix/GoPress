@@ -21,7 +21,7 @@ func (Article) Fields() []ent.Field {
 			Default(""),
 		field.Bool("released").
 			Default(false),
-		field.String("author_id"),
+		field.Int("author_id"),
 	}
 }
 

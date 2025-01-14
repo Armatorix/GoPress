@@ -12,6 +12,7 @@ type InsertArticle struct {
 	Title       string
 	Description string
 	Released    bool
+	UserId      int
 }
 
 func (db *DB) GetArticles(ctx context.Context) (ent.Articles, error) {
@@ -27,6 +28,7 @@ func (db *DB) InsertArticle(ctx context.Context, v InsertArticle) error {
 		SetTitle(v.Title).
 		SetDescription(v.Description).
 		SetReleased(v.Released).
+		SetAuthorID(v.UserId).
 		Exec(ctx)
 }
 
@@ -37,6 +39,7 @@ func (db *DB) UpdateArticle(ctx context.Context, id int, v InsertArticle) error 
 		SetTitle(v.Title).
 		SetDescription(v.Description).
 		SetReleased(v.Released).
+		SetAuthorID(v.UserId).
 		Exec(ctx)
 }
 

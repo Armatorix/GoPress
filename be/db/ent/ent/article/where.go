@@ -86,7 +86,7 @@ func Released(v bool) predicate.Article {
 }
 
 // AuthorID applies equality check predicate on the "author_id" field. It's identical to AuthorIDEQ.
-func AuthorID(v string) predicate.Article {
+func AuthorID(v int) predicate.Article {
 	return predicate.Article(sql.FieldEQ(FieldAuthorID, v))
 }
 
@@ -396,68 +396,43 @@ func ReleasedNEQ(v bool) predicate.Article {
 }
 
 // AuthorIDEQ applies the EQ predicate on the "author_id" field.
-func AuthorIDEQ(v string) predicate.Article {
+func AuthorIDEQ(v int) predicate.Article {
 	return predicate.Article(sql.FieldEQ(FieldAuthorID, v))
 }
 
 // AuthorIDNEQ applies the NEQ predicate on the "author_id" field.
-func AuthorIDNEQ(v string) predicate.Article {
+func AuthorIDNEQ(v int) predicate.Article {
 	return predicate.Article(sql.FieldNEQ(FieldAuthorID, v))
 }
 
 // AuthorIDIn applies the In predicate on the "author_id" field.
-func AuthorIDIn(vs ...string) predicate.Article {
+func AuthorIDIn(vs ...int) predicate.Article {
 	return predicate.Article(sql.FieldIn(FieldAuthorID, vs...))
 }
 
 // AuthorIDNotIn applies the NotIn predicate on the "author_id" field.
-func AuthorIDNotIn(vs ...string) predicate.Article {
+func AuthorIDNotIn(vs ...int) predicate.Article {
 	return predicate.Article(sql.FieldNotIn(FieldAuthorID, vs...))
 }
 
 // AuthorIDGT applies the GT predicate on the "author_id" field.
-func AuthorIDGT(v string) predicate.Article {
+func AuthorIDGT(v int) predicate.Article {
 	return predicate.Article(sql.FieldGT(FieldAuthorID, v))
 }
 
 // AuthorIDGTE applies the GTE predicate on the "author_id" field.
-func AuthorIDGTE(v string) predicate.Article {
+func AuthorIDGTE(v int) predicate.Article {
 	return predicate.Article(sql.FieldGTE(FieldAuthorID, v))
 }
 
 // AuthorIDLT applies the LT predicate on the "author_id" field.
-func AuthorIDLT(v string) predicate.Article {
+func AuthorIDLT(v int) predicate.Article {
 	return predicate.Article(sql.FieldLT(FieldAuthorID, v))
 }
 
 // AuthorIDLTE applies the LTE predicate on the "author_id" field.
-func AuthorIDLTE(v string) predicate.Article {
+func AuthorIDLTE(v int) predicate.Article {
 	return predicate.Article(sql.FieldLTE(FieldAuthorID, v))
-}
-
-// AuthorIDContains applies the Contains predicate on the "author_id" field.
-func AuthorIDContains(v string) predicate.Article {
-	return predicate.Article(sql.FieldContains(FieldAuthorID, v))
-}
-
-// AuthorIDHasPrefix applies the HasPrefix predicate on the "author_id" field.
-func AuthorIDHasPrefix(v string) predicate.Article {
-	return predicate.Article(sql.FieldHasPrefix(FieldAuthorID, v))
-}
-
-// AuthorIDHasSuffix applies the HasSuffix predicate on the "author_id" field.
-func AuthorIDHasSuffix(v string) predicate.Article {
-	return predicate.Article(sql.FieldHasSuffix(FieldAuthorID, v))
-}
-
-// AuthorIDEqualFold applies the EqualFold predicate on the "author_id" field.
-func AuthorIDEqualFold(v string) predicate.Article {
-	return predicate.Article(sql.FieldEqualFold(FieldAuthorID, v))
-}
-
-// AuthorIDContainsFold applies the ContainsFold predicate on the "author_id" field.
-func AuthorIDContainsFold(v string) predicate.Article {
-	return predicate.Article(sql.FieldContainsFold(FieldAuthorID, v))
 }
 
 // HasUser applies the HasEdge predicate on the "user" edge.
