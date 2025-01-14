@@ -38,7 +38,7 @@ type ArticleTileProps = {
 
 function ArticleList({ articles }: { articles: Article[] }) {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-2 gap-y-4">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-2 gap-y-4 max-h-96 overflow-auto  shadow p-2">
       {articles.map((article) => (
         <ArticleTile key={article.id} article={article} />
       ))}
