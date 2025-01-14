@@ -63,6 +63,7 @@ services:
             - node_modules
         - path: package.json
           action: rebuild
+          target: /app
 
     profiles: [local]
   befe:

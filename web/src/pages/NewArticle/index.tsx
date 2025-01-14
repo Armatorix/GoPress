@@ -1,11 +1,15 @@
 import { useNewArticle } from '@/api/articles'
 import type { PostArticle } from '@/api/gen'
+import Editor from '@/components/Editor'
 import { useToast } from '@/components/Toasts/ToastsProvider'
 import { Bootstrap } from '@/page_wrappers'
+import { Button } from '@material-tailwind/react'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 function NewArticle() {
   const newArticle = useNewArticle()
+  const navigate = useNavigate()
   const [form, setForm] = useState({
     title: '',
     body: '',
@@ -15,6 +19,7 @@ function NewArticle() {
     newArticle.mutate(form, {
       onSuccess: () => {
         toast.success('Article created')
+        navigate('/articles')
       },
       onError: (error) => {
         toast.error(error.message)
@@ -25,16 +30,17 @@ function NewArticle() {
     <Bootstrap>
       <div>
         <h1>New Article</h1>
-        <form onSubmit={onSubmit}>
-          <label>
-            Title
-            <input name="title" />
-          </label>
-          <label>
-            Body
-            <textarea name="body" />
-          </label>
-          <button type="submit">Submit</button>
+        <form>
+          <div>
+            <Editor
+              value={form.body}
+              onChange={(body) => setForm({ ...form, body })}
+            />
+          </div>
+
+          <Button type="submit" onClick={onSubmit}>
+            Submit
+          </Button>
         </form>
       </div>
     </Bootstrap>
