@@ -18,6 +18,7 @@ type InsertArticle struct {
 func (db *DB) GetArticles(ctx context.Context) (ent.Articles, error) {
 	return db.ArticleClient().
 		Query().
+		Order(ent.Desc(article.FieldCreatedAt)).
 		All(ctx)
 }
 
