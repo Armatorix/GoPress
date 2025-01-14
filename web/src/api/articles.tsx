@@ -22,3 +22,9 @@ export function useNewArticle() {
     mutationFn: (body: PostArticle) => DefaultService.createArticle(body),
   })
 }
+
+export function usePublishArticle() {
+  return useMutation({
+    mutationFn: (id: number) => DefaultService.publishArticle(id),
+  })
+}

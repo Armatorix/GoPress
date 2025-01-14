@@ -1,4 +1,4 @@
-import ReactQuill, { Quill } from 'react-quill-new'
+import ReactQuill from 'react-quill-new'
 import 'react-quill-new/dist/quill.snow.css'
 
 type EditorProps = {
