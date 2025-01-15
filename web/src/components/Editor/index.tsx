@@ -1,4 +1,3 @@
-import { Select } from '@material-tailwind/react'
 import { useState } from 'react'
 import ReactQuill from 'react-quill-new'
 import 'react-quill-new/dist/quill.snow.css'
@@ -28,7 +27,7 @@ const Editor: React.FC<EditorProps> = ({ label, value, setValue }) => {
 }
 function AdvancedEditor({ label, value, setValue }: EditorProps) {
   return (
-    <div className="relative mt-2 h-48">
+    <div className="relative mt-2">
       <ReactQuill
         value={value}
         id="editor"
@@ -64,6 +63,8 @@ function AdvancedEditor({ label, value, setValue }: EditorProps) {
             ['clean'], // remove formatting button
           ],
         }}
+
+        className='min-h-48 overflow-auto'
         formats={[
           'header',
           'font',
