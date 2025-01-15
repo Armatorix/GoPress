@@ -53,7 +53,7 @@ type ArticleTileProps = {
 
 function ArticleList({ articles }: { articles: Article[] }) {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-2 gap-y-4 max-h-96 overflow-auto  shadow p-2">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-2 gap-y-4 max-h-96 overflow-auto pb-2">
       {articles.map((article) => (
         <ArticleTile key={article.id} article={article} />
       ))}
@@ -82,7 +82,7 @@ function ArticleTile({ article }: ArticleTileProps) {
     navigate(`/articles/${article.id}/edit`)
   }
   return (
-    <div className="bg-white shadow-md p-4 rounded-md h-40 relative">
+    <div className="bg-white shadow-md p-4 rounded-md h-40 relative hover:bg-gray-500 hover:text-white group">
       <Typography variant="h6" className="max-w-40 overflow-ellipsis">
         {article.title}
       </Typography>
@@ -95,6 +95,7 @@ function ArticleTile({ article }: ArticleTileProps) {
           onChange={onPublishClick}
           label="Published"
           color="green"
+          labelProps={{ className: 'group-hover:text-white' }}
         />
       </div>
       <div className="absolute bottom-4 right-4 gap-2 flex">
