@@ -26,7 +26,7 @@ function AuthedRouter() {
         </Route>
       </Route>
       <Route path="profile" element={<Profile />} />
-      <Route path="*" element={<Navigate to="/dashboard" />} />
+      <Route path="*" element={<Navigate to="/articles" />} />
     </Routes>
   )
 }
