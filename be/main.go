@@ -77,10 +77,7 @@ func main() {
 		xecho.ErrorLoggerMiddleware,
 		middleware.CORSWithConfig(
 			middleware.CORSConfig{
-				AllowOrigins: []string{
-					// TODO: move to config
-					"http://localhost:5173",
-				},
+				AllowOrigins: cfg.Server.CORSOrigins,
 				AllowHeaders: []string{
 					echo.HeaderAccept,
 					echo.HeaderOrigin,

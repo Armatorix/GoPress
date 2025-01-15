@@ -8,8 +8,9 @@ import (
 )
 
 type Server struct {
-	Port         int  `env:"PORT" envDefault:"8080"`
-	RedirectMode bool `env:"REDIRECT_MODE" envDefault:"false"`
+	Port         int      `env:"PORT" envDefault:"8080"`
+	RedirectMode bool     `env:"REDIRECT_MODE" envDefault:"false"`
+	CORSOrigins  []string `env:"CORS_ORIGINS" envDefault:"http://localhost:5173,http://localhost:8080"`
 }
 
 type Auth struct {
