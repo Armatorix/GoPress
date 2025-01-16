@@ -9,6 +9,8 @@ export type Article = {
     description: string;
     tags: Array<string>;
     released?: boolean;
+    createdAt: string;
+    updatedAt: string;
     author: string;
 };
 

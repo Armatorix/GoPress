@@ -99,8 +99,14 @@ function ArticleTile({ article }: ArticleTileProps) {
         />
       </div>
       <div className="absolute bottom-4 right-4 gap-2 flex">
-        <DeleteWithConfirmationButton article={article} />
-        <Button onClick={onEditClick}>Edit</Button>
+        <div className="flex flex-col text-right">
+          <Typography variant='small'>Created: {new Date(article.createdAt).toLocaleDateString()}</Typography>
+          <Typography variant='small'>Updated: {new Date(article.updatedAt).toLocaleDateString()}</Typography>
+          <div className='flex gap-2 flex-row'>
+            <DeleteWithConfirmationButton article={article} />
+            <Button onClick={onEditClick}>Edit</Button>
+          </div>
+        </div>
       </div>
     </div>
   )

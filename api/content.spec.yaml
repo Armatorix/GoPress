@@ -126,7 +126,9 @@ components:
         description: {type: string}
         tags: {type: array, items: {type: string}}
         released: {type: boolean}
-      required: [id, title, body, tags, description, released]
+        createdAt: {type: string, format: date-time}
+        updatedAt: {type: string, format: date-time}
+      required: [id, title, body, tags, description, released, createdAt, updatedAt]
     Articles:
       type: array
       items: {$ref: '#/components/schemas/Article'}

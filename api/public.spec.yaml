@@ -78,7 +78,9 @@ components:
         description: {type: string}
         tags: {type: array, items: {type: string}}
         author: {type: string}
-      required: [id, title, body, tags, author, description]
+        createdAt: {type: string, format: date-time}
+        updatedAt: {type: string, format: date-time}
+      required: [id, title, body, tags, author, description, createdAt, updatedAt]
     Articles:
       type: array
       items: {$ref: '#/components/schemas/Article'}

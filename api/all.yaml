@@ -340,9 +340,11 @@ components:
         tags: {type: array, items: {type: string}}
         released:
           type: boolean
+        createdAt: {type: string, format: date-time}
+        updatedAt: {type: string, format: date-time}
         author:
           type: string
-      required: [id, title, body, tags, author, description]
+      required: [id, title, body, tags, author, description, createdAt, updatedAt]
     Articles:
       type: array
       items: {$ref: '#/components/schemas/Article'}

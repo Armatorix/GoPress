@@ -17,5 +17,7 @@ func articleFromEnt(in *ent.Article) Article {
 		Title:       in.Title,
 		Description: in.Description,
 		Released:    in.Released,
+		CreatedAt:   in.CreatedAt,
+		UpdatedAt:   in.UpdatedAt,
 	}
 }
