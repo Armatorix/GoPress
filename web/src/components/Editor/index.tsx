@@ -8,22 +8,34 @@ type EditorProps = {
   setValue: (value: string) => void
 }
 const Editor: React.FC<EditorProps> = ({ label, value, setValue }) => {
-  const [mode, setMode] = useState('editor' as 'editor'|'html')
-    return (
-      <div className="relative mt-2">
-        <div className='flex'>
-          <select value={mode} onChange={(e) => setMode(e.target.value as 'editor'|'html')} className='border border-gray-300 rounded-md absolute left-24 z-10 top-[-5px]'>
-            <option value='editor'>Editor</option>
-            <option value='html'>HTML</option>
-          </select>
-        </div>
-        {mode === 'editor' ? (
-          <AdvancedEditor label={label} value={value} setValue={setValue} />
-        ) : (
-          <HTMLEditor label={label} value={value} setValue={setValue} />
-        )}
+  const [mode, setMode] = useState('html' as 'editor' | 'html' | 'preview')
+  return (
+    <div className="relative mt-2">
+      <div className="flex">
+        <select
+          value={mode}
+          onChange={(e) => setMode(e.target.value as 'editor' | 'html')}
+          className="border border-gray-300 rounded-md absolute left-24 z-10 top-[-5px]"
+        >
+          <option value="editor">Editor</option>
+          <option value="html">HTML</option>
+          <option value="preview">Preview</option>
+        </select>
       </div>
-    )
+      {mode === 'editor' && (
+        <AdvancedEditor label={label} value={value} setValue={setValue} />
+      )}
+      {mode === 'html' && (
+        <HTMLEditor label={label} value={value} setValue={setValue} />
+      )}
+      {mode === 'preview' && (
+        <div
+          className="p-2 border border-gray-300 rounded-md max-w-[65em] w-full h-48 overflow-auto"
+          dangerouslySetInnerHTML={{ __html: value }}
+        ></div>
+      )}
+    </div>
+  )
 }
 function AdvancedEditor({ label, value, setValue }: EditorProps) {
   return (
@@ -63,8 +75,7 @@ function AdvancedEditor({ label, value, setValue }: EditorProps) {
             ['clean'], // remove formatting button
           ],
         }}
-
-        className='min-h-48 overflow-auto'
+        className="min-h-48 overflow-auto"
         formats={[
           'header',
           'font',

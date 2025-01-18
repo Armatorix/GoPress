@@ -26,8 +26,10 @@ function NewArticle() {
   }
   return (
     <Bootstrap>
-      <div>
-        <h1>New Article</h1>
+      <div className="flex flex-col gap-2">
+        <div className="flex flex-row justify-between">
+          <h1>New Article</h1>
+        </div>
         <ArticleForm
           initData={{} as Article}
           onSubmit={onSubmit}

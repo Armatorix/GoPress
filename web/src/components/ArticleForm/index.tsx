@@ -1,8 +1,24 @@
-import { useState } from 'react'
-import { Button, Input, Switch } from '@material-tailwind/react'
+import { useAiGenerate } from '@/api/articles'
+import {
+  ApiError,
+  HtmlStyleType,
+  type Article,
+  type PatchArticle,
+  type PostArticle,
+  type PostArticleGenerate,
+} from '@/api/gen'
 import Editor from '@/components/Editor'
 import { useToast } from '@/components/Toasts/ToastsProvider'
-import { type Article, type PatchArticle, type PostArticle } from '@/api/gen'
+import {
+  Button,
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  DialogHeader,
+  Input,
+  Switch,
+} from '@material-tailwind/react'
+import { useState } from 'react'
 
 type FormType = PostArticle | PatchArticle
 interface ArticleFormProps {
@@ -30,6 +46,7 @@ const ArticleForm: React.FC<ArticleFormProps> = ({
 
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+      <AIGenerateContent setForm={setForm} form={form} />
       <Input
         type="text"
         label="Title"
@@ -61,6 +78,98 @@ const ArticleForm: React.FC<ArticleFormProps> = ({
         Submit
       </Button>
     </form>
+  )
+}
+
+type AIGenerateContentProps = {
+  form: FormType
+  setForm: React.Dispatch<React.SetStateAction<FormType>>
+}
+function AIGenerateContent({ form, setForm }: AIGenerateContentProps) {
+  const [open, setOpen] = useState(false)
+  const generate = useAiGenerate()
+  const toast = useToast()
+  const handleOpen = () => setOpen(!open)
+  const [prompt, setPrompt] = useState({
+    topic: '',
+    htmlStyles: HtmlStyleType.TAILWIND_CSS,
+  } as PostArticleGenerate)
+  const handleConfirm = () => {
+    generate.mutate(prompt, {
+      onSuccess: (v) => {
+        setForm({
+          ...form,
+          title: v.data.title,
+          body: v.data.body,
+          description: v.data.description,
+        } as FormType)
+        toast.success('Article generated')
+        setOpen(false)
+      },
+      onError: (error) => {
+        if (error instanceof ApiError) {
+          toast.error(error.message)
+          return
+        } else {
+          toast.error('Something went wrong')
+        }
+      },
+    })
+  }
+  return (
+    <>
+      <Button onClick={handleOpen} variant="gradient">
+        AI Generate
+      </Button>
+      <Dialog open={open} handler={handleOpen}>
+        <DialogHeader>Generate Content with AI</DialogHeader>
+        <DialogBody className="flex flex-col pl-8 gap-4">
+          <Input
+            type="text"
+            label="Article topic"
+            variant="outlined"
+            value={prompt.topic}
+            required
+            onChange={(e) => setPrompt({ ...prompt, topic: e.target.value })}
+          />
+          <Switch
+            checked={prompt.htmlStyles === HtmlStyleType.TAILWIND_CSS}
+            onChange={(e) =>
+              setPrompt({
+                ...prompt,
+                htmlStyles: e.target.checked
+                  ? HtmlStyleType.TAILWIND_CSS
+                  : HtmlStyleType.RAW_HTML,
+              })
+            }
+            label={
+              prompt.htmlStyles === HtmlStyleType.TAILWIND_CSS
+                ? 'Tailwind CSS'
+                : 'Raw HTML'
+            }
+            color="green"
+          />
+        </DialogBody>
+        <DialogFooter>
+          <Button
+            variant="text"
+            color="red"
+            onClick={handleOpen}
+            className="mr-1"
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="gradient"
+            color="green"
+            onClick={handleConfirm}
+            loading={generate.isPending}
+          >
+            Generate
+          </Button>
+        </DialogFooter>
+      </Dialog>
+    </>
   )
 }
 

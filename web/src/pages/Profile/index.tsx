@@ -36,12 +36,10 @@ function ChangePasswordModal() {
         onError: (error) => {
           // check if error is type of ApiError
           if (error instanceof ApiError && error.status === 412) {
-            toast.error(
-              'Sesja trwa zbyt długo - zaloguj się ponownie i spróbuj ponownie',
-            )
+            toast.error('Session expired - please log in again')
             return
           } else {
-            toast.error('Wystąpił błąd - spróbuj ponownie')
+            toast.error('Error occurred - please try again')
           }
         },
       },
