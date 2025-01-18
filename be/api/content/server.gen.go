@@ -17,6 +17,9 @@ import (
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
 
+	// (POST /admin/article/generate)
+	GenerateArticle(ctx echo.Context) error
+
 	// (PATCH /admin/article/{articleId})
 	UpdateArticle(ctx echo.Context, articleId ArticleId) error
 
@@ -36,6 +39,15 @@ type ServerInterface interface {
 // ServerInterfaceWrapper converts echo contexts to parameters.
 type ServerInterfaceWrapper struct {
 	Handler ServerInterface
+}
+
+// GenerateArticle converts echo context to params.
+func (w *ServerInterfaceWrapper) GenerateArticle(ctx echo.Context) error {
+	var err error
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.GenerateArticle(ctx)
+	return err
 }
 
 // UpdateArticle converts echo context to params.
@@ -134,6 +146,7 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 		Handler: si,
 	}
 
+	router.POST(baseURL+"/admin/article/generate", wrapper.GenerateArticle)
 	router.PATCH(baseURL+"/admin/article/:articleId", wrapper.UpdateArticle)
 	router.POST(baseURL+"/admin/article/:articleId/publish", wrapper.PublishArticle)
 	router.DELETE(baseURL+"/admin/articles", wrapper.DeleteArticles)
@@ -146,6 +159,38 @@ type ErrorMsgJSONResponse ErrorMsg
 
 type GetArticlesJSONResponse struct {
 	Data Articles `json:"data"`
+}
+
+type RespGeneratedArticleJSONResponse struct {
+	Data GeneratedArticle `json:"data"`
+}
+
+type GenerateArticleRequestObject struct {
+	Body *GenerateArticleJSONRequestBody
+}
+
+type GenerateArticleResponseObject interface {
+	VisitGenerateArticleResponse(w http.ResponseWriter) error
+}
+
+type GenerateArticle200JSONResponse struct {
+	RespGeneratedArticleJSONResponse
+}
+
+func (response GenerateArticle200JSONResponse) VisitGenerateArticleResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GenerateArticle500JSONResponse struct{ ErrorMsgJSONResponse }
+
+func (response GenerateArticle500JSONResponse) VisitGenerateArticleResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+
+	return json.NewEncoder(w).Encode(response)
 }
 
 type UpdateArticleRequestObject struct {
@@ -304,6 +349,9 @@ func (response CreateArticle500JSONResponse) VisitCreateArticleResponse(w http.R
 // StrictServerInterface represents all server handlers.
 type StrictServerInterface interface {
 
+	// (POST /admin/article/generate)
+	GenerateArticle(ctx context.Context, request GenerateArticleRequestObject) (GenerateArticleResponseObject, error)
+
 	// (PATCH /admin/article/{articleId})
 	UpdateArticle(ctx context.Context, request UpdateArticleRequestObject) (UpdateArticleResponseObject, error)
 
@@ -330,6 +378,35 @@ func NewStrictHandler(ssi StrictServerInterface, middlewares []StrictMiddlewareF
 type strictHandler struct {
 	ssi         StrictServerInterface
 	middlewares []StrictMiddlewareFunc
+}
+
+// GenerateArticle operation middleware
+func (sh *strictHandler) GenerateArticle(ctx echo.Context) error {
+	var request GenerateArticleRequestObject
+
+	var body GenerateArticleJSONRequestBody
+	if err := ctx.Bind(&body); err != nil {
+		return err
+	}
+	request.Body = &body
+
+	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.GenerateArticle(ctx.Request().Context(), request.(GenerateArticleRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GenerateArticle")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(GenerateArticleResponseObject); ok {
+		return validResponse.VisitGenerateArticleResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
 }
 
 // UpdateArticle operation middleware

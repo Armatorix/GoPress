@@ -51,6 +51,13 @@ paths:
       responses:
         '200': {description: Article published}
         '500': {$ref: '#/components/responses/ErrorMsg'}
+  /admin/article/generate:
+    post:
+      operationId: generateArticle
+      requestBody: {$ref: '#/components/requestBodies/PostArticleGenerate'}
+      responses:
+        '200': {$ref: '#/components/responses/RespGeneratedArticle'}
+        '500': {$ref: '#/components/responses/ErrorMsg'}
 components:
   parameters:
     userIds:
@@ -96,6 +103,11 @@ components:
       content:
         application/json:
           schema: {$ref: '#/components/schemas/PatchArticle'}
+    PostArticleGenerate:
+      required: true
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/PostArticleGenerate'}
   responses:
     ErrorMsg:
       description: Error message
@@ -110,6 +122,15 @@ components:
             type: object
             properties:
               data: {$ref: '#/components/schemas/Articles'}
+            required: [data]
+    RespGeneratedArticle:
+      description: Article generated
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data: {$ref: '#/components/schemas/GeneratedArticle'}
             required: [data]
   schemas:
     ErrorMsg:
@@ -150,5 +171,21 @@ components:
         tags: {type: array, items: {type: string}}
         released: {type: boolean}
       required: [title, body, tags, description, released]
+    PostArticleGenerate:
+      type: object
+      properties:
+        topic: {type: string}
+        htmlStyles: {$ref: '#/components/schemas/HtmlStyleType'}
+      required: [topic, htmlStyles]
+    GeneratedArticle:
+      type: object
+      properties:
+        title: {type: string}
+        body: {type: string}
+        description: {type: string}
+      required: [title, body, description]
+    HtmlStyleType:
+      type: string
+      enum: [RAW_HTML, TAILWIND_CSS]
   securitySchemes: {}
 security: []

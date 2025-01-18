@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/Armatorix/GoPress/be/db"
+	"github.com/Armatorix/GoPress/be/pkg/openai"
 	"github.com/caarlos0/env/v9"
 )
 
@@ -25,6 +26,7 @@ type Config struct {
 	Server Server
 	Auth   Auth
 	DB     db.Config
+	OpenAI openai.Config
 }
 
 func FromEnv() (*Config, error) {

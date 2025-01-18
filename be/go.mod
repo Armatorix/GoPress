@@ -12,6 +12,7 @@ require (
 	github.com/oapi-codegen/runtime v1.1.1
 	github.com/pressly/goose/v3 v3.23.0
 	github.com/rotisserie/eris v0.5.4
+	github.com/sashabaranov/go-openai v1.36.1
 	gopkg.in/DataDog/dd-trace-go.v1 v1.70.1
 )
 

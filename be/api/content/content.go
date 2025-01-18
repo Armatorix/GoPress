@@ -7,11 +7,52 @@ import (
 	"context"
 
 	"github.com/Armatorix/GoPress/be/db"
+	"github.com/Armatorix/GoPress/be/pkg/openai"
 	"github.com/Armatorix/GoPress/be/x/xecho"
 )
 
 type handler struct {
-	db *db.DB
+	db  *db.DB
+	oai *openai.Client
+}
+
+// GenerateArticle implements StrictServerInterface.
+func (h *handler) GenerateArticle(
+	ctx context.Context,
+	request GenerateArticleRequestObject,
+) (GenerateArticleResponseObject, error) {
+	var article *openai.Article
+	var err error
+	switch request.Body.HtmlStyles {
+	case RAWHTML:
+		article, err = h.oai.GenerateHTMLArticle(ctx, request.Body.Topic)
+	case TAILWINDCSS:
+		article, err = h.oai.GenerateTailwindCssArticle(ctx, request.Body.Topic)
+	default:
+		return GenerateArticle500JSONResponse{
+			ErrorMsgJSONResponse{
+				Error: "unknown html style",
+			},
+		}, nil
+	}
+
+	if err != nil {
+		return GenerateArticle500JSONResponse{
+			ErrorMsgJSONResponse{
+				Error: err.Error(),
+			},
+		}, nil
+	}
+
+	return GenerateArticle200JSONResponse{
+		RespGeneratedArticleJSONResponse{
+			Data: GeneratedArticle{
+				Title:       article.Title,
+				Body:        article.Body,
+				Description: article.Description,
+			},
+		},
+	}, nil
 }
 
 // PublishArticle implements StrictServerInterface.
@@ -94,10 +135,11 @@ func (h *handler) GetArticles(
 	}, nil
 }
 
-func NewHandler(db *db.DB) ServerInterface {
+func NewHandler(db *db.DB, oai *openai.Client) ServerInterface {
 	return NewStrictHandler(
 		&handler{
-			db: db,
+			db:  db,
+			oai: oai,
 		},
 		nil,
 	)

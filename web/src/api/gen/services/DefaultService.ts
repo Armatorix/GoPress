@@ -5,10 +5,12 @@
 import type { Article } from '../models/Article';
 import type { Articles } from '../models/Articles';
 import type { AuthToken } from '../models/AuthToken';
+import type { GeneratedArticle } from '../models/GeneratedArticle';
 import type { PatchArticle } from '../models/PatchArticle';
 import type { PatchPassword } from '../models/PatchPassword';
 import type { PatchUser } from '../models/PatchUser';
 import type { PostArticle } from '../models/PostArticle';
+import type { PostArticleGenerate } from '../models/PostArticleGenerate';
 import type { PostLogin } from '../models/PostLogin';
 import type { PostUsers } from '../models/PostUsers';
 import type { Users } from '../models/Users';
@@ -223,6 +225,26 @@ export class DefaultService {
             path: {
                 'articleId': articleId,
             },
+            errors: {
+                500: `Error message`,
+            },
+        });
+    }
+    /**
+     * @param requestBody
+     * @returns any Article generated
+     * @throws ApiError
+     */
+    public static generateArticle(
+        requestBody: PostArticleGenerate,
+    ): CancelablePromise<{
+        data: GeneratedArticle;
+    }> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/admin/article/generate',
+            body: requestBody,
+            mediaType: 'application/json',
             errors: {
                 500: `Error message`,
             },

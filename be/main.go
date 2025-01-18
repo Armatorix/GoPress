@@ -15,6 +15,7 @@ import (
 	"github.com/Armatorix/GoPress/be/config"
 	"github.com/Armatorix/GoPress/be/db"
 	dbext "github.com/Armatorix/GoPress/be/db/ext"
+	"github.com/Armatorix/GoPress/be/pkg/openai"
 	"github.com/Armatorix/GoPress/be/x/xecho"
 	"github.com/Armatorix/GoPress/be/x/xjwt"
 	"github.com/Armatorix/GoPress/be/x/xslog"
@@ -68,6 +69,7 @@ func main() {
 	e.Validator = &V{validator.New()}
 	apiNoAuth := e.Group("/api/v1")
 
+	openaic := openai.New(cfg.OpenAI)
 	dbAuthMiddleware := xecho.NewAuthStoreMiddleware(db)
 	apiAuth := apiNoAuth.Group("", xecho.AuthMiddleware(cfg.Auth.JwtSecret), dbAuthMiddleware)
 
@@ -107,7 +109,7 @@ func main() {
 	content.
 		RegisterHandlers(
 			apiAuth,
-			content.NewHandler(db),
+			content.NewHandler(db, openaic),
 		)
 
 	public.RegisterHandlers(
