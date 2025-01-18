@@ -9,12 +9,14 @@ import { Bootstrap } from '@/page_wrappers'
 import { TrashIcon } from '@heroicons/react/24/solid'
 import {
   Button,
+  Chip,
   Dialog,
   DialogBody,
   DialogFooter,
   DialogHeader,
   IconButton,
   Switch,
+  Tooltip,
   Typography,
 } from '@material-tailwind/react'
 import { useState } from 'react'
@@ -82,10 +84,15 @@ function ArticleTile({ article }: ArticleTileProps) {
     navigate(`/articles/${article.id}/edit`)
   }
   return (
-    <div className="bg-white shadow-md p-4 rounded-md h-40 relative hover:bg-gray-500 hover:text-white group">
-      <Typography variant="h6" className="max-w-40 overflow-ellipsis">
-        {article.title}
-      </Typography>
+    <div className="bg-white shadow-md p-4 rounded-md h-52 relative hover:bg-gray-500 hover:text-white group">
+      <Tooltip placement="top" content={article.title}>
+        <Typography
+          variant="h6"
+          className="max-w-72 text-nowrap overflow-hidden text-ellipsis"
+        >
+          {article.title}
+        </Typography>
+      </Tooltip>
       <Typography variant="small" className="overflow-hidden max-h-24">
         <div dangerouslySetInnerHTML={{ __html: article.description }} />
       </Typography>
@@ -98,14 +105,16 @@ function ArticleTile({ article }: ArticleTileProps) {
           labelProps={{ className: 'group-hover:text-white' }}
         />
       </div>
-      <div className="absolute bottom-4 right-4 gap-2 flex">
-        <div className="flex flex-col text-right">
-          <Typography variant='small'>Created: {new Date(article.createdAt).toLocaleDateString()}</Typography>
-          <Typography variant='small'>Updated: {new Date(article.updatedAt).toLocaleDateString()}</Typography>
-          <div className='flex gap-2 flex-row'>
+      <div className="absolute bottom-2 right-2 ">
+        <div className="flex flex-row gap-1 items-center text-right bg-gray-500/50 group-hover:bg-white/70 group-hover:text-black p-2 rounded-md">
+          <Typography variant="small" className='font-medium text-center'>
+            Created <Chip value={new Date(article.createdAt).toLocaleDateString()} />
+          </Typography>
+          <Typography variant="small" className='font-medium text-center'>
+            Updated <Chip value={new Date(article.updatedAt).toLocaleDateString()} />
+          </Typography>
             <DeleteWithConfirmationButton article={article} />
             <Button onClick={onEditClick}>Edit</Button>
-          </div>
         </div>
       </div>
     </div>
