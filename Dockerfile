@@ -1,5 +1,4 @@
-FROM golang:1.23.4 AS go-build
-
+FROM golang:1.23.5 AS go-build
 
 WORKDIR /go/src/github.com/Armatorix/mojepole/be
 COPY ./be/go.mod \
@@ -27,12 +26,16 @@ COPY ./web/index.html \
     ./
 COPY ./web/src src
 
-
 RUN bun run build
 
-FROM debian:bookworm-slim
+FROM alpine:latest as certs
+RUN apk --update add ca-certificates
+
+FROM scratch
 
 WORKDIR /app
+COPY --from=certs /etc/ssl/certs/ca-certificates.crt \
+    /etc/ssl/certs/ca-certificates.crt
 
 COPY --from=go-build \
     /go/src/github.com/Armatorix/mojepole/be/apibin \
@@ -41,7 +44,5 @@ COPY --from=go-build \
 COPY --from=node-build \
     /app/dist \
     /app/public
-
-RUN apt-get update -y && apt-get install ca-certificates -y
 
 CMD ["/app/api"]

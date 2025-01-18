@@ -1,6 +1,6 @@
 module github.com/Armatorix/GoPress/be
 
-go 1.23.0
+go 1.23.5
 
 require (
 	entgo.io/ent v0.14.1
