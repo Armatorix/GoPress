@@ -14,19 +14,19 @@ TODO:
 admin pandel:
 - [x] adding new content
 - [x] changing self password
-public api:
-- [ ] get content list (with tag filters)
-- [ ] get content by id
 
 additional:
-- [ ] preview mode
+- [x] preview mode in editor
+- [ ] add handling for tags
 - [ ] page view statistics
-- [ ] files upload handling to pg
+- [ ] files upload handling to pg + hosting options + compress
 - [ ] members handling - adding new members with password
 - [ ] in memory content caching
 - [ ] first publish date
+- [ ] update readme with configs and how to use
+- [ ] permalinks - named links in articles except ids
 
 ## Options for docker image:
-- [ ] usage domain (for inner-links and CORS)
-- [ ] GoPress domain (for analytic links generation)
-- [ ] postgres connection uri
+- [x] usage domain (for inner-links and CORS)
+- [ ] GoPress domain (for analytic links generation) [or drop it and leave this job for GA?]
+- [x] postgres connection uri
