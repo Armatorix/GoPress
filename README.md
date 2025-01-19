@@ -25,6 +25,7 @@ additional:
 - [ ] first publish date
 - [ ] update readme with configs and how to use
 - [ ] permalinks - named links in articles except ids
+- [ ] organization page with simple user management 
 
 ## Options for docker image:
 - [x] usage domain (for inner-links and CORS)
