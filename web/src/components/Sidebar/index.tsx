@@ -78,7 +78,7 @@ function SidebarContent() {
     navigate('/profile')
   }
   return (
-    <Card className="h-screen ">
+    <Card className="h-screen w-48">
       <div className="mb-2 p-4 flex flex-row items-center justify-center space-x-2 select-none">
         <img src="/icon.png" alt="logo" className="h-10 w-10" />
         <Typography variant="h5" color="blue-gray">

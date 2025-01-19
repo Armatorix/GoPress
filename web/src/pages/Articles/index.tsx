@@ -93,9 +93,7 @@ function ArticleTile({ article }: ArticleTileProps) {
           {article.title}
         </Typography>
       </Tooltip>
-      <Typography variant="small" className="overflow-hidden max-h-24">
-        <div dangerouslySetInnerHTML={{ __html: article.description }} />
-      </Typography>
+      <div className="text-sm overflow-hidden max-h-20" dangerouslySetInnerHTML={{ __html: article.description }} />
       <div className="absolute top-4 right-4">
         <Switch
           checked={article.released}
@@ -106,7 +104,7 @@ function ArticleTile({ article }: ArticleTileProps) {
         />
       </div>
       <div className="absolute bottom-2 right-2 ">
-        <div className="flex flex-row gap-1 items-center text-right bg-gray-500/50 group-hover:bg-white/70 group-hover:text-black p-2 rounded-md">
+        <div className="flex flex-row gap-1 items-center text-right bg-gray-500/20 group-hover:bg-white/70 group-hover:text-black p-2 rounded-md">
           <Typography variant="small" className='font-medium text-center'>
             Created <Chip value={new Date(article.createdAt).toLocaleDateString()} />
           </Typography>
