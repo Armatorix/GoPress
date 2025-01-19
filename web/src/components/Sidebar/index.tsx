@@ -61,6 +61,11 @@ function DrawerSidebar() {
 
 function SidebarContent() {
   const navigate = useNavigate()
+
+  const onDashboard = () => {
+    navigate('/dashboard')
+  }
+
   const onArticles = () => {
     navigate('/articles')
   }
@@ -81,7 +86,7 @@ function SidebarContent() {
         </Typography>
       </div>
       <List>
-        <ListItem disabled>
+        <ListItem onClick={onDashboard}>
           <ListItemPrefix>
             <PresentationChartBarIcon className="h-5 w-5" />
           </ListItemPrefix>

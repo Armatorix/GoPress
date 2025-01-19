@@ -15,6 +15,11 @@ type InsertArticle struct {
 	UserId      int
 }
 
+type ArticleStats struct {
+	TotalReleased int
+	Total         int
+}
+
 func (db *DB) GetArticles(ctx context.Context) (ent.Articles, error) {
 	return db.ArticleClient().
 		Query().
@@ -82,4 +87,26 @@ func (db *DB) GetPublishedArticleWithAuthor(ctx context.Context, id int) (*ent.A
 		).
 		WithUser().
 		Only(ctx)
+}
+
+func (db *DB) GetArticleStats(ctx context.Context) (*ArticleStats, error) {
+	total, err := db.ArticleClient().
+		Query().
+		Count(ctx)
+	if err != nil {
+		return nil, err
+	}
+	totalReleased, err := db.ArticleClient().
+		Query().
+		Where(
+			article.Released(true),
+		).
+		Count(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &ArticleStats{
+		Total:         total,
+		TotalReleased: totalReleased,
+	}, nil
 }

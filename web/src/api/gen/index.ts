@@ -11,6 +11,7 @@ export type { Article } from './models/Article';
 export type { articleId } from './models/articleId';
 export type { articleIds } from './models/articleIds';
 export type { Articles } from './models/Articles';
+export type { ArticleStats } from './models/ArticleStats';
 export type { AuthToken } from './models/AuthToken';
 export type { ErrorMsg } from './models/ErrorMsg';
 export type { GeneratedArticle } from './models/GeneratedArticle';

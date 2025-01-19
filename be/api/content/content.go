@@ -16,6 +16,27 @@ type handler struct {
 	oai *openai.Client
 }
 
+// GetArticleStats implements StrictServerInterface.
+func (h *handler) GetArticleStats(
+	ctx context.Context,
+	request GetArticleStatsRequestObject,
+) (GetArticleStatsResponseObject, error) {
+	stats, err := h.db.GetArticleStats(ctx)
+	if err != nil {
+		return GetArticleStats500JSONResponse{}, err
+	}
+
+	return GetArticleStats200JSONResponse{
+		GetArticleStatsJSONResponse{
+			Data: ArticleStats{
+				Released: stats.TotalReleased,
+				Total:    stats.Total,
+			},
+		},
+	}, nil
+
+}
+
 // GenerateArticle implements StrictServerInterface.
 func (h *handler) GenerateArticle(
 	ctx context.Context,

@@ -20,6 +20,9 @@ type ServerInterface interface {
 	// (POST /admin/article/generate)
 	GenerateArticle(ctx echo.Context) error
 
+	// (GET /admin/article/stats)
+	GetArticleStats(ctx echo.Context) error
+
 	// (PATCH /admin/article/{articleId})
 	UpdateArticle(ctx echo.Context, articleId ArticleId) error
 
@@ -47,6 +50,15 @@ func (w *ServerInterfaceWrapper) GenerateArticle(ctx echo.Context) error {
 
 	// Invoke the callback with all the unmarshaled arguments
 	err = w.Handler.GenerateArticle(ctx)
+	return err
+}
+
+// GetArticleStats converts echo context to params.
+func (w *ServerInterfaceWrapper) GetArticleStats(ctx echo.Context) error {
+	var err error
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.GetArticleStats(ctx)
 	return err
 }
 
@@ -147,6 +159,7 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 	}
 
 	router.POST(baseURL+"/admin/article/generate", wrapper.GenerateArticle)
+	router.GET(baseURL+"/admin/article/stats", wrapper.GetArticleStats)
 	router.PATCH(baseURL+"/admin/article/:articleId", wrapper.UpdateArticle)
 	router.POST(baseURL+"/admin/article/:articleId/publish", wrapper.PublishArticle)
 	router.DELETE(baseURL+"/admin/articles", wrapper.DeleteArticles)
@@ -156,6 +169,10 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 }
 
 type ErrorMsgJSONResponse ErrorMsg
+
+type GetArticleStatsJSONResponse struct {
+	Data ArticleStats `json:"data"`
+}
 
 type GetArticlesJSONResponse struct {
 	Data Articles `json:"data"`
@@ -187,6 +204,31 @@ func (response GenerateArticle200JSONResponse) VisitGenerateArticleResponse(w ht
 type GenerateArticle500JSONResponse struct{ ErrorMsgJSONResponse }
 
 func (response GenerateArticle500JSONResponse) VisitGenerateArticleResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetArticleStatsRequestObject struct {
+}
+
+type GetArticleStatsResponseObject interface {
+	VisitGetArticleStatsResponse(w http.ResponseWriter) error
+}
+
+type GetArticleStats200JSONResponse struct{ GetArticleStatsJSONResponse }
+
+func (response GetArticleStats200JSONResponse) VisitGetArticleStatsResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetArticleStats500JSONResponse struct{ ErrorMsgJSONResponse }
+
+func (response GetArticleStats500JSONResponse) VisitGetArticleStatsResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(500)
 
@@ -352,6 +394,9 @@ type StrictServerInterface interface {
 	// (POST /admin/article/generate)
 	GenerateArticle(ctx context.Context, request GenerateArticleRequestObject) (GenerateArticleResponseObject, error)
 
+	// (GET /admin/article/stats)
+	GetArticleStats(ctx context.Context, request GetArticleStatsRequestObject) (GetArticleStatsResponseObject, error)
+
 	// (PATCH /admin/article/{articleId})
 	UpdateArticle(ctx context.Context, request UpdateArticleRequestObject) (UpdateArticleResponseObject, error)
 
@@ -403,6 +448,29 @@ func (sh *strictHandler) GenerateArticle(ctx echo.Context) error {
 		return err
 	} else if validResponse, ok := response.(GenerateArticleResponseObject); ok {
 		return validResponse.VisitGenerateArticleResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
+// GetArticleStats operation middleware
+func (sh *strictHandler) GetArticleStats(ctx echo.Context) error {
+	var request GetArticleStatsRequestObject
+
+	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.GetArticleStats(ctx.Request().Context(), request.(GetArticleStatsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetArticleStats")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(GetArticleStatsResponseObject); ok {
+		return validResponse.VisitGetArticleStatsResponse(ctx.Response())
 	} else if response != nil {
 		return fmt.Errorf("unexpected response type: %T", response)
 	}

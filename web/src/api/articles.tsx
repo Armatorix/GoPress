@@ -68,3 +68,10 @@ export function useAiGenerate() {
       DefaultService.generateArticle(body),
   })
 }
+
+export function useArticleStats() {
+  return useQuery({
+    queryKey: ['articleStats'],
+    queryFn: () => DefaultService.getArticleStats(),
+  })
+}

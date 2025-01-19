@@ -25,6 +25,12 @@ type Article struct {
 	UpdatedAt   time.Time `json:"updatedAt"`
 }
 
+// ArticleStats defines model for ArticleStats.
+type ArticleStats struct {
+	Released int `json:"released"`
+	Total    int `json:"total"`
+}
+
 // Articles defines model for Articles.
 type Articles = []Article
 
@@ -72,6 +78,11 @@ type ArticleId = int
 
 // ArticleIds defines model for articleIds.
 type ArticleIds = []int
+
+// GetArticleStats defines model for GetArticleStats.
+type GetArticleStats struct {
+	Data ArticleStats `json:"data"`
+}
 
 // GetArticles defines model for GetArticles.
 type GetArticles struct {

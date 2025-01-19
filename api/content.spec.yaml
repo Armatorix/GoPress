@@ -58,6 +58,12 @@ paths:
       responses:
         '200': {$ref: '#/components/responses/RespGeneratedArticle'}
         '500': {$ref: '#/components/responses/ErrorMsg'}
+  /admin/article/stats:
+    get:
+      operationId: getArticleStats
+      responses:
+        '200': {$ref: '#/components/responses/GetArticleStats'}
+        '500': {$ref: '#/components/responses/ErrorMsg'}
 components:
   parameters:
     userIds:
@@ -132,6 +138,15 @@ components:
             properties:
               data: {$ref: '#/components/schemas/GeneratedArticle'}
             required: [data]
+    GetArticleStats:
+      description: Article stats
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data: {$ref: '#/components/schemas/ArticleStats'}
+            required: [data]
   schemas:
     ErrorMsg:
       type: object
@@ -187,5 +202,11 @@ components:
     HtmlStyleType:
       type: string
       enum: [RAW_HTML, TAILWIND_CSS]
+    ArticleStats:
+      type: object
+      properties:
+        total: {type: number, format: int64, x-go-type: int}
+        released: {type: number, format: int64, x-go-type: int}
+      required: [total, released]
   securitySchemes: {}
 security: []

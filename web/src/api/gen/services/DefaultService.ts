@@ -4,6 +4,7 @@
 /* eslint-disable */
 import type { Article } from '../models/Article';
 import type { Articles } from '../models/Articles';
+import type { ArticleStats } from '../models/ArticleStats';
 import type { AuthToken } from '../models/AuthToken';
 import type { GeneratedArticle } from '../models/GeneratedArticle';
 import type { PatchArticle } from '../models/PatchArticle';
@@ -245,6 +246,21 @@ export class DefaultService {
             url: '/admin/article/generate',
             body: requestBody,
             mediaType: 'application/json',
+            errors: {
+                500: `Error message`,
+            },
+        });
+    }
+    /**
+     * @returns any Article stats
+     * @throws ApiError
+     */
+    public static getArticleStats(): CancelablePromise<{
+        data: ArticleStats;
+    }> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/admin/article/stats',
             errors: {
                 500: `Error message`,
             },
