@@ -34,7 +34,7 @@ function Sidebar() {
 
 function AlwaysOpenSidebar() {
   return (
-    <Card className="h-screen fixed max-w-72">
+    <Card className="h-screen fixed">
       <SidebarContent />
     </Card>
   )
@@ -78,14 +78,14 @@ function SidebarContent() {
     navigate('/profile')
   }
   return (
-    <Card className="h-screen w-48">
+    <Card className="h-screen">
       <div className="mb-2 p-4 flex flex-row items-center justify-center space-x-2 select-none">
         <img src="/icon.png" alt="logo" className="h-10 w-10" />
         <Typography variant="h5" color="blue-gray">
           GoPress
         </Typography>
       </div>
-      <List>
+      <List className='min-w-48'>
         <ListItem onClick={onDashboard}>
           <ListItemPrefix>
             <PresentationChartBarIcon className="h-5 w-5" />
