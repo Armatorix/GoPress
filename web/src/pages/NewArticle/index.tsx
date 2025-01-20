@@ -2,7 +2,6 @@ import { useNewArticle } from '@/api/articles'
 import type { Article, PostArticle } from '@/api/gen'
 import ArticleForm from '@/components/ArticleForm'
 import { useToast } from '@/components/Toasts/ToastsProvider'
-import { Bootstrap } from '@/page_wrappers'
 import { useNavigate } from 'react-router-dom'
 
 function NewArticle() {
@@ -25,18 +24,16 @@ function NewArticle() {
     })
   }
   return (
-    <Bootstrap>
-      <div className="flex flex-col gap-2">
-        <div className="flex flex-row justify-between">
-          <h1>New Article</h1>
-        </div>
-        <ArticleForm
-          initData={{} as Article}
-          onSubmit={onSubmit}
-          isPending={newArticle.isPending}
-        />
+    <div className="flex flex-col gap-2">
+      <div className="flex flex-row justify-between">
+        <h1>New Article</h1>
       </div>
-    </Bootstrap>
+      <ArticleForm
+        initData={{} as Article}
+        onSubmit={onSubmit}
+        isPending={newArticle.isPending}
+      />
+    </div>
   )
 }
 

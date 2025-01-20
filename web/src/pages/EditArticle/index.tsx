@@ -2,7 +2,6 @@ import { useArticles, useUpdateArticle } from '@/api/articles'
 import type { Article, PatchArticle } from '@/api/gen'
 import ArticleForm from '@/components/ArticleForm'
 import { useToast } from '@/components/Toasts/ToastsProvider'
-import { Bootstrap } from '@/page_wrappers'
 import { useNavigate, useParams } from 'react-router-dom'
 
 function EditArticle() {
@@ -35,16 +34,14 @@ function EditWithData({ article }: { article: Article }) {
     })
   }
   return (
-    <Bootstrap>
-      <div>
-        <h1>Edit Article</h1>
-        <ArticleForm
-          initData={article}
-          onSubmit={onSubmit}
-          isPending={updateArticle.isPending}
-        />
-      </div>
-    </Bootstrap>
+    <div>
+      <h1>Edit Article</h1>
+      <ArticleForm
+        initData={article}
+        onSubmit={onSubmit}
+        isPending={updateArticle.isPending}
+      />
+    </div>
   )
 }
 

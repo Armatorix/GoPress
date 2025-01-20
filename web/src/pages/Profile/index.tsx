@@ -1,7 +1,6 @@
 import { useUpdatePassword } from '@/api/admin'
 import { ApiError } from '@/api/gen'
 import { useToast } from '@/components/Toasts/ToastsProvider'
-import { Bootstrap } from '@/page_wrappers/Bootstrap'
 import {
   Button,
   Dialog,
@@ -13,11 +12,7 @@ import {
 import { useState } from 'react'
 
 function Profile() {
-  return (
-    <Bootstrap>
-      <ChangePasswordModal />
-    </Bootstrap>
-  )
+  return <ChangePasswordModal />
 }
 
 function ChangePasswordModal() {

@@ -5,7 +5,6 @@ import {
 } from '@/api/articles'
 import type { Article } from '@/api/gen'
 import { useToast } from '@/components/Toasts/ToastsProvider'
-import { Bootstrap } from '@/page_wrappers'
 import { TrashIcon } from '@heroicons/react/24/solid'
 import {
   Button,
@@ -30,23 +29,17 @@ function Articles() {
   }
 
   if (articles.isLoading || articles.data === undefined) {
-    return (
-      <Bootstrap>
-        <Typography>Loading...</Typography>
-      </Bootstrap>
-    )
+    return <Typography>Loading...</Typography>
   }
   return (
-    <Bootstrap>
-      <div className="flex flex-col gap-4">
-        <Button onClick={onNewArticle}>New Article</Button>
-        {articles.data.data.length === 0 ? (
-          <Typography>No articles found</Typography>
-        ) : (
-          <ArticleList articles={articles.data.data} />
-        )}
-      </div>
-    </Bootstrap>
+    <div className="flex flex-col gap-4">
+      <Button onClick={onNewArticle}>New Article</Button>
+      {articles.data.data.length === 0 ? (
+        <Typography>No articles found</Typography>
+      ) : (
+        <ArticleList articles={articles.data.data} />
+      )}
+    </div>
   )
 }
 type ArticleTileProps = {
