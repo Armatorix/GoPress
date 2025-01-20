@@ -32,3 +32,6 @@ additional:
 - [x] usage domain (for inner-links and CORS)
 - [ ] GoPress domain (for analytic links generation) [or drop it and leave this job for GA?]
 - [x] postgres connection uri
+
+## Open questions:
+- [ ] Maybe use config in DB and make a admin panel to make it dynamically loadable

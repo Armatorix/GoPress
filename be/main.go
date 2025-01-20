@@ -114,7 +114,7 @@ func main() {
 
 	public.RegisterHandlers(
 		apiNoAuth,
-		public.NewHandler(db),
+		public.NewHandler(db, cfg.Public),
 	)
 
 	fe := e.Group("", func(next echo.HandlerFunc) echo.HandlerFunc {

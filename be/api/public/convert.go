@@ -28,24 +28,16 @@ func articleFromEnt(in *ent.Article) Article {
 	}
 }
 
-type blogDetails struct {
-	name        string
-	link        string
-	description string
-	authorName  string
-	authorEmail string
-}
-
-func rssFeedFromEnt(details blogDetails, ins ent.Articles) (r io.Reader, n int64, err error) {
+func rssFeedFromEnt(details Config, ins ent.Articles) (r io.Reader, n int64, err error) {
 	f := feeds.Feed{
-		Title: details.name,
+		Title: details.BlogName,
 		Link: &feeds.Link{
-			Href: details.link,
+			Href: details.BlogUrl,
 		},
-		Description: details.description,
+		Description: details.BlogDesc,
 		Author: &feeds.Author{
-			Name:  details.authorName,
-			Email: details.authorEmail,
+			Name:  details.BlogAuthor,
+			Email: details.BlogEmail,
 		},
 		Items: rssFeedItemsFromEnt(ins),
 	}

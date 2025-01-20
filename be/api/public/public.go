@@ -10,7 +10,16 @@ import (
 )
 
 type handler struct {
-	db *db.DB
+	db  *db.DB
+	cfg Config
+}
+
+type Config struct {
+	BlogName   string `env:"BLOG_NAME"`
+	BlogUrl    string `env:"BLOG_URL"`
+	BlogDesc   string `env:"BLOG_DESCRIPTION"`
+	BlogAuthor string `env:"BLOG_AUTHOR"`
+	BlogEmail  string `env:"BLOG_EMAIL"`
 }
 
 // GetRss implements StrictServerInterface.
@@ -24,7 +33,7 @@ func (h *handler) GetRss(
 	}
 
 	r, n, err := rssFeedFromEnt(
-		blogDetails{},
+		h.cfg,
 		arts,
 	)
 	if err != nil {
@@ -69,10 +78,11 @@ func (h *handler) GetArticles(
 	}, nil
 }
 
-func NewHandler(db *db.DB) ServerInterface {
+func NewHandler(db *db.DB, cfg Config) ServerInterface {
 	return NewStrictHandler(
 		&handler{
-			db: db,
+			db:  db,
+			cfg: cfg,
 		},
 		nil,
 	)
