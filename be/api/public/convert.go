@@ -80,5 +80,6 @@ func rssFeedItemFromEnt(in *ent.Article, url url.URL) *feeds.Item {
 		Description: in.Description,
 		Created:     in.CreatedAt,
 		Updated:     in.UpdatedAt,
+		Id:          strconv.Itoa(in.ID),
 	}
 }
