@@ -32,7 +32,13 @@ const ArticleForm: React.FC<ArticleFormProps> = ({
   onSubmit,
   isPending,
 }) => {
-  const [form, setForm] = useState(initData as FormType)
+  const [form, setForm] = useState({
+    title: initData.title || '',
+    body: initData.body || '',
+    description: initData.description || '',
+    tags: initData.tags || [],
+    released: initData.released || false,
+  } as FormType)
   const toast = useToast()
 
   const handleSubmit = (e: React.FormEvent) => {
