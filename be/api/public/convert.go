@@ -2,6 +2,8 @@ package public
 
 import (
 	"io"
+	"net/url"
+	"strconv"
 	"strings"
 
 	"github.com/Armatorix/GoPress/be/db/ent/ent"
@@ -29,6 +31,10 @@ func articleFromEnt(in *ent.Article) Article {
 }
 
 func rssFeedFromEnt(details Config, ins ent.Articles) (r io.Reader, n int64, err error) {
+	items, err := rssFeedItemsFromEnt(details, ins)
+	if err != nil {
+		return nil, 0, err
+	}
 	f := feeds.Feed{
 		Title: details.BlogName,
 		Link: &feeds.Link{
@@ -39,7 +45,7 @@ func rssFeedFromEnt(details Config, ins ent.Articles) (r io.Reader, n int64, err
 			Name:  details.BlogAuthor,
 			Email: details.BlogEmail,
 		},
-		Items: rssFeedItemsFromEnt(ins),
+		Items: items,
 	}
 
 	rss, err := f.ToRss()
@@ -50,18 +56,27 @@ func rssFeedFromEnt(details Config, ins ent.Articles) (r io.Reader, n int64, err
 	return strings.NewReader(rss), int64(len(rss)), nil
 }
 
-func rssFeedItemsFromEnt(ins ent.Articles) []*feeds.Item {
+func rssFeedItemsFromEnt(details Config, ins ent.Articles) ([]*feeds.Item, error) {
+	url, err := url.Parse(details.BlogUrl)
+	if err != nil {
+		return nil, err
+	}
 	items := make([]*feeds.Item, len(ins))
 	for i, in := range ins {
-		items[i] = rssFeedItemFromEnt(in)
+		itemUrl := *url
+		url.JoinPath("articles", strconv.Itoa(in.ID))
+		items[i] = rssFeedItemFromEnt(
+			in,
+			itemUrl,
+		)
 	}
-	return items
+	return items, nil
 }
 
-func rssFeedItemFromEnt(in *ent.Article) *feeds.Item {
+func rssFeedItemFromEnt(in *ent.Article, url url.URL) *feeds.Item {
 	return &feeds.Item{
 		Title:       in.Title,
-		Link:        &feeds.Link{Href: "http://example.com/article/1"},
+		Link:        &feeds.Link{Href: url.String()},
 		Description: in.Description,
 		Created:     in.CreatedAt,
 		Updated:     in.UpdatedAt,
