@@ -5,6 +5,8 @@ package public
 
 import (
 	"time"
+
+	"github.com/gorilla/feeds"
 )
 
 // Article defines model for Article.
@@ -21,6 +23,9 @@ type Article struct {
 
 // Articles defines model for Articles.
 type Articles = []Article
+
+// RssFeed defines model for RssFeed.
+type RssFeed = feeds.Feed
 
 // ArticleId defines model for articleId.
 type ArticleId = int

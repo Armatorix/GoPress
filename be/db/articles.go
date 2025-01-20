@@ -110,3 +110,13 @@ func (db *DB) GetArticleStats(ctx context.Context) (*ArticleStats, error) {
 		TotalReleased: totalReleased,
 	}, nil
 }
+
+func (db *DB) GetLast20PublishedArticlesWithAuthors(ctx context.Context) (ent.Articles, error) {
+	return db.ArticleClient().
+		Query().
+		Where(article.Released(true)).
+		WithUser().
+		Order(ent.Desc(article.FieldID)).
+		Limit(20).
+		All(ctx)
+}

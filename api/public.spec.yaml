@@ -25,6 +25,12 @@ paths:
         '200': {$ref: '#/components/responses/GetArticle'}
         '404': {$ref: '#/components/responses/ErrorMsg'}
         '500': {$ref: '#/components/responses/ErrorMsg'}
+  /rss:
+    get:
+      operationId: getRss
+      responses:
+        '200': {$ref: '#/components/responses/GetRss'}
+        '500': {$ref: '#/components/responses/ErrorMsg'}
 components:
   parameters:
     articleId:
@@ -63,6 +69,11 @@ components:
             properties:
               data: {$ref: '#/components/schemas/Article'}
             required: [data]
+    GetRss:
+      description: RSS feed
+      content:
+        application/xml:
+          schema: {$ref: '#/components/schemas/RssFeed'}
   schemas:
     ErrorMsg:
       type: object
@@ -84,5 +95,9 @@ components:
     Articles:
       type: array
       items: {$ref: '#/components/schemas/Article'}
+    RssFeed:
+      type: object
+      x-go-type: feeds.Feed
+      x-go-package: github.com/gorilla/feeds
   securitySchemes: {}
 security: []

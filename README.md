@@ -18,6 +18,7 @@ admin pandel:
 additional:
 - [x] preview mode in editor
 - [ ] add handling for tags
+- [ ] rss channel handling
 - [ ] page view statistics
 - [ ] files upload handling to pg + hosting options + compress
 - [ ] members handling - adding new members with password

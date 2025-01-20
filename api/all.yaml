@@ -168,6 +168,14 @@ paths:
           $ref: '#/components/responses/ErrorMsg'
         '500':
           $ref: '#/components/responses/ErrorMsg'
+  /rss:
+    get:
+      operationId: getRss
+      responses:
+        '200':
+          $ref: '#/components/responses/GetRss'
+        '500':
+          $ref: '#/components/responses/ErrorMsg'
 components:
   parameters:
     userIds:
@@ -302,6 +310,12 @@ components:
               data:
                 $ref: '#/components/schemas/Article'
             required: [data]
+    GetRss:
+      description: RSS feed
+      content:
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/RssFeed'
   schemas:
     ErrorMsg:
       type: object
@@ -457,5 +471,9 @@ components:
           format: int64
           x-go-type: int
       required: [total, released]
+    RssFeed:
+      type: object
+      x-go-type: feeds.Feed
+      x-go-package: github.com/gorilla/feeds
   securitySchemes: {}
 security: []

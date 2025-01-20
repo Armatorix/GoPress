@@ -14,6 +14,7 @@ import type { PostArticle } from '../models/PostArticle';
 import type { PostArticleGenerate } from '../models/PostArticleGenerate';
 import type { PostLogin } from '../models/PostLogin';
 import type { PostUsers } from '../models/PostUsers';
+import type { RssFeed } from '../models/RssFeed';
 import type { Users } from '../models/Users';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -299,6 +300,19 @@ export class DefaultService {
             },
             errors: {
                 404: `Error message`,
+                500: `Error message`,
+            },
+        });
+    }
+    /**
+     * @returns RssFeed RSS feed
+     * @throws ApiError
+     */
+    public static getRss(): CancelablePromise<RssFeed> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/rss',
+            errors: {
                 500: `Error message`,
             },
         });

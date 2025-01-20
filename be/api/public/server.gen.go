@@ -7,6 +7,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -22,6 +23,9 @@ type ServerInterface interface {
 
 	// (GET /articles/{articleId})
 	GetArticle(ctx echo.Context, articleId ArticleId) error
+
+	// (GET /rss)
+	GetRss(ctx echo.Context) error
 }
 
 // ServerInterfaceWrapper converts echo contexts to parameters.
@@ -51,6 +55,15 @@ func (w *ServerInterfaceWrapper) GetArticle(ctx echo.Context) error {
 
 	// Invoke the callback with all the unmarshaled arguments
 	err = w.Handler.GetArticle(ctx, articleId)
+	return err
+}
+
+// GetRss converts echo context to params.
+func (w *ServerInterfaceWrapper) GetRss(ctx echo.Context) error {
+	var err error
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.GetRss(ctx)
 	return err
 }
 
@@ -84,6 +97,7 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 
 	router.GET(baseURL+"/articles", wrapper.GetArticles)
 	router.GET(baseURL+"/articles/:articleId", wrapper.GetArticle)
+	router.GET(baseURL+"/rss", wrapper.GetRss)
 
 }
 
@@ -97,6 +111,12 @@ type GetArticleJSONResponse struct {
 
 type GetArticlesJSONResponse struct {
 	Data Articles `json:"data"`
+}
+
+type GetRssApplicationxmlResponse struct {
+	Body io.Reader
+
+	ContentLength int64
 }
 
 type GetArticlesRequestObject struct {
@@ -161,6 +181,38 @@ func (response GetArticle500JSONResponse) VisitGetArticleResponse(w http.Respons
 	return json.NewEncoder(w).Encode(response)
 }
 
+type GetRssRequestObject struct {
+}
+
+type GetRssResponseObject interface {
+	VisitGetRssResponse(w http.ResponseWriter) error
+}
+
+type GetRss200ApplicationxmlResponse struct{ GetRssApplicationxmlResponse }
+
+func (response GetRss200ApplicationxmlResponse) VisitGetRssResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/xml")
+	if response.ContentLength != 0 {
+		w.Header().Set("Content-Length", fmt.Sprint(response.ContentLength))
+	}
+	w.WriteHeader(200)
+
+	if closer, ok := response.Body.(io.ReadCloser); ok {
+		defer closer.Close()
+	}
+	_, err := io.Copy(w, response.Body)
+	return err
+}
+
+type GetRss500JSONResponse struct{ ErrorMsgJSONResponse }
+
+func (response GetRss500JSONResponse) VisitGetRssResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
 // StrictServerInterface represents all server handlers.
 type StrictServerInterface interface {
 
@@ -169,6 +221,9 @@ type StrictServerInterface interface {
 
 	// (GET /articles/{articleId})
 	GetArticle(ctx context.Context, request GetArticleRequestObject) (GetArticleResponseObject, error)
+
+	// (GET /rss)
+	GetRss(ctx context.Context, request GetRssRequestObject) (GetRssResponseObject, error)
 }
 
 type StrictHandlerFunc = strictecho.StrictEchoHandlerFunc
@@ -225,6 +280,29 @@ func (sh *strictHandler) GetArticle(ctx echo.Context, articleId ArticleId) error
 		return err
 	} else if validResponse, ok := response.(GetArticleResponseObject); ok {
 		return validResponse.VisitGetArticleResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
+// GetRss operation middleware
+func (sh *strictHandler) GetRss(ctx echo.Context) error {
+	var request GetRssRequestObject
+
+	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.GetRss(ctx.Request().Context(), request.(GetRssRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetRss")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(GetRssResponseObject); ok {
+		return validResponse.VisitGetRssResponse(ctx.Response())
 	} else if response != nil {
 		return fmt.Errorf("unexpected response type: %T", response)
 	}

@@ -23,6 +23,7 @@ export type { PostArticle } from './models/PostArticle';
 export type { PostArticleGenerate } from './models/PostArticleGenerate';
 export type { PostLogin } from './models/PostLogin';
 export type { PostUsers } from './models/PostUsers';
+export type { RssFeed } from './models/RssFeed';
 export type { User } from './models/User';
 export type { userId } from './models/userId';
 export type { userIds } from './models/userIds';

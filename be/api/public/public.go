@@ -13,6 +13,32 @@ type handler struct {
 	db *db.DB
 }
 
+// GetRss implements StrictServerInterface.
+func (h *handler) GetRss(
+	ctx context.Context,
+	request GetRssRequestObject,
+) (GetRssResponseObject, error) {
+	arts, err := h.db.GetLast20PublishedArticlesWithAuthors(ctx)
+	if err != nil {
+		return GetRss500JSONResponse{}, err
+	}
+
+	r, n, err := rssFeedFromEnt(
+		blogDetails{},
+		arts,
+	)
+	if err != nil {
+		return GetRss500JSONResponse{}, err
+	}
+
+	return GetRss200ApplicationxmlResponse{
+		GetRssApplicationxmlResponse{
+			Body:          r,
+			ContentLength: n,
+		},
+	}, nil
+}
+
 // GetArticle implements StrictServerInterface.
 func (h *handler) GetArticle(
 	ctx context.Context,

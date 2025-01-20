@@ -6,6 +6,7 @@ require (
 	entgo.io/ent v0.14.1
 	github.com/caarlos0/env/v9 v9.0.0
 	github.com/go-playground/validator/v10 v10.24.0
+	github.com/gorilla/feeds v1.2.0
 	github.com/jackc/pgx/v5 v5.7.2
 	github.com/labstack/echo/v4 v4.13.3
 	github.com/oapi-codegen/oapi-codegen/v2 v2.4.1

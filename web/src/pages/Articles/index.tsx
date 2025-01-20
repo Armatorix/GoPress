@@ -93,7 +93,10 @@ function ArticleTile({ article }: ArticleTileProps) {
           {article.title}
         </Typography>
       </Tooltip>
-      <div className="text-sm overflow-hidden max-h-20" dangerouslySetInnerHTML={{ __html: article.description }} />
+      <div
+        className="text-sm overflow-hidden max-h-20"
+        dangerouslySetInnerHTML={{ __html: article.description }}
+      />
       <div className="absolute top-4 right-4">
         <Switch
           checked={article.released}
@@ -105,14 +108,20 @@ function ArticleTile({ article }: ArticleTileProps) {
       </div>
       <div className="absolute bottom-2 right-2 ">
         <div className="flex flex-row gap-1 items-center text-right bg-gray-500/20 group-hover:bg-white/70 group-hover:text-black p-2 rounded-md">
-          <Typography variant="small" className='font-medium text-center'>
-            Created <Chip value={new Date(article.createdAt).toLocaleDateString()} />
-          </Typography>
-          <Typography variant="small" className='font-medium text-center'>
-            Updated <Chip value={new Date(article.updatedAt).toLocaleDateString()} />
-          </Typography>
-            <DeleteWithConfirmationButton article={article} />
-            <Button onClick={onEditClick}>Edit</Button>
+          <div className="flex flex-col gap-1">
+            <Typography variant="small" className="font-medium text-center">
+              Created
+            </Typography>
+            <Chip value={new Date(article.createdAt).toLocaleDateString()} />
+          </div>
+          <div className="flex flex-col gap-1">
+            <Typography variant="small" className="font-medium text-center">
+              Updated
+            </Typography>
+            <Chip value={new Date(article.updatedAt).toLocaleDateString()} />
+          </div>
+          <DeleteWithConfirmationButton article={article} />
+          <Button onClick={onEditClick}>Edit</Button>
         </div>
       </div>
     </div>

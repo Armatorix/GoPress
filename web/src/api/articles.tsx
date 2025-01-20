@@ -71,7 +71,7 @@ export function useAiGenerate() {
 
 export function useArticleStats() {
   return useQuery({
-    queryKey: ['articleStats'],
+    queryKey: queryKey.articles(),
     queryFn: () => DefaultService.getArticleStats(),
   })
 }
