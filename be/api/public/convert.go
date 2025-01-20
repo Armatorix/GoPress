@@ -47,7 +47,7 @@ func rssFeedFromEnt(details blogDetails, ins ent.Articles) (r io.Reader, n int64
 			Name:  details.authorName,
 			Email: details.authorEmail,
 		},
-		Items: make([]*feeds.Item, len(ins)),
+		Items: rssFeedItemsFromEnt(ins),
 	}
 
 	rss, err := f.ToRss()
@@ -71,5 +71,7 @@ func rssFeedItemFromEnt(in *ent.Article) *feeds.Item {
 		Title:       in.Title,
 		Link:        &feeds.Link{Href: "http://example.com/article/1"},
 		Description: in.Description,
+		Created:     in.CreatedAt,
+		Updated:     in.UpdatedAt,
 	}
 }
