@@ -8,6 +8,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 export const queryKey = {
   articles: () => ['articles'] as const,
+  articlesStats: () => ['articles', 'stats'] as const,
 }
 export function useLogin() {
   return useMutation({
@@ -27,6 +28,7 @@ export function useNewArticle() {
   return useMutation({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKey.articles() })
+      queryClient.invalidateQueries({ queryKey: queryKey.articlesStats() })
     },
     mutationFn: (body: PostArticle) => DefaultService.createArticle(body),
   })
@@ -37,6 +39,7 @@ export function useUpdateArticle(id: number) {
   return useMutation({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKey.articles() })
+      queryClient.invalidateQueries({ queryKey: queryKey.articlesStats() })
     },
     mutationFn: (body: PostArticle) => DefaultService.updateArticle(id, body),
   })
@@ -47,6 +50,7 @@ export function usePublishArticle() {
   return useMutation({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKey.articles() })
+      queryClient.invalidateQueries({ queryKey: queryKey.articlesStats() })
     },
     mutationFn: (id: number) => DefaultService.publishArticle(id),
   })
@@ -57,6 +61,7 @@ export function useDeleteArticle(id: number) {
   return useMutation({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKey.articles() })
+      queryClient.invalidateQueries({ queryKey: queryKey.articlesStats() })
     },
     mutationFn: () => DefaultService.deleteArticles([id]),
   })
@@ -71,7 +76,7 @@ export function useAiGenerate() {
 
 export function useArticleStats() {
   return useQuery({
-    queryKey: queryKey.articles(),
+    queryKey: queryKey.articlesStats(),
     queryFn: () => DefaultService.getArticleStats(),
   })
 }
