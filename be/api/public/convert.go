@@ -39,6 +39,7 @@ func rssFeedFromEnt(details Config, ins ent.Articles) (r io.Reader, n int64, err
 		Title: details.BlogName,
 		Link: &feeds.Link{
 			Href: details.BlogUrl,
+			Rel:  "self",
 		},
 		Description: details.BlogDesc,
 		Author: &feeds.Author{
@@ -76,7 +77,7 @@ func rssFeedItemsFromEnt(details Config, ins ent.Articles) ([]*feeds.Item, error
 func rssFeedItemFromEnt(in *ent.Article, url url.URL) *feeds.Item {
 	return &feeds.Item{
 		Title:       in.Title,
-		Link:        &feeds.Link{Href: url.String()},
+		Link:        &feeds.Link{Href: url.String(), Rel: "self"},
 		Description: in.Description,
 		Created:     in.CreatedAt,
 		Updated:     in.UpdatedAt,
