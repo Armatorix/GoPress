@@ -74,13 +74,13 @@ func rssFeedItemsFromEnt(details Config, ins ent.Articles) ([]*feeds.Item, error
 	return items, nil
 }
 
-func rssFeedItemFromEnt(in *ent.Article, url url.URL) *feeds.Item {
+func rssFeedItemFromEnt(in *ent.Article, itemUrl url.URL) *feeds.Item {
 	return &feeds.Item{
 		Title:       in.Title,
-		Link:        &feeds.Link{Href: url.String(), Rel: "self"},
+		Link:        &feeds.Link{Href: itemUrl.String(), Rel: "self"},
 		Description: in.Description,
 		Created:     in.CreatedAt,
 		Updated:     in.UpdatedAt,
-		Id:          strconv.Itoa(in.ID),
+		Id:          itemUrl.String(),
 	}
 }
