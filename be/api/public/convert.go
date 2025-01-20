@@ -64,8 +64,7 @@ func rssFeedItemsFromEnt(details Config, ins ent.Articles) ([]*feeds.Item, error
 	}
 	items := make([]*feeds.Item, len(ins))
 	for i, in := range ins {
-		itemUrl := *url
-		url.JoinPath("articles", strconv.Itoa(in.ID))
+		itemUrl := url.JoinPath("articles", strconv.Itoa(in.ID))
 		items[i] = rssFeedItemFromEnt(
 			in,
 			itemUrl,
@@ -74,7 +73,7 @@ func rssFeedItemsFromEnt(details Config, ins ent.Articles) ([]*feeds.Item, error
 	return items, nil
 }
 
-func rssFeedItemFromEnt(in *ent.Article, itemUrl url.URL) *feeds.Item {
+func rssFeedItemFromEnt(in *ent.Article, itemUrl *url.URL) *feeds.Item {
 	return &feeds.Item{
 		Title:       in.Title,
 		Link:        &feeds.Link{Href: itemUrl.String(), Rel: "self"},
