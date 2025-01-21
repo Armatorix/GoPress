@@ -31,12 +31,14 @@ func articleFromEnt(in *ent.Article) Article {
 }
 
 func rssFeedFromEnt(details Config, ins ent.Articles) (r io.Reader, n int64, err error) {
-	items, err := rssFeedItemsFromEnt(details, ins)
+	blogUrl, err := url.Parse(details.BlogUrl)
 	if err != nil {
 		return nil, 0, err
 	}
+
 	f := feeds.Feed{
 		Title: details.BlogName,
+		Id:    details.BlogUrl,
 		Link: &feeds.Link{
 			Href: details.BlogUrl,
 			Rel:  "self",
@@ -46,7 +48,7 @@ func rssFeedFromEnt(details Config, ins ent.Articles) (r io.Reader, n int64, err
 			Name:  details.BlogAuthor,
 			Email: details.BlogEmail,
 		},
-		Items: items,
+		Items: rssFeedItemsFromEnt(blogUrl, ins),
 	}
 
 	rss, err := f.ToRss()
@@ -57,20 +59,16 @@ func rssFeedFromEnt(details Config, ins ent.Articles) (r io.Reader, n int64, err
 	return strings.NewReader(rss), int64(len(rss)), nil
 }
 
-func rssFeedItemsFromEnt(details Config, ins ent.Articles) ([]*feeds.Item, error) {
-	url, err := url.Parse(details.BlogUrl)
-	if err != nil {
-		return nil, err
-	}
+func rssFeedItemsFromEnt(blogUrl *url.URL, ins ent.Articles) []*feeds.Item {
 	items := make([]*feeds.Item, len(ins))
 	for i, in := range ins {
-		itemUrl := url.JoinPath("articles", strconv.Itoa(in.ID))
+		itemUrl := blogUrl.JoinPath("articles", strconv.Itoa(in.ID))
 		items[i] = rssFeedItemFromEnt(
 			in,
 			itemUrl,
 		)
 	}
-	return items, nil
+	return items
 }
 
 func rssFeedItemFromEnt(in *ent.Article, itemUrl *url.URL) *feeds.Item {
